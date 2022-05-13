@@ -60,7 +60,7 @@ export class AuthController {
     @UsePipes(new JoiValidatorPipe(vRegisterDTO))
     async cRegister(@Body() body: RegisterDTO, @Res() res: Response) {
         const user = await this.userService.findUser('email', body.email);
-        if (user && user.isActive) throw new HttpException({ email: 'field.field-taken' }, StatusCodes.BAD_REQUEST);
+        if (user) throw new HttpException({ email: 'field.field-taken' }, StatusCodes.BAD_REQUEST);
 
         const newUser = user || new User();
         newUser.fullName = body.fullName;
@@ -82,7 +82,8 @@ export class AuthController {
     @UsePipes(new JoiValidatorPipe(vLoginDTO))
     async cLogin(@Body() body: LoginDTO, @Res() res: Response) {
         const user = await this.userService.findUser('email', body.email);
-        if (!user || !user.isActive) throw new HttpException({ errorMessage: 'error.invalid-password-username' }, StatusCodes.BAD_REQUEST);
+        if (!user) throw new HttpException({ errorMessage: 'error.invalid-password-username' }, StatusCodes.BAD_REQUEST);
+        if (!user.isActive) throw new HttpException({ errorMessage: 'error.email-not-active' }, StatusCodes.BAD_REQUEST);
 
         const isCorrectPassword = await this.authService.decryptPassword(body.password, user.password);
         if (!isCorrectPassword) throw new HttpException({ errorMessage: 'error.invalid-password-username' }, StatusCodes.BAD_REQUEST);
