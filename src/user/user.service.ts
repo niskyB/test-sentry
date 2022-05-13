@@ -1,11 +1,11 @@
 import { SortOrder } from './../core/interface';
 import { Injectable } from '@nestjs/common';
-import { User } from '../core/models';
-import { UserRepository } from '../core/repositories';
+import { Role, User } from '../core/models';
+import { RoleRepository, UserRepository } from '../core/repositories';
 
 @Injectable()
 export class UserService {
-    constructor(private readonly userRepository: UserRepository) {}
+    constructor(private readonly userRepository: UserRepository, private readonly roleRepository: RoleRepository) {}
 
     async saveUser(user: User): Promise<User> {
         return await this.userRepository.save(user);
@@ -42,5 +42,9 @@ export class UserService {
         } catch (err) {
             return { data: [], count: 0 };
         }
+    }
+
+    async findRole(field: keyof Role, value: any): Promise<Role> {
+        return await this.roleRepository.findOneByField(field, value);
     }
 }

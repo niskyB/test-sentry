@@ -110,7 +110,7 @@ describe('UserController', () => {
 
             beforeEach(async () => {
                 getUser = fakeUser();
-                newData = { name: fakeUser().name };
+                newData = { name: fakeUser().fullName };
 
                 await userService.saveUser(getUser);
                 token = await authService.createAccessToken(getUser);

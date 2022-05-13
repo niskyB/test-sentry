@@ -36,7 +36,7 @@ describe('AuthController', () => {
             let user: User;
             beforeEach(async () => {
                 user = fakeUser();
-                user.isVerified = false;
+                user.isActive = false;
                 await userService.saveUser(user);
             });
 
@@ -67,7 +67,7 @@ describe('AuthController', () => {
             let otp: string;
             beforeEach(async () => {
                 user = fakeUser();
-                user.isVerified = false;
+                user.isActive = false;
                 await userService.saveUser(user);
 
                 otp = await authService.createAccessToken(user, 5);
@@ -76,7 +76,7 @@ describe('AuthController', () => {
             it('Pass', async () => {
                 const res = await reqApi(otp);
                 const getUser = await userRepository.findOne({ email: user.email });
-                expect(getUser.isVerified).toBeTruthy();
+                expect(getUser.isActive).toBeTruthy();
                 expect(res.status).toBe(StatusCodes.OK);
             });
 
@@ -84,7 +84,7 @@ describe('AuthController', () => {
                 const res = await reqApi('hello');
                 const getUser = await userRepository.findOne({ email: user.email });
 
-                expect(getUser.isVerified).toBeFalsy();
+                expect(getUser.isActive).toBeFalsy();
                 expect(res.status).toBe(StatusCodes.UNAUTHORIZED);
             });
 
@@ -93,7 +93,7 @@ describe('AuthController', () => {
                 const res = await reqApi(token);
                 const getUser = await userRepository.findOne({ email: user.email });
 
-                expect(getUser.isVerified).toBeFalsy();
+                expect(getUser.isActive).toBeFalsy();
                 expect(res.status).toBe(StatusCodes.UNAUTHORIZED);
             });
         });
@@ -144,14 +144,16 @@ describe('AuthController', () => {
                     email: getUser.email,
                     password: getUser.password,
                     confirmPassword: getUser.password,
-                    name: getUser.name,
+                    fullName: getUser.fullName,
+                    mobile: getUser.mobile,
+                    gender: getUser.gender,
                 };
             });
             it('Pass', async () => {
                 const res = await reqApi(registerData);
                 const user = await userRepository.findOneByField('email', getUser.email);
 
-                expect(user.name).toBe(getUser.name);
+                expect(user.fullName).toBe(getUser.fullName);
                 expect(res.body.token).not.toBeNull();
             });
 

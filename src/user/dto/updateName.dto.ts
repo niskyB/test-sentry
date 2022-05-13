@@ -7,5 +7,5 @@ export class UpdateUserDTO {
 }
 
 export const vUpdateUserDTO = joi.object<UpdateUserDTO>({
-    name: userValidateSchema.name,
+    name: userValidateSchema.fullName,
 });

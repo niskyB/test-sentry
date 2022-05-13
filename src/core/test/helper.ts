@@ -1,4 +1,4 @@
-import { User, UserRole, UserStatus } from '../models';
+import { Role, User } from '../models';
 
 interface FakeDataType {
     lettersAndNumbers: string;
@@ -28,13 +28,11 @@ export function fakeData(length: number, type: keyof FakeDataType = 'lettersAndN
 
 export const fakeUser = () => {
     const user = new User();
-    user.name = fakeData(10, 'lettersLowerCase');
+    user.fullName = fakeData(10, 'lettersLowerCase');
     user.password = '123abcAbc';
-    user.googleId = fakeData(10, 'lettersAndNumbersLowerCase');
-    user.role = UserRole.USER;
+    user.role = new Role();
     user.email = `${fakeData(10, 'lettersLowerCase')}@gmail.com`;
-    user.status = UserStatus.ACTIVE;
-    user.isVerified = true;
+    user.isActive = true;
 
     return user;
 };

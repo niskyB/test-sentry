@@ -1,9 +1,10 @@
+import { Role } from './core/models/role';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { config } from './core';
 import { User } from './core/models';
 
 export const DbModule = TypeOrmModule.forRoot({
-    type: 'postgres',
+    type: 'mysql',
     host: config.DB_HOST,
     port: config.DB_PORT,
     username: config.DB_USERNAME,
@@ -11,6 +12,6 @@ export const DbModule = TypeOrmModule.forRoot({
     database: config.DB_NAME,
     synchronize: true,
     keepConnectionAlive: true,
-    entities: [User],
+    entities: [User, Role],
     extra: { connectionLimit: 1 },
 });

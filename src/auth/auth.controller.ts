@@ -1,15 +1,13 @@
-import { Body, Controller, Get, HttpException, Param, Post, Req, Res, UseGuards, UsePipes } from '@nestjs/common';
+import { Body, Controller, Get, HttpException, Param, Post, Req, Res, UsePipes } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiCreatedResponse } from '@nestjs/swagger';
 import { Request, Response } from 'express';
 import { UserService } from '../user/user.service';
 import { AuthService } from './auth.service';
 import { StatusCodes } from 'http-status-codes';
 import { LoginDTO, vLoginDTO, RegisterDTO, vRegisterDTO, vRequestVerifyEmailDTO, RequestVerifyEmailDTO } from './dto';
-import { AuthGuard } from '@nestjs/passport';
 import { constant } from '../core/constant';
-import { User } from '../core/models';
+import { User, UserRole } from '../core/models';
 import { JoiValidatorPipe } from '../core/pipe/validator.pipe';
-import { config } from '../core';
 import { JwtToken } from '../core/interface';
 import { EmailService } from '../core/providers';
 
@@ -50,7 +48,7 @@ export class AuthController {
             throw new HttpException({ errorMessage: '' }, StatusCodes.UNAUTHORIZED);
         }
 
-        user.isVerified = true;
+        user.isActive = true;
         await this.userService.saveUser(user);
 
         return res.send();
@@ -62,12 +60,15 @@ export class AuthController {
     @UsePipes(new JoiValidatorPipe(vRegisterDTO))
     async cRegister(@Body() body: RegisterDTO, @Res() res: Response) {
         const user = await this.userService.findUser('email', body.email);
-        if (user) throw new HttpException({ email: 'field.field-taken' }, StatusCodes.BAD_REQUEST);
+        if (user && user.isActive) throw new HttpException({ email: 'field.field-taken' }, StatusCodes.BAD_REQUEST);
 
-        const newUser = new User();
-        newUser.name = body.name;
+        const newUser = user || new User();
+        newUser.fullName = body.fullName;
         newUser.email = body.email;
         newUser.password = await this.authService.encryptPassword(body.password, constant.default.hashingSalt);
+        newUser.gender = body.gender;
+        newUser.mobile = body.mobile;
+        newUser.role = await this.userService.findRole('name', 'customer');
 
         const insertedUser = await this.userService.saveUser(newUser);
 
@@ -94,32 +95,5 @@ export class AuthController {
     @ApiOperation({ summary: 'Logout user account' })
     async cLogout(@Req() req: Request, @Res() res: Response) {
         return res.cookie(constant.authController.tokenName, '', { maxAge: -999 }).send();
-    }
-
-    // ---------------------------3rd authentication---------------------------
-    @Get('/google')
-    @UseGuards(AuthGuard('google'))
-    cGoogleAuth() {
-        //
-    }
-
-    @Get('/google/callback')
-    @UseGuards(AuthGuard('google'))
-    async cGoogleAuthRedirect(@Req() req: Request, @Res() res: Response) {
-        const accessToken = await this.authService.createAccessToken(req.user as User);
-        return res.cookie(constant.authController.tokenName, accessToken, { maxAge: constant.authController.googleUserCookieTime }).redirect(config.GOOGLE_CLIENT_REDIRECT_URL);
-    }
-
-    @Get('/facebook')
-    @UseGuards(AuthGuard('facebook'))
-    async cFacebookAuth() {
-        //
-    }
-
-    @Get('/facebook/callback')
-    @UseGuards(AuthGuard('facebook'))
-    async cFacebookAuthRedirect(@Req() req: Request, @Res() res: Response) {
-        const accessToken = await this.authService.createAccessToken(req.user as User);
-        return res.cookie(constant.authController.tokenName, accessToken, { maxAge: constant.authController.facebookUserCookieTime }).redirect(config.FACEBOOK_CLIENT_REDIRECT_URL);
     }
 }
