@@ -39,6 +39,10 @@ export class User {
     @Column({ default: null })
     token: string;
 
+    @ApiProperty({ description: 'Image Url' })
+    @Column({ default: null })
+    imageUrl: string;
+
     @ApiProperty({ description: 'Is active' })
     @Column({ default: false })
     isActive: boolean;

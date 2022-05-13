@@ -18,7 +18,9 @@ export class UserController {
     @Get('/me')
     @UseGuards(AuthGuard)
     async cGetMe(@Req() req: Request, @Res() res: Response) {
-        return res.send(req.user);
+        const user = req.user;
+        user.token = '';
+        return res.send(user);
     }
 
     @Get('/:userId')
