@@ -1,10 +1,11 @@
 import { CanActivate, ExecutionContext, HttpException, Injectable } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
-import { AuthService } from './auth.service';
+import { AuthService } from '../auth.service';
 import { Request } from 'express';
 import { StatusCodes } from 'http-status-codes';
-import { UserService } from '../user/user.service';
-import { JwtToken } from '../core/interface';
+import { UserService } from '../../user/user.service';
+import { JwtToken } from '../../core/interface';
+import { Role } from '../../core/models';
 
 @Injectable()
 export class AuthGuard implements CanActivate {
@@ -12,7 +13,7 @@ export class AuthGuard implements CanActivate {
 
     async canActivate(context: ExecutionContext): Promise<boolean> {
         const req: Request = context.switchToHttp().getRequest();
-        // const roles = this.reflector.get<UserRole[]>('roles', context.getHandler()) || [];
+        const roles = this.reflector.get<Role[]>('roles', context.getHandler()) || [];
 
         const authorization = req.headers['authorization'] || '';
         const token = this.getTokenFromHeader(authorization);
@@ -28,9 +29,9 @@ export class AuthGuard implements CanActivate {
             throw new HttpException({}, StatusCodes.UNAUTHORIZED);
         }
 
-        // if (roles.length && !roles.includes(user.role)) {
-        //     throw new HttpException({}, StatusCodes.UNAUTHORIZED);
-        // }
+        if (roles.length && !roles.includes(user.role)) {
+            throw new HttpException({}, StatusCodes.UNAUTHORIZED);
+        }
 
         user.password = '';
         req.user = user;

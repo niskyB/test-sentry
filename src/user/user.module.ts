@@ -5,7 +5,6 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { UserRepository, RoleRepository } from '../core/repositories';
 import { AuthModule } from '../auth/auth.module';
 import { UsersController } from './users.controller';
-import { EmailModule } from '../core/providers';
 
 @Module({
     imports: [forwardRef(() => AuthModule), TypeOrmModule.forFeature([UserRepository]), TypeOrmModule.forFeature([RoleRepository])],

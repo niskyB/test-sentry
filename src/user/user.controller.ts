@@ -3,7 +3,7 @@ import { UserService } from './user.service';
 import { ApiTags, ApiBearerAuth } from '@nestjs/swagger';
 import { Request, Response } from 'express';
 import { StatusCodes } from 'http-status-codes';
-import { AuthGuard } from '../auth/auth.guard';
+import { AuthGuard } from '../auth/guard/auth.guard';
 import { AuthService } from '../auth/auth.service';
 import { JoiValidatorPipe } from '../core/pipe/validator.pipe';
 import { ChangePasswordDTO, vChangePasswordDTO, UpdateUserDTO, vUpdateUserDTO } from './dto';
