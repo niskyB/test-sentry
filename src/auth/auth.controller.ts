@@ -68,7 +68,7 @@ export class AuthController {
         newUser.password = await this.authService.encryptPassword(body.password, constant.default.hashingSalt);
         newUser.gender = body.gender;
         newUser.mobile = body.mobile;
-        newUser.role = await this.userService.findRole('name', 'customer');
+        newUser.role = await this.userService.findRole('name', UserRole.CUSTOMER);
 
         const insertedUser = await this.userService.saveUser(newUser);
 
@@ -82,13 +82,13 @@ export class AuthController {
     @UsePipes(new JoiValidatorPipe(vLoginDTO))
     async cLogin(@Body() body: LoginDTO, @Res() res: Response) {
         const user = await this.userService.findUser('email', body.email);
-        if (!user) throw new HttpException({ errorMessage: 'error.invalid-password-username' }, StatusCodes.BAD_REQUEST);
+        if (!user || !user.isActive) throw new HttpException({ errorMessage: 'error.invalid-password-username' }, StatusCodes.BAD_REQUEST);
 
         const isCorrectPassword = await this.authService.decryptPassword(body.password, user.password);
         if (!isCorrectPassword) throw new HttpException({ errorMessage: 'error.invalid-password-username' }, StatusCodes.BAD_REQUEST);
 
         const accessToken = await this.authService.createAccessToken(user);
-        return res.cookie(constant.authController.tokenName, accessToken, { maxAge: constant.authController.loginCookieTime }).send({ token: accessToken });
+        return res.cookie(constant.authController.tokenName, accessToken, { maxAge: constant.authController.loginCookieTime }).send();
     }
 
     @Post('/logout')
