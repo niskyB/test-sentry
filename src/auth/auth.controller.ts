@@ -4,7 +4,7 @@ import { Request, Response } from 'express';
 import { UserService } from '../user/user.service';
 import { AuthService } from './auth.service';
 import { StatusCodes } from 'http-status-codes';
-import { LoginDTO, vLoginDTO, RegisterDTO, vRegisterDTO, vRequestVerifyEmailDTO, RequestVerifyEmailDTO } from './dto';
+import { LoginDTO, vLoginDTO, RegisterDTO, vRegisterDTO, vRequestVerifyEmailDTO, RequestVerifyEmailDTO, vRequestResetPasswordDTO, RequestResetPasswordDTO } from './dto';
 import { constant } from '../core/constant';
 import { User, UserRole } from '../core/models';
 import { JoiValidatorPipe } from '../core/pipe/validator.pipe';
@@ -25,11 +25,7 @@ export class AuthController {
             throw new HttpException({ errorMessage: 'error.not_found' }, StatusCodes.BAD_REQUEST);
         }
 
-        const otp = await this.authService.createAccessToken(user, 5);
-
-        const isSend = await this.emailService.sendEmailForVerify(user.email, otp);
-
-        if (!isSend) {
+        if (!this.authService.sendEmailToken(user)) {
             throw new HttpException({ errorMessage: 'error.something_wrong' }, StatusCodes.INTERNAL_SERVER_ERROR);
         }
 
@@ -96,5 +92,42 @@ export class AuthController {
     @ApiOperation({ summary: 'Logout user account' })
     async cLogout(@Req() req: Request, @Res() res: Response) {
         return res.cookie(constant.authController.tokenName, '', { maxAge: -999 }).send();
+    }
+
+    @Post('/send-reset-password')
+    @UsePipes(new JoiValidatorPipe(vRequestVerifyEmailDTO))
+    async cSendResetPassword(@Body() body: RequestVerifyEmailDTO, @Res() res: Response) {
+        const user = await this.userService.findUser('email', body.email);
+
+        if (!user) {
+            throw new HttpException({ errorMessage: 'error.not_found' }, StatusCodes.BAD_REQUEST);
+        }
+
+        if (!this.authService.sendEmailToken(user)) {
+            throw new HttpException({ errorMessage: 'error.something_wrong' }, StatusCodes.INTERNAL_SERVER_ERROR);
+        }
+
+        return res.send();
+    }
+
+    @Post('/reset-password')
+    @UsePipes(new JoiValidatorPipe(vRequestResetPasswordDTO))
+    async cResetPassword(@Body() body: RequestResetPasswordDTO, @Res() res: Response) {
+        const { data, error } = await this.authService.verifyToken<JwtToken>(body.token);
+        if (error) {
+            throw new HttpException({ errorMessage: '' }, StatusCodes.UNAUTHORIZED);
+        }
+
+        const user = await this.userService.findUser('id', data.id);
+
+        if (!user) {
+            throw new HttpException({ errorMessage: '' }, StatusCodes.UNAUTHORIZED);
+        }
+
+        user.password = await this.authService.encryptPassword(body.password, constant.default.hashingSalt);
+
+        await this.userService.saveUser(user);
+
+        return res.send();
     }
 }

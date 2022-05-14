@@ -17,6 +17,7 @@ export class JoiValidatorPipe implements PipeTransform {
         if (!input) throw new HttpException({ errorMessage: 'error.invalid-input' }, StatusCodes.BAD_REQUEST);
 
         const { error, value } = this.schema.validate(input, { abortEarly: false });
+        console.log(error);
         if (error) throw new HttpException(this.mapJoiError(error), StatusCodes.BAD_REQUEST);
 
         return value;
