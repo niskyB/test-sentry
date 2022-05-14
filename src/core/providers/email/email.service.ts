@@ -40,7 +40,22 @@ export class EmailService {
                                                     <h2>Hello, ${receiver}</h2>
                                                     <p>We are from Mono Infinity Team</p>
                                                     <p>Please click to this link to verify your email:</p>
-                                                    <a href="${config.SENDGRID_URL}/user/verify-email/${otp}"></a>
+                                                    <a href="${config.SENDGRID_URL}api/auth/verify-email/${otp}">Here</a>
+                                                </div>
+        `,
+        );
+    }
+
+    async sendResetPassword(receiver: string, otp: string) {
+        return await this.sendMail(
+            receiver,
+            'RESET PASSWORD',
+            `
+                                                <div>
+                                                    <h2>Hello, ${receiver}</h2>
+                                                    <p>We are from Mono Infinity Team</p>
+                                                    <p>Please click to this link to reset password:</p>
+                                                    <a href="${config.CLIENT_URL}/auth/reset-password/token=${otp}">Here</a>
                                                 </div>
         `,
         );
