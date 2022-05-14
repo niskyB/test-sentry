@@ -19,5 +19,5 @@ export const vUpdateUserDTO = joi.object<UpdateUserDTO>({
     fullName: userValidateSchema.fullName.failover(''),
     gender: userValidateSchema.gender.failover(''),
     mobile: userValidateSchema.mobile.failover(''),
-    imageUrl: userValidateSchema.imageUrl,
+    imageUrl: userValidateSchema.imageUrl.failover(''),
 });

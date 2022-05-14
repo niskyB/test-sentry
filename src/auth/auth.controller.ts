@@ -67,10 +67,15 @@ export class AuthController {
         newUser.mobile = body.mobile;
         newUser.role = await this.userService.findRole('name', UserRole.CUSTOMER);
 
-        const insertedUser = await this.userService.saveUser(newUser);
+        await this.userService.saveUser(newUser);
 
-        const accessToken = await this.authService.createAccessToken(insertedUser);
-        return res.cookie(constant.authController.tokenName, accessToken, { maxAge: constant.authController.registerCookieTime }).send({ token: accessToken });
+        const isSend = await this.authService.sendEmailToken(newUser, EmailAction.verifyEmail);
+
+        if (!isSend) {
+            throw new HttpException({ errorMessage: 'error.something_wrong' }, StatusCodes.INTERNAL_SERVER_ERROR);
+        }
+
+        return res.send();
     }
 
     @Post('/login')
@@ -104,7 +109,9 @@ export class AuthController {
             throw new HttpException({ errorMessage: 'error.not_found' }, StatusCodes.BAD_REQUEST);
         }
 
-        if (!this.authService.sendEmailToken(user, EmailAction.resetPassword)) {
+        const isSend = await this.authService.sendEmailToken(user, EmailAction.resetPassword);
+
+        if (!isSend) {
             throw new HttpException({ errorMessage: 'error.something_wrong' }, StatusCodes.INTERNAL_SERVER_ERROR);
         }
 
