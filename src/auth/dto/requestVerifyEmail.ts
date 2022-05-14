@@ -3,7 +3,7 @@ import * as joi from 'joi';
 import { userValidateSchema } from '../../core/models';
 
 export class RequestVerifyEmailDTO {
-    @ApiProperty({ description: 'Username', example: 'haicao2805@gmail.com' })
+    @ApiProperty({ description: 'Username', example: 'kainesv86@gmail.com' })
     email: string;
 }
 

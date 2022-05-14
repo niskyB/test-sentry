@@ -45,4 +45,19 @@ export class EmailService {
         `,
         );
     }
+
+    async sendResetPassword(receiver: string, otp: string) {
+        return await this.sendMail(
+            receiver,
+            'RESET PASSWORD',
+            `
+                                                <div>
+                                                    <h2>Hello, ${receiver}</h2>
+                                                    <p>We are from Mono Infinity Team</p>
+                                                    <p>Please click to this link to reset password:</p>
+                                                    <a href="${config.CLIENT_URL}/auth/reset-password/token=${otp}">Here</a>
+                                                </div>
+        `,
+        );
+    }
 }
