@@ -3,9 +3,11 @@ import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
 
 import { User } from '../core/models';
+import { UserService } from 'src/user/user.service';
+import { EmailService } from 'src/core/providers';
 @Injectable()
 export class AuthService {
-    constructor(private readonly jwtService: JwtService) {}
+    constructor(private readonly jwtService: JwtService, private readonly emailService: EmailService) {}
 
     // ---------------------------Bcrypt Service---------------------------
     async encryptPassword(password: string, saltOrRounds: number): Promise<string> {
@@ -40,5 +42,13 @@ export class AuthService {
     async createAccessToken(user: User, minutes?: number): Promise<string> {
         const token = this.encryptAccessToken({ id: user.id }, minutes);
         return token;
+    }
+    // --------------------------- Send Email Service ---------------------------
+
+    async sendEmailToken(user: User): Promise<boolean> {
+        const otp = await this.createAccessToken(user, 5);
+
+        const isSend = await this.emailService.sendEmailForVerify(user.email, otp);
+        return isSend;
     }
 }
