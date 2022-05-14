@@ -51,10 +51,11 @@ export class UserController {
 
     @Put('/')
     @UseGuards(AuthGuard)
+    @UseInterceptors(FileInterceptor('image', multerOptions))
     @UsePipes(new JoiValidatorPipe(vUpdateUserDTO))
-    @UseInterceptors(FileInterceptor('imageUrl', multerOptions))
     async updateUserInformation(@Body() body: UpdateUserDTO, @Res() res: Response, @Req() req: Request, @UploadedFile() file: Express.Multer.File) {
         //get current user data
+
         const user = await this.userService.findUser('id', req.user.id);
 
         // update field
