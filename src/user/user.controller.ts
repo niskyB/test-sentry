@@ -18,7 +18,9 @@ export class UserController {
     @Get('/me')
     @UseGuards(AuthGuard)
     async cGetMe(@Req() req: Request, @Res() res: Response) {
-        return res.send(req.user);
+        const user = req.user;
+        user.token = '';
+        return res.send(user);
     }
 
     @Get('/:userId')
@@ -52,7 +54,7 @@ export class UserController {
         //get current user data
         const user = await this.userService.findUser('id', req.user.id);
         // update field
-        user.fullName = body.name;
+        user.fullName = body.fullName;
         await this.userService.saveUser(user);
         return res.send();
     }

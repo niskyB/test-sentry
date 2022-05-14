@@ -1,11 +1,23 @@
 import { ApiProperty } from '@nestjs/swagger';
 import * as joi from 'joi';
-import { userValidateSchema } from '../../core/models';
+import { Gender, userValidateSchema } from '../../core/models';
 export class UpdateUserDTO {
-    @ApiProperty({ description: 'Name', example: 'Duc Dauuu' })
-    name: string;
+    @ApiProperty({ description: 'Full Name', example: 'Hoang Loocccc' })
+    fullName: string;
+
+    @ApiProperty({ description: 'Gender', example: 'male' })
+    gender: Gender;
+
+    @ApiProperty({ description: 'Mobile', example: '0993954239' })
+    mobile: string;
+
+    @ApiProperty({ description: 'Image Url', example: 'abcdefg' })
+    imageUrl: string;
 }
 
 export const vUpdateUserDTO = joi.object<UpdateUserDTO>({
-    name: userValidateSchema.fullName,
+    fullName: userValidateSchema.fullName.failover(''),
+    gender: userValidateSchema.gender.failover(''),
+    mobile: userValidateSchema.mobile.failover(''),
+    imageUrl: userValidateSchema.imageUrl,
 });
