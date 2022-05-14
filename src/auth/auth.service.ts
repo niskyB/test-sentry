@@ -5,9 +5,10 @@ import { JwtService } from '@nestjs/jwt';
 import { User } from '../core/models';
 import { UserService } from 'src/user/user.service';
 import { EmailService } from 'src/core/providers';
+import { EmailAction } from 'src/core/interface/email.enum';
 @Injectable()
 export class AuthService {
-    constructor(private readonly jwtService: JwtService, private readonly emailService: EmailService) {}
+    constructor(private readonly jwtService: JwtService, private readonly userService: UserService, private readonly emailService: EmailService) {}
 
     // ---------------------------Bcrypt Service---------------------------
     async encryptPassword(password: string, saltOrRounds: number): Promise<string> {
@@ -45,10 +46,23 @@ export class AuthService {
     }
     // --------------------------- Send Email Service ---------------------------
 
-    async sendEmailToken(user: User): Promise<boolean> {
+    async sendEmailToken(user: User, action: EmailAction): Promise<boolean> {
         const otp = await this.createAccessToken(user, 5);
 
-        const isSend = await this.emailService.sendEmailForVerify(user.email, otp);
+        let isSend;
+        if (action === EmailAction.verifyEmail) {
+            isSend = await this.emailService.sendEmailForVerify(user.email, otp);
+        }
+        if (action === EmailAction.resetPassword) {
+            isSend = await this.emailService.sendResetPassword(user.email, otp);
+        }
+
+        user.token = otp;
+
+        if (isSend) {
+            this.userService.saveUser(user);
+        }
+
         return isSend;
     }
 }

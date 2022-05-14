@@ -10,6 +10,7 @@ import { User, UserRole } from '../core/models';
 import { JoiValidatorPipe } from '../core/pipe/validator.pipe';
 import { JwtToken } from '../core/interface';
 import { EmailService } from '../core/providers';
+import { EmailAction } from 'src/core/interface/email.enum';
 
 @ApiTags('auth')
 @Controller('auth')
@@ -25,7 +26,7 @@ export class AuthController {
             throw new HttpException({ errorMessage: 'error.not_found' }, StatusCodes.BAD_REQUEST);
         }
 
-        if (!this.authService.sendEmailToken(user)) {
+        if (!this.authService.sendEmailToken(user, EmailAction.verifyEmail)) {
             throw new HttpException({ errorMessage: 'error.something_wrong' }, StatusCodes.INTERNAL_SERVER_ERROR);
         }
 
@@ -94,7 +95,7 @@ export class AuthController {
         return res.cookie(constant.authController.tokenName, '', { maxAge: -999 }).send();
     }
 
-    @Post('/send-reset-password')
+    @Post('/send-reset-password/')
     @UsePipes(new JoiValidatorPipe(vRequestVerifyEmailDTO))
     async cSendResetPassword(@Body() body: RequestVerifyEmailDTO, @Res() res: Response) {
         const user = await this.userService.findUser('email', body.email);
@@ -103,7 +104,7 @@ export class AuthController {
             throw new HttpException({ errorMessage: 'error.not_found' }, StatusCodes.BAD_REQUEST);
         }
 
-        if (!this.authService.sendEmailToken(user)) {
+        if (!this.authService.sendEmailToken(user, EmailAction.resetPassword)) {
             throw new HttpException({ errorMessage: 'error.something_wrong' }, StatusCodes.INTERNAL_SERVER_ERROR);
         }
 
@@ -114,6 +115,7 @@ export class AuthController {
     @UsePipes(new JoiValidatorPipe(vRequestResetPasswordDTO))
     async cResetPassword(@Body() body: RequestResetPasswordDTO, @Res() res: Response) {
         const { data, error } = await this.authService.verifyToken<JwtToken>(body.token);
+
         if (error) {
             throw new HttpException({ errorMessage: '' }, StatusCodes.UNAUTHORIZED);
         }
@@ -124,7 +126,12 @@ export class AuthController {
             throw new HttpException({ errorMessage: '' }, StatusCodes.UNAUTHORIZED);
         }
 
+        if (user.token === null || user.token !== body.token) {
+            throw new HttpException({ errorMessage: '' }, StatusCodes.BAD_REQUEST);
+        }
+
         user.password = await this.authService.encryptPassword(body.password, constant.default.hashingSalt);
+        user.token = null;
 
         await this.userService.saveUser(user);
 
