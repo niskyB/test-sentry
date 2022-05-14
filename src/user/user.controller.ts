@@ -54,7 +54,7 @@ export class UserController {
         //get current user data
         const user = await this.userService.findUser('id', req.user.id);
         // update field
-        user.fullName = body.name;
+        user.fullName = body.fullName;
         await this.userService.saveUser(user);
         return res.send();
     }

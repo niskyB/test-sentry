@@ -16,7 +16,8 @@ export class EmailService {
             html: `<div>${content}</div>`,
             mailSettings: {
                 sandboxMode: {
-                    enable: config.NODE_ENV !== monoEnum.NODE_ENV_MODE.PRODUCTION,
+                    // enable: config.NODE_ENV !== monoEnum.NODE_ENV_MODE.PRODUCTION,
+                    enable: false,
                 },
             },
         };

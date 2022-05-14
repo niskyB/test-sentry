@@ -74,4 +74,5 @@ export const userValidateSchema = {
         .string()
         .valid(Gender.MALE || Gender.FEMALE)
         .required(),
+    imageUrl: joi.string(),
 };
