@@ -1,4 +1,4 @@
-import { Body, Controller, Get, HttpException, Param, Put, Req, Res, UseGuards, UsePipes } from '@nestjs/common';
+import { Body, Controller, Get, HttpException, Param, Put, Req, Res, UploadedFile, UseGuards, UseInterceptors, UsePipes } from '@nestjs/common';
 import { UserService } from './user.service';
 import { ApiTags, ApiBearerAuth } from '@nestjs/swagger';
 import { Request, Response } from 'express';
@@ -8,6 +8,8 @@ import { AuthService } from '../auth/auth.service';
 import { JoiValidatorPipe } from '../core/pipe/validator.pipe';
 import { ChangePasswordDTO, vChangePasswordDTO, UpdateUserDTO, vUpdateUserDTO } from './dto';
 import { constant } from '../core';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { multerOptions } from '../core/multer';
 
 @ApiTags('user')
 @ApiBearerAuth()
@@ -50,12 +52,18 @@ export class UserController {
     @Put('/')
     @UseGuards(AuthGuard)
     @UsePipes(new JoiValidatorPipe(vUpdateUserDTO))
-    async updateUserInformation(@Body() body: UpdateUserDTO, @Res() res: Response, @Req() req: Request) {
+    @UseInterceptors(FileInterceptor('imageUrl', multerOptions))
+    async updateUserInformation(@Body() body: UpdateUserDTO, @Res() res: Response, @Req() req: Request, @UploadedFile() file: Express.Multer.File) {
         //get current user data
         const user = await this.userService.findUser('id', req.user.id);
+
         // update field
-        user.fullName = body.fullName;
+        user.fullName = body.fullName || user.fullName;
+        user.gender = body.gender || user.gender;
+        user.imageUrl = file.filename || user.imageUrl;
+        user.mobile = body.mobile || user.mobile;
+
         await this.userService.saveUser(user);
-        return res.send();
+        return res.send(user);
     }
 }
