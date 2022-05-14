@@ -55,7 +55,7 @@ export class EmailService {
                                                     <h2>Hello, ${receiver}</h2>
                                                     <p>We are from Mono Infinity Team</p>
                                                     <p>Please click to this link to reset password:</p>
-                                                    <a href="${config.CLIENT_URL}/auth/reset-password/token=${otp}">Here</a>
+                                                    <a href="${config.CLIENT_URL}/auth/reset-password/${otp}">Here</a>
                                                 </div>
         `,
         );
