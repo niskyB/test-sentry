@@ -61,7 +61,7 @@ export class User {
 }
 
 export const userValidateSchema = {
-    fullName: joi.string().min(5).max(40).trim().lowercase().required(),
+    fullName: joi.string().min(3).max(40).trim().lowercase().required(),
     email: joi.string().min(5).max(255).email().trim().lowercase().required(),
     password: joiPassword.string().min(8).max(32).trim().alphanum().required(),
     mobile: joi

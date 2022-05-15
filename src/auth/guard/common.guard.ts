@@ -6,6 +6,7 @@ import { StatusCodes } from 'http-status-codes';
 import { UserService } from '../../user/user.service';
 import { JwtToken } from '../../core/interface';
 import { Role } from '../../core/models';
+import { constant } from '../../core';
 
 @Injectable()
 export class AuthGuard implements CanActivate {
@@ -17,6 +18,7 @@ export class AuthGuard implements CanActivate {
 
         const authorization = req.headers['authorization'] || '';
         const token = this.getTokenFromHeader(authorization);
+        // const token = req.cookies[constant.authController.tokenName] || '';
 
         const { data, error } = await this.authService.verifyToken<JwtToken>(token);
         if (error) {
