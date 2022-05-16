@@ -9,12 +9,12 @@ const storage = multer.diskStorage({
     },
     filename: function (req: Request, file: Express.Multer.File, cb: any) {
         const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
-        cb(null, uniqueSuffix + file.originalname + file.mimetype.replace('/', '.'));
+        cb(null, uniqueSuffix + file.originalname);
     },
 });
 
 const fileFilter = (req: Request, file: Express.Multer.File, cb: any) => {
-    if (file.mimetype === 'image/jpg' || file.mimetype === 'image/jpeg' || file.mimetype === 'image/png') {
+    if (file && (file.mimetype === 'image/jpg' || file.mimetype === 'image/jpeg' || file.mimetype === 'image/png')) {
         cb(null, true);
     } else {
         cb(new BadRequestException());

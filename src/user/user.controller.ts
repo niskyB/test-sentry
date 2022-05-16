@@ -60,7 +60,9 @@ export class UserController {
         // update field
         user.fullName = body.fullName || user.fullName;
         user.gender = body.gender || user.gender;
-        user.imageUrl = file.filename || user.imageUrl;
+        if (file) {
+            user.imageUrl = file.filename || user.imageUrl;
+        }
         user.mobile = body.mobile || user.mobile;
 
         await this.userService.saveUser(user);
