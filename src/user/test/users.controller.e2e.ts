@@ -1,7 +1,7 @@
-import { fakeUser } from './../../core/test/helper';
+import { fakeUser } from '../../core/test/helper';
 import { INestApplication } from '@nestjs/common';
 import { UserRepository } from '../../core/repositories';
-import { UserService } from '../../user/user.service';
+import { UserService } from '../user.service';
 import { initTestModule } from '../../core/test/initTest';
 import * as supertest from 'supertest';
 
