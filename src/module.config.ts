@@ -1,8 +1,8 @@
+import { Slider } from './core/models/slider';
 import { Role } from './core/models/role';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { config } from './core';
 import { User } from './core/models';
-import { Slider } from './core/models/slider';
 
 export const DbModule = TypeOrmModule.forRoot({
     type: 'mysql',

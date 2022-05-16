@@ -30,8 +30,7 @@ export class Slider {
     user: User;
 }
 
-export const userValidateSchema = {
+export const sliderValidateSchema = {
     title: joi.string().min(3).max(40).trim().lowercase().required(),
     backLink: joi.string().max(255).trim().lowercase().required(),
-    imageUrl: joi.string(),
 };
