@@ -51,17 +51,16 @@ export class UserController {
 
     @Put('/')
     @UseGuards(CommonGuard)
-    // @UseInterceptors(FileInterceptor('image', multerOptions))
+    @UseInterceptors(FileInterceptor('image', multerOptions))
     @UsePipes(new JoiValidatorPipe(vUpdateUserDTO))
-    async updateUserInformation(@Body() body: UpdateUserDTO, @Res() res: Response, @Req() req: Request) {
+    async updateUserInformation(@Body() body: UpdateUserDTO, @Res() res: Response, @Req() req: Request, @UploadedFile() file: Express.Multer.File) {
         //get current user data
         const user = await this.userService.findUser('id', req.user.id);
 
         // update field
         user.fullName = body.fullName || user.fullName;
         user.gender = body.gender || user.gender;
-        console.log('ASSA');
-        // user.imageUrl = file.filename || user.imageUrl;
+        user.imageUrl = file.filename || user.imageUrl;
         user.mobile = body.mobile || user.mobile;
 
         await this.userService.saveUser(user);

@@ -14,9 +14,11 @@ export class JoiValidatorPipe implements PipeTransform {
     }
 
     transform(input: any) {
-        if (input.filename) return input;
+        if ((input && input.filename) || !input) return input;
 
-        if (!input) throw new HttpException({ errorMessage: 'error.invalid-input' }, StatusCodes.BAD_REQUEST);
+        if (!input) {
+            throw new HttpException({ errorMessage: 'error.invalid-input' }, StatusCodes.BAD_REQUEST);
+        }
 
         const { error, value } = this.schema.validate(input, { abortEarly: false });
 
