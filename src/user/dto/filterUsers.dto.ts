@@ -1,4 +1,4 @@
-import { constant } from './../../core/constant';
+import { constant } from '../../core/constant';
 import { ApiProperty } from '@nestjs/swagger';
 import * as joi from 'joi';
 import { SortOrder } from '../../core/interface';

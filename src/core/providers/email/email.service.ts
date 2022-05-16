@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { MailDataRequired, MailService } from '@sendgrid/mail';
-import { monoEnum, monoLogger } from 'mono-utils-core';
+import { monoLogger } from 'mono-utils-core';
 import { config } from '../../config';
 import { constant } from '../../constant';
 

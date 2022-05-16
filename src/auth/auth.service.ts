@@ -50,11 +50,14 @@ export class AuthService {
         const otp = await this.createAccessToken(user, 5);
 
         let isSend;
-        if (action === EmailAction.verifyEmail) {
-            isSend = await this.emailService.sendEmailForVerify(user.email, otp);
-        }
-        if (action === EmailAction.resetPassword) {
-            isSend = await this.emailService.sendResetPassword(user.email, otp);
+
+        switch (action) {
+            case EmailAction.verifyEmail:
+                isSend = await this.emailService.sendEmailForVerify(user.email, otp);
+                break;
+            case EmailAction.resetPassword:
+                isSend = await this.emailService.sendResetPassword(user.email, otp);
+                break;
         }
 
         user.token = otp;
