@@ -40,7 +40,7 @@ export class EmailService {
                                                     <h2>Hello, ${receiver}</h2>
                                                     <p>We are from Mono Infinity Team</p>
                                                     <p>Please click to this link to verify your email:</p>
-                                                    <a href="${config.CLIENT_URL}api/auth/verify-email/${otp}">Here</a>
+                                                    <a href="${config.CLIENT_URL}/auth/verify-email/${otp}">Here</a>
                                                 </div>
         `,
         );
