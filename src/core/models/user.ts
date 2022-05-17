@@ -58,6 +58,10 @@ export class User {
     @ApiProperty({ description: 'Role' })
     @ManyToOne(() => Role)
     role: Role;
+
+    @ApiProperty({ description: 'Type Id' })
+    @Column({ unique: true, nullable: true })
+    typeId: string;
 }
 
 export const userValidateSchema = {
@@ -70,9 +74,6 @@ export const userValidateSchema = {
         .max(20)
         .pattern(/^[0-9]+$/)
         .required(),
-    gender: joi
-        .string()
-        .valid(Gender.MALE || Gender.FEMALE)
-        .required(),
+    gender: joi.string().valid(Gender.MALE, Gender.FEMALE).required(),
     imageUrl: joi.string(),
 };

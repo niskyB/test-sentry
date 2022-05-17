@@ -1,3 +1,4 @@
+import { CustomerService } from './../customer/customer.service';
 import { Body, Controller, Get, HttpException, Param, Post, Req, Res, UsePipes } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiCreatedResponse } from '@nestjs/swagger';
 import { Request, Response } from 'express';
@@ -6,16 +7,15 @@ import { AuthService } from './auth.service';
 import { StatusCodes } from 'http-status-codes';
 import { LoginDTO, vLoginDTO, RegisterDTO, vRegisterDTO, vRequestVerifyEmailDTO, RequestVerifyEmailDTO, vRequestResetPasswordDTO, RequestResetPasswordDTO } from './dto';
 import { constant } from '../core/constant';
-import { User, UserRole } from '../core/models';
+import { UserRole, Customer, User } from '../core/models';
 import { JoiValidatorPipe } from '../core/pipe/validator.pipe';
 import { JwtToken } from '../core/interface';
-import { EmailService } from '../core/providers';
 import { EmailAction } from 'src/core/interface/email.enum';
 
 @ApiTags('auth')
 @Controller('auth')
 export class AuthController {
-    constructor(private readonly authService: AuthService, private readonly userService: UserService, private readonly emailService: EmailService) {}
+    constructor(private readonly authService: AuthService, private readonly userService: UserService, private readonly customerService: CustomerService) {}
 
     @Post('/verify-email')
     @UsePipes(new JoiValidatorPipe(vRequestVerifyEmailDTO))
@@ -59,15 +59,19 @@ export class AuthController {
         const user = await this.userService.findUser('email', body.email);
         if (user) throw new HttpException({ email: 'field.field-taken' }, StatusCodes.BAD_REQUEST);
 
-        const newUser = user || new User();
+        const newUser = new User();
+        const newCustomer = new Customer();
         newUser.fullName = body.fullName;
         newUser.email = body.email;
         newUser.password = await this.authService.encryptPassword(body.password, constant.default.hashingSalt);
         newUser.gender = body.gender;
         newUser.mobile = body.mobile;
+        newCustomer.user = newUser;
+        newUser.typeId = newCustomer.id;
         newUser.role = await this.userService.findRole('name', UserRole.CUSTOMER);
 
         await this.userService.saveUser(newUser);
+        await this.customerService.saveCustomer(newCustomer);
 
         const isSend = await this.authService.sendEmailToken(newUser, EmailAction.verifyEmail);
 
