@@ -58,6 +58,10 @@ export class User {
     @ApiProperty({ description: 'Role' })
     @ManyToOne(() => Role)
     role: Role;
+
+    @ApiProperty({ description: 'Type Id' })
+    @Column({ unique: true })
+    typeId: string;
 }
 
 export const userValidateSchema = {

@@ -6,7 +6,7 @@ import { AuthService } from './auth.service';
 import { StatusCodes } from 'http-status-codes';
 import { LoginDTO, vLoginDTO, RegisterDTO, vRegisterDTO, vRequestVerifyEmailDTO, RequestVerifyEmailDTO, vRequestResetPasswordDTO, RequestResetPasswordDTO } from './dto';
 import { constant } from '../core/constant';
-import { User, UserRole } from '../core/models';
+import { UserRole, Customer, User } from '../core/models';
 import { JoiValidatorPipe } from '../core/pipe/validator.pipe';
 import { JwtToken } from '../core/interface';
 import { EmailService } from '../core/providers';
@@ -59,12 +59,15 @@ export class AuthController {
         const user = await this.userService.findUser('email', body.email);
         if (user) throw new HttpException({ email: 'field.field-taken' }, StatusCodes.BAD_REQUEST);
 
-        const newUser = user || new User();
+        const newUser = new User();
+        const newCustomer = new Customer();
         newUser.fullName = body.fullName;
         newUser.email = body.email;
         newUser.password = await this.authService.encryptPassword(body.password, constant.default.hashingSalt);
         newUser.gender = body.gender;
         newUser.mobile = body.mobile;
+        newCustomer.user = newUser;
+        newUser.typeId = newCustomer.id;
         newUser.role = await this.userService.findRole('name', UserRole.CUSTOMER);
 
         await this.userService.saveUser(newUser);
