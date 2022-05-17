@@ -2,6 +2,7 @@ import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
 import * as joi from 'joi';
 import { User } from './user';
+import JoiMessage from 'joi-message';
 
 @Entity()
 export class Slider {
@@ -31,6 +32,19 @@ export class Slider {
 }
 
 export const sliderValidateSchema = {
-    title: joi.string().min(3).max(40).trim().lowercase().required(),
-    backLink: joi.string().max(255).trim().lowercase().required(),
+    title: joi
+        .string()
+        .min(3)
+        .max(40)
+        .trim()
+        .lowercase()
+        .required()
+        .messages(JoiMessage.createStringMessages({ field: 'Title', min: 3, max: 40 })),
+    backLink: joi
+        .string()
+        .max(255)
+        .trim()
+        .lowercase()
+        .required()
+        .messages(JoiMessage.createStringMessages({ field: 'Back Link', max: 255 })),
 };

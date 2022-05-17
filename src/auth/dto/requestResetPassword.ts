@@ -1,5 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import * as joi from 'joi';
+import JoiMessage from 'joi-message';
 import { userValidateSchema } from 'src/core/models';
 
 export class RequestResetPasswordDTO {
@@ -19,6 +20,16 @@ export class RequestResetPasswordDTO {
 
 export const vRequestResetPasswordDTO = joi.object<RequestResetPasswordDTO>({
     password: userValidateSchema.password,
-    confirmPassword: joi.string().required().valid(joi.ref('password')),
-    token: joi.string().required(),
+    confirmPassword: joi
+        .string()
+        .required()
+        .valid(joi.ref('password'))
+        .messages({
+            ...JoiMessage.createStringMessages({ field: 'Confirm password' }),
+            'any.only': 'Confirm password should match with password',
+        }),
+    token: joi
+        .string()
+        .required()
+        .messages(JoiMessage.createStringMessages({ field: 'Token' })),
 });
