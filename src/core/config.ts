@@ -23,6 +23,10 @@ export const config = {
     SENDGRID_SENDER: process.env.SENDGRID_SENDER || '',
     SENDGRID_URL: process.env.SENDGRID_URL || '',
 
+    AWS_REGION: process.env.AWS_REGION || '',
+    AWS_ACCESS_KEY_ID: process.env.AWS_ACCESS_KEY_ID || '',
+    AWS_SECRET_ACCESS_KEY: process.env.AWS_SECRET_ACCESS_KEY || '',
+
     PORT: Number(process.env.PORT) || 4000,
     NODE_ENV: process.env.NODE_ENV || monoEnum.NODE_ENV_MODE.DEVELOPMENT,
     DEBUG: process.env.DEBUG || '',
