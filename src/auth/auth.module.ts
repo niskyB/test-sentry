@@ -1,3 +1,4 @@
+import { CustomerModule } from './../customer/customer.module';
 import { forwardRef, Module } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { AuthController } from './auth.controller';
@@ -7,7 +8,7 @@ import { config } from '../core';
 import { EmailModule } from '../core/providers';
 
 @Module({
-    imports: [forwardRef(() => UserModule), EmailModule],
+    imports: [forwardRef(() => UserModule), EmailModule, CustomerModule],
     controllers: [AuthController],
     providers: [
         AuthService,

@@ -1,3 +1,4 @@
+import { CustomerService } from './../customer/customer.service';
 import { Body, Controller, Get, HttpException, Param, Post, Req, Res, UsePipes } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiCreatedResponse } from '@nestjs/swagger';
 import { Request, Response } from 'express';
@@ -9,13 +10,12 @@ import { constant } from '../core/constant';
 import { UserRole, Customer, User } from '../core/models';
 import { JoiValidatorPipe } from '../core/pipe/validator.pipe';
 import { JwtToken } from '../core/interface';
-import { EmailService } from '../core/providers';
 import { EmailAction } from 'src/core/interface/email.enum';
 
 @ApiTags('auth')
 @Controller('auth')
 export class AuthController {
-    constructor(private readonly authService: AuthService, private readonly userService: UserService, private readonly emailService: EmailService) {}
+    constructor(private readonly authService: AuthService, private readonly userService: UserService, private readonly customerService: CustomerService) {}
 
     @Post('/verify-email')
     @UsePipes(new JoiValidatorPipe(vRequestVerifyEmailDTO))
@@ -71,6 +71,7 @@ export class AuthController {
         newUser.role = await this.userService.findRole('name', UserRole.CUSTOMER);
 
         await this.userService.saveUser(newUser);
+        await this.customerService.saveCustomer(newCustomer);
 
         const isSend = await this.authService.sendEmailToken(newUser, EmailAction.verifyEmail);
 

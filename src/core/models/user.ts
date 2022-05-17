@@ -60,7 +60,7 @@ export class User {
     role: Role;
 
     @ApiProperty({ description: 'Type Id' })
-    @Column({ unique: true })
+    @Column({ unique: true, nullable: true })
     typeId: string;
 }
 
