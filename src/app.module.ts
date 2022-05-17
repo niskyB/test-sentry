@@ -6,6 +6,7 @@ import { DbModule } from './module.config';
 import { SliderModule } from './slider/slider.module';
 import { join } from 'path';
 import { CustomerModule } from './customer/customer.module';
+import { MarketingModule } from './marketing/marketing.module';
 @Module({
     imports: [
         DbModule,
@@ -17,6 +18,7 @@ import { CustomerModule } from './customer/customer.module';
             rootPath: join(__dirname, '..', 'uploads'),
         }),
         CustomerModule,
+        MarketingModule,
     ],
 })
 export class AppModule {}
