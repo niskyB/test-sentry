@@ -4270,6 +4270,11 @@ jest@^27.5.1:
     import-local "^3.0.2"
     jest-cli "^27.5.1"
 
+joi-message@^1.1.0:
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/joi-message/-/joi-message-1.1.0.tgz#378b2483524ed7119bf1d6f84bdf807d4ace50f2"
+  integrity sha512-ecTIy5jnHBjC2g301TbDNTHQ1A9UrEbyG3T0BUz/Wxy+UXVTPDUIL6ZTxMcQsfOdxgGotg1/H/ATBhsE0g+VcQ==
+
 joi-password@^3.0.1:
   version "3.0.1"
   resolved "https://registry.yarnpkg.com/joi-password/-/joi-password-3.0.1.tgz#7c979dfebae13fbb4d3d2ab1e3f58590e79643a1"

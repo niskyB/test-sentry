@@ -1,5 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import * as joi from 'joi';
+import JoiMessage from 'joi-message';
 import { userValidateSchema } from '../../core/models';
 
 export class ChangePasswordDTO {
@@ -16,5 +17,12 @@ export class ChangePasswordDTO {
 export const vChangePasswordDTO = joi.object<ChangePasswordDTO>({
     currentPassword: userValidateSchema.password,
     newPassword: userValidateSchema.password,
-    confirmNewPassword: joi.string().required().valid(joi.ref('newPassword')),
+    confirmNewPassword: joi
+        .string()
+        .required()
+        .valid(joi.ref('newPassword'))
+        .messages({
+            ...JoiMessage.createStringMessages({ field: 'Confirm new password' }),
+            'any.only': 'Confirm new password should match with password',
+        }),
 });
