@@ -1,3 +1,4 @@
+import { Slider } from './core/models/slider';
 import { Role } from './core/models/role';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { config } from './core';
@@ -12,6 +13,6 @@ export const DbModule = TypeOrmModule.forRoot({
     database: config.DB_NAME,
     synchronize: true,
     keepConnectionAlive: true,
-    entities: [User, Role],
+    entities: [User, Role, Slider],
     extra: { connectionLimit: 1 },
 });

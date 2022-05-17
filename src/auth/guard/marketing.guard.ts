@@ -5,11 +5,11 @@ import { Request } from 'express';
 import { StatusCodes } from 'http-status-codes';
 import { UserService } from '../../user/user.service';
 import { JwtToken } from '../../core/interface';
-import { Role } from '../../core/models';
+import { Role, UserRole } from '../../core/models';
 import { constant } from '../../core';
 
 @Injectable()
-export class CommonGuard implements CanActivate {
+export class MarketingGuard implements CanActivate {
     constructor(private readonly authService: AuthService, private readonly userService: UserService, private readonly reflector: Reflector) {}
 
     async canActivate(context: ExecutionContext): Promise<boolean> {
@@ -31,7 +31,7 @@ export class CommonGuard implements CanActivate {
             throw new HttpException({}, StatusCodes.UNAUTHORIZED);
         }
 
-        if (roles.length && !roles.includes(user.role)) {
+        if (roles.length && !roles.includes(user.role) && user.role.name !== UserRole.ADMIN && user.role.name !== UserRole.MARKETING) {
             throw new HttpException({}, StatusCodes.UNAUTHORIZED);
         }
 

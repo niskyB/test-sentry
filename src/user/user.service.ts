@@ -1,4 +1,4 @@
-import { SortOrder } from './../core/interface';
+import { SortOrder } from '../core/interface';
 import { Injectable } from '@nestjs/common';
 import { Role, User } from '../core/models';
 import { RoleRepository, UserRepository } from '../core/repositories';

@@ -122,7 +122,6 @@ export class AuthController {
     @UsePipes(new JoiValidatorPipe(vRequestResetPasswordDTO))
     async cResetPassword(@Body() body: RequestResetPasswordDTO, @Res() res: Response) {
         const { data, error } = await this.authService.verifyToken<JwtToken>(body.token);
-
         if (error) {
             throw new HttpException({ errorMessage: '' }, StatusCodes.UNAUTHORIZED);
         }

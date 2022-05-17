@@ -3,7 +3,7 @@ import { UserService } from './user.service';
 import { ApiTags, ApiBearerAuth } from '@nestjs/swagger';
 import { Request, Response } from 'express';
 import { StatusCodes } from 'http-status-codes';
-import { AuthGuard } from '../auth/guard/common.guard';
+import { CommonGuard } from '../auth/guard';
 import { AuthService } from '../auth/auth.service';
 import { JoiValidatorPipe } from '../core/pipe/validator.pipe';
 import { ChangePasswordDTO, vChangePasswordDTO, UpdateUserDTO, vUpdateUserDTO } from './dto';
@@ -18,7 +18,7 @@ export class UserController {
     constructor(private readonly userService: UserService, private readonly authService: AuthService) {}
 
     @Get('/me')
-    @UseGuards(AuthGuard)
+    @UseGuards(CommonGuard)
     async cGetMe(@Req() req: Request, @Res() res: Response) {
         const user = req.user;
         user.token = '';
@@ -33,7 +33,7 @@ export class UserController {
     }
 
     @Put('/password')
-    @UseGuards(AuthGuard)
+    @UseGuards(CommonGuard)
     @UsePipes(new JoiValidatorPipe(vChangePasswordDTO))
     async changePassword(@Body() body: ChangePasswordDTO, @Res() res: Response, @Req() req: Request) {
         //get current user data
@@ -50,18 +50,19 @@ export class UserController {
     }
 
     @Put('/')
-    @UseGuards(AuthGuard)
+    @UseGuards(CommonGuard)
     @UseInterceptors(FileInterceptor('image', multerOptions))
     @UsePipes(new JoiValidatorPipe(vUpdateUserDTO))
     async updateUserInformation(@Body() body: UpdateUserDTO, @Res() res: Response, @Req() req: Request, @UploadedFile() file: Express.Multer.File) {
         //get current user data
-
         const user = await this.userService.findUser('id', req.user.id);
 
         // update field
         user.fullName = body.fullName || user.fullName;
         user.gender = body.gender || user.gender;
-        user.imageUrl = file.filename || user.imageUrl;
+        if (file) {
+            user.imageUrl = file.filename || user.imageUrl;
+        }
         user.mobile = body.mobile || user.mobile;
 
         await this.userService.saveUser(user);
