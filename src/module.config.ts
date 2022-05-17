@@ -1,8 +1,6 @@
-import { Slider } from './core/models/slider';
-import { Role } from './core/models/role';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { config } from './core';
-import { User } from './core/models';
+import { User, Slider, Role, Customer } from './core/models';
 
 export const DbModule = TypeOrmModule.forRoot({
     type: 'mysql',
@@ -13,6 +11,6 @@ export const DbModule = TypeOrmModule.forRoot({
     database: config.DB_NAME,
     synchronize: true,
     keepConnectionAlive: true,
-    entities: [User, Role, Slider],
+    entities: [User, Role, Slider, Customer],
     extra: { connectionLimit: 1 },
 });

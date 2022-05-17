@@ -48,7 +48,6 @@ export class AuthService {
 
     async sendEmailToken(user: User, action: EmailAction): Promise<boolean> {
         const otp = await this.createAccessToken(user, 5);
-
         let isSend;
 
         switch (action) {

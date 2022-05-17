@@ -5,6 +5,7 @@ import { AuthModule } from './auth/auth.module';
 import { DbModule } from './module.config';
 import { SliderModule } from './slider/slider.module';
 import { join } from 'path';
+import { CustomerModule } from './customer/customer.module';
 @Module({
     imports: [
         DbModule,
@@ -15,6 +16,7 @@ import { join } from 'path';
         ServeStaticModule.forRoot({
             rootPath: join(__dirname, '..', 'uploads'),
         }),
+        CustomerModule,
     ],
 })
 export class AppModule {}
