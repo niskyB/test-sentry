@@ -9,4 +9,5 @@ export enum ResponseMessage {
     INVALID_GENDER = 'Invalid gender',
     INVALID_PASSWORD = 'Invalid password',
     INVALID_IMAGE = 'Invalid image',
+    DUPLICATE_PASSWORD = 'New password should not be same with current password',
 }
