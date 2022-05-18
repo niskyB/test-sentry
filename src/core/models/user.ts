@@ -3,6 +3,7 @@ import { ApiProperty } from '@nestjs/swagger';
 import { joiPassword } from 'joi-password';
 import * as joi from 'joi';
 import { Role } from './role';
+import { JoiMessage } from 'joi-message';
 
 export enum Gender {
     MALE = 'male',
@@ -58,21 +59,59 @@ export class User {
     @ApiProperty({ description: 'Role' })
     @ManyToOne(() => Role)
     role: Role;
+
+    @ApiProperty({ description: 'Type Id' })
+    @Column({ unique: true, nullable: true })
+    typeId: string;
 }
 
 export const userValidateSchema = {
-    fullName: joi.string().min(3).max(40).trim().lowercase().required(),
-    email: joi.string().min(5).max(255).email().trim().lowercase().required(),
-    password: joiPassword.string().min(8).max(32).trim().alphanum().required(),
+    fullName: joi
+        .string()
+        .min(3)
+        .max(40)
+        .trim()
+        .lowercase()
+        .required()
+        .messages(JoiMessage.createStringMessages({ field: 'Full Name', min: 3, max: 40 })),
+    email: joi
+        .string()
+        .min(5)
+        .max(255)
+        .email()
+        .trim()
+        .lowercase()
+        .required()
+        .messages(JoiMessage.createStringMessages({ field: 'Email' })),
+    password: joiPassword
+        .string()
+        .min(8)
+        .max(32)
+        .trim()
+        .alphanum()
+        .required()
+        .messages(JoiMessage.createStringMessages({ field: 'Password', min: 8, max: 32 })),
     mobile: joi
         .string()
         .min(6)
         .max(20)
         .pattern(/^[0-9]+$/)
-        .required(),
+        .required()
+        .messages({
+            ...JoiMessage.createStringMessages({
+                field: 'Phone number',
+                min: 6,
+                max: 20,
+            }),
+            'string.pattern.base': 'Phone is invalid',
+        }),
     gender: joi
         .string()
-        .valid(Gender.MALE || Gender.FEMALE)
-        .required(),
+        .valid(Gender.MALE, Gender.FEMALE)
+        .required()
+        .messages({
+            ...JoiMessage.createStringMessages({ field: 'Sex' }),
+            'any.only': 'Gender is invalid',
+        }),
     imageUrl: joi.string(),
 };

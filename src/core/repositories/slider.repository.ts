@@ -1,4 +1,4 @@
-import { Slider } from './../models/slider';
+import { Slider } from './../models';
 import { EntityRepository } from 'typeorm';
 import { RepositoryService } from '../providers';
 

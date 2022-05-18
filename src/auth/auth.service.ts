@@ -48,15 +48,14 @@ export class AuthService {
 
     async sendEmailToken(user: User, action: EmailAction): Promise<boolean> {
         const otp = await this.createAccessToken(user, 5);
-
         let isSend;
 
         switch (action) {
             case EmailAction.verifyEmail:
-                isSend = await this.emailService.sendEmailForVerify(user.email, otp);
+                isSend = await this.emailService.sendEmailForVerify(user.email, otp, user.fullName);
                 break;
             case EmailAction.resetPassword:
-                isSend = await this.emailService.sendResetPassword(user.email, otp);
+                isSend = await this.emailService.sendResetPassword(user.email, otp, user.fullName);
                 break;
         }
 

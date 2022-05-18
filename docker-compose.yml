@@ -1,6 +1,6 @@
 version: '3'
 services:
-    client:
+    server:
         build: .
         container_name: fuquizserver
         image: dauleduc2/fuquizserver:latest
