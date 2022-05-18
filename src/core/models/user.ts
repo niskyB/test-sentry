@@ -1,3 +1,4 @@
+import { ResponseMessage } from './../interface/message.enum';
 import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
 import { joiPassword } from 'joi-password';
@@ -103,7 +104,7 @@ export const userValidateSchema = {
                 min: 6,
                 max: 20,
             }),
-            'string.pattern.base': 'Phone is invalid',
+            'string.pattern.base': ResponseMessage.INVALID_PHONE,
         }),
     gender: joi
         .string()
@@ -111,7 +112,7 @@ export const userValidateSchema = {
         .required()
         .messages({
             ...JoiMessage.createStringMessages({ field: 'Sex' }),
-            'any.only': 'Gender is invalid',
+            'any.only': ResponseMessage.INVALID_GENDER,
         }),
     imageUrl: joi.string(),
 };

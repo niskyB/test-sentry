@@ -1,4 +1,3 @@
-import { multerOptions } from './../core/multer';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { Slider } from './../core/models';
 import { UserService } from '../user/user.service';
@@ -18,7 +17,7 @@ export class SliderController {
     constructor(private readonly sliderService: SliderService, private readonly userService: UserService) {}
 
     @Post('')
-    @UseInterceptors(FileInterceptor('image', multerOptions))
+    @UseInterceptors(FileInterceptor('image'))
     @UsePipes(new JoiValidatorPipe(vCreateSliderDTO))
     async cCreateSlider(@Req() req: Request, @Res() res: Response, @Body() body: CreateSliderDTO, @UploadedFile() file: Express.Multer.File) {
         const user = await this.userService.findUser('id', req.user.id);

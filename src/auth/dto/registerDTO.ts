@@ -1,3 +1,4 @@
+import { ResponseMessage } from './../../core/interface/message.enum';
 import * as joi from 'joi';
 import { ApiProperty } from '@nestjs/swagger';
 import { userValidateSchema } from '../../core/models';
@@ -33,7 +34,7 @@ export const vRegisterDTO = joi.object<RegisterDTO>({
         .valid(joi.ref('password'))
         .messages({
             ...JoiMessage.createStringMessages({ field: 'Confirm password' }),
-            'any.only': 'Confirm password should match with password',
+            'any.only': ResponseMessage.INVALID_CONFIRM_PASSWORD,
         }),
     mobile: userValidateSchema.mobile,
     gender: userValidateSchema.gender,

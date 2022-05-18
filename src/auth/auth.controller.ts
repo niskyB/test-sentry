@@ -1,3 +1,4 @@
+import { ResponseMessage } from './../core/interface';
 import { CustomerService } from './../customer/customer.service';
 import { Body, Controller, Get, HttpException, Param, Post, Req, Res, UsePipes } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiCreatedResponse } from '@nestjs/swagger';
@@ -9,8 +10,7 @@ import { LoginDTO, vLoginDTO, RegisterDTO, vRegisterDTO, vRequestVerifyEmailDTO,
 import { constant } from '../core/constant';
 import { UserRole, Customer, User } from '../core/models';
 import { JoiValidatorPipe } from '../core/pipe/validator.pipe';
-import { JwtToken } from '../core/interface';
-import { EmailAction } from 'src/core/interface/email.enum';
+import { JwtToken, EmailAction } from '../core/interface';
 
 @ApiTags('auth')
 @Controller('auth')
@@ -23,11 +23,11 @@ export class AuthController {
         const user = await this.userService.findUser('email', body.email);
 
         if (!user) {
-            throw new HttpException({ errorMessage: 'error.not_found' }, StatusCodes.BAD_REQUEST);
+            throw new HttpException({ errorMessage: ResponseMessage.NOT_EXISTED_USER }, StatusCodes.BAD_REQUEST);
         }
 
-        if (!this.authService.sendEmailToken(user, EmailAction.verifyEmail)) {
-            throw new HttpException({ errorMessage: 'error.something_wrong' }, StatusCodes.INTERNAL_SERVER_ERROR);
+        if (!this.authService.sendEmailToken(user, EmailAction.VERIFY_EMAIL)) {
+            throw new HttpException({ errorMessage: ResponseMessage.SOMETHING_WRONG }, StatusCodes.INTERNAL_SERVER_ERROR);
         }
 
         return res.send();
@@ -57,7 +57,7 @@ export class AuthController {
     @UsePipes(new JoiValidatorPipe(vRegisterDTO))
     async cRegister(@Body() body: RegisterDTO, @Res() res: Response) {
         const user = await this.userService.findUser('email', body.email);
-        if (user) throw new HttpException({ email: 'field.field-taken' }, StatusCodes.BAD_REQUEST);
+        if (user) throw new HttpException({ email: ResponseMessage.EMAIL_TAKEN }, StatusCodes.BAD_REQUEST);
 
         const newUser = new User();
         const newCustomer = new Customer();
@@ -73,10 +73,10 @@ export class AuthController {
         await this.userService.saveUser(newUser);
         await this.customerService.saveCustomer(newCustomer);
 
-        const isSend = await this.authService.sendEmailToken(newUser, EmailAction.verifyEmail);
+        const isSend = await this.authService.sendEmailToken(newUser, EmailAction.VERIFY_EMAIL);
 
         if (!isSend) {
-            throw new HttpException({ errorMessage: 'error.something_wrong' }, StatusCodes.INTERNAL_SERVER_ERROR);
+            throw new HttpException({ errorMessage: ResponseMessage.SOMETHING_WRONG }, StatusCodes.INTERNAL_SERVER_ERROR);
         }
 
         return res.send();
@@ -88,11 +88,11 @@ export class AuthController {
     @UsePipes(new JoiValidatorPipe(vLoginDTO))
     async cLogin(@Body() body: LoginDTO, @Res() res: Response) {
         const user = await this.userService.findUser('email', body.email);
-        if (!user) throw new HttpException({ errorMessage: 'error.invalid-password-username' }, StatusCodes.BAD_REQUEST);
-        if (!user.isActive) throw new HttpException({ errorMessage: 'error.email-not-active' }, StatusCodes.BAD_REQUEST);
+        if (!user) throw new HttpException({ errorMessage: ResponseMessage.INVALID_EMAIL_PASSWORD }, StatusCodes.BAD_REQUEST);
+        if (!user.isActive) throw new HttpException({ errorMessage: ResponseMessage.EMAIL_NOT_ACTIVE }, StatusCodes.BAD_REQUEST);
 
         const isCorrectPassword = await this.authService.decryptPassword(body.password, user.password);
-        if (!isCorrectPassword) throw new HttpException({ errorMessage: 'error.invalid-password-username' }, StatusCodes.BAD_REQUEST);
+        if (!isCorrectPassword) throw new HttpException({ errorMessage: ResponseMessage.INVALID_EMAIL_PASSWORD }, StatusCodes.BAD_REQUEST);
 
         const accessToken = await this.authService.createAccessToken(user);
         return res.cookie(constant.authController.tokenName, accessToken, { maxAge: constant.authController.loginCookieTime }).send(accessToken);
@@ -110,13 +110,13 @@ export class AuthController {
         const user = await this.userService.findUser('email', body.email);
 
         if (!user) {
-            throw new HttpException({ errorMessage: 'error.not_found' }, StatusCodes.BAD_REQUEST);
+            throw new HttpException({ errorMessage: ResponseMessage.NOT_EXISTED_USER }, StatusCodes.BAD_REQUEST);
         }
 
-        const isSend = await this.authService.sendEmailToken(user, EmailAction.resetPassword);
+        const isSend = await this.authService.sendEmailToken(user, EmailAction.RESET_PASSWORD);
 
         if (!isSend) {
-            throw new HttpException({ errorMessage: 'error.something_wrong' }, StatusCodes.INTERNAL_SERVER_ERROR);
+            throw new HttpException({ errorMessage: ResponseMessage.SOMETHING_WRONG }, StatusCodes.INTERNAL_SERVER_ERROR);
         }
 
         return res.send();

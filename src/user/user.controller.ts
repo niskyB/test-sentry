@@ -1,3 +1,4 @@
+import { ResponseMessage } from './../core/interface';
 import { Body, Controller, Get, HttpException, Param, Put, Req, Res, UploadedFile, UseGuards, UseInterceptors, UsePipes } from '@nestjs/common';
 import { UserService } from './user.service';
 import { ApiTags, ApiBearerAuth } from '@nestjs/swagger';
@@ -9,7 +10,7 @@ import { JoiValidatorPipe } from '../core/pipe/validator.pipe';
 import { ChangePasswordDTO, vChangePasswordDTO, UpdateUserDTO, vUpdateUserDTO } from './dto';
 import { constant } from '../core';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { S3Service } from 'src/core/providers/s3/s3.service';
+import { S3Service } from '../core/providers/s3/s3.service';
 
 @ApiTags('user')
 @ApiBearerAuth()
@@ -28,7 +29,7 @@ export class UserController {
     @Get('/:userId')
     async cGetOneById(@Param('userId') userId: string, @Res() res: Response) {
         const user = await this.userService.findUser('id', userId);
-        if (!user) throw new HttpException({ errorMessage: 'error.not_found' }, StatusCodes.NOT_FOUND);
+        if (!user) throw new HttpException({ errorMessage: ResponseMessage.NOT_EXISTED_USER }, StatusCodes.NOT_FOUND);
         return res.send(user);
     }
 
@@ -41,7 +42,7 @@ export class UserController {
         //check current input value is correct or not
         const isCorrectPassword = await this.authService.decryptPassword(body.currentPassword, user.password);
         if (!isCorrectPassword) {
-            throw new HttpException({ errorMessage: 'error.invalid_current_password' }, StatusCodes.BAD_REQUEST);
+            throw new HttpException({ errorMessage: ResponseMessage.INVALID_PASSWORD }, StatusCodes.BAD_REQUEST);
         }
         //change password to new password
         user.password = await this.authService.encryptPassword(body.newPassword, constant.default.hashingSalt);
