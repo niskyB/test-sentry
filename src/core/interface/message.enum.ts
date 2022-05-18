@@ -8,4 +8,5 @@ export enum ResponseMessage {
     INVALID_PHONE = 'Invalid phone number',
     INVALID_GENDER = 'Invalid gender',
     INVALID_PASSWORD = 'Invalid password',
+    INVALID_IMAGE = 'Invalid image',
 }

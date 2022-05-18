@@ -62,8 +62,8 @@ export class UserController {
         user.fullName = body.fullName || user.fullName;
         user.gender = body.gender || user.gender;
         if (file) {
-            const res = await this.s3Service.uploadFile(file);
-            if (res) user.imageUrl = res.Location;
+            const result = await this.s3Service.uploadFile(file);
+            if (result) user.imageUrl = result.Location;
         }
         user.mobile = body.mobile || user.mobile;
 
