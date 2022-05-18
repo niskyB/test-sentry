@@ -1,3 +1,4 @@
+import { ResponseMessage } from './../../core/interface';
 import { ApiProperty } from '@nestjs/swagger';
 import * as joi from 'joi';
 import JoiMessage from 'joi-message';
@@ -26,7 +27,7 @@ export const vRequestResetPasswordDTO = joi.object<RequestResetPasswordDTO>({
         .valid(joi.ref('password'))
         .messages({
             ...JoiMessage.createStringMessages({ field: 'Confirm password' }),
-            'any.only': 'Confirm password should match with password',
+            'any.only': ResponseMessage.INVALID_CONFIRM_PASSWORD,
         }),
     token: joi
         .string()

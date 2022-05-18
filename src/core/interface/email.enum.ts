@@ -1,4 +1,4 @@
 export enum EmailAction {
-    verifyEmail = 'Verify-Email',
-    resetPassword = 'Reset-Password',
+    VERIFY_EMAIL = 'Verify-Email',
+    RESET_PASSWORD = 'Reset-Password',
 }

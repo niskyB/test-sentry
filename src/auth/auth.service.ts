@@ -1,11 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
-
 import { User } from '../core/models';
-import { UserService } from 'src/user/user.service';
-import { EmailService } from 'src/core/providers';
-import { EmailAction } from 'src/core/interface/email.enum';
+import { UserService } from '../user/user.service';
+import { EmailService } from '../core/providers';
+import { EmailAction } from '../core/interface';
 @Injectable()
 export class AuthService {
     constructor(private readonly jwtService: JwtService, private readonly userService: UserService, private readonly emailService: EmailService) {}
@@ -51,10 +50,10 @@ export class AuthService {
         let isSend;
 
         switch (action) {
-            case EmailAction.verifyEmail:
+            case EmailAction.VERIFY_EMAIL:
                 isSend = await this.emailService.sendEmailForVerify(user.email, otp, user.fullName);
                 break;
-            case EmailAction.resetPassword:
+            case EmailAction.RESET_PASSWORD:
                 isSend = await this.emailService.sendResetPassword(user.email, otp, user.fullName);
                 break;
         }
