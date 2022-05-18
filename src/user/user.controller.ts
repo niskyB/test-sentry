@@ -9,13 +9,13 @@ import { JoiValidatorPipe } from '../core/pipe/validator.pipe';
 import { ChangePasswordDTO, vChangePasswordDTO, UpdateUserDTO, vUpdateUserDTO } from './dto';
 import { constant } from '../core';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { multerOptions } from '../core/multer';
+import { S3Service } from 'src/core/providers/s3/s3.service';
 
 @ApiTags('user')
 @ApiBearerAuth()
 @Controller('user')
 export class UserController {
-    constructor(private readonly userService: UserService, private readonly authService: AuthService) {}
+    constructor(private readonly userService: UserService, private readonly s3Service: S3Service, private readonly authService: AuthService) {}
 
     @Get('/me')
     @UseGuards(CommonGuard)
@@ -51,7 +51,7 @@ export class UserController {
 
     @Put('/')
     @UseGuards(CommonGuard)
-    @UseInterceptors(FileInterceptor('image', multerOptions))
+    @UseInterceptors(FileInterceptor('image'))
     @UsePipes(new JoiValidatorPipe(vUpdateUserDTO))
     async updateUserInformation(@Body() body: UpdateUserDTO, @Res() res: Response, @Req() req: Request, @UploadedFile() file: Express.Multer.File) {
         //get current user data
@@ -61,7 +61,8 @@ export class UserController {
         user.fullName = body.fullName || user.fullName;
         user.gender = body.gender || user.gender;
         if (file) {
-            user.imageUrl = file.filename || user.imageUrl;
+            const res = await this.s3Service.uploadFile(file);
+            if (res) user.imageUrl = res.Location;
         }
         user.mobile = body.mobile || user.mobile;
 
