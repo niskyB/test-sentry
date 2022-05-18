@@ -42,8 +42,9 @@ export class UserController {
         //check current input value is correct or not
         const isCorrectPassword = await this.authService.decryptPassword(body.currentPassword, user.password);
         if (!isCorrectPassword) {
-            throw new HttpException({ errorMessage: ResponseMessage.INVALID_PASSWORD }, StatusCodes.BAD_REQUEST);
+            throw new HttpException({ currentPassword: ResponseMessage.INVALID_PASSWORD }, StatusCodes.BAD_REQUEST);
         }
+        if (body.currentPassword === body.newPassword) throw new HttpException({ errorMessage: ResponseMessage.DUPLICATE_PASSWORD }, StatusCodes.BAD_REQUEST);
         //change password to new password
         user.password = await this.authService.encryptPassword(body.newPassword, constant.default.hashingSalt);
         await this.userService.saveUser(user);
