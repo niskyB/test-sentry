@@ -26,6 +26,10 @@ export class Slider {
     @Column({ default: true })
     isShow: boolean;
 
+    @ApiProperty({ description: 'Created at' })
+    @Column({ default: new Date().toISOString().slice(0, 19).replace('T', ' ') })
+    createdAt: Date;
+
     @ApiProperty({ description: 'User' })
     @ManyToOne(() => User)
     user: User;

@@ -49,13 +49,13 @@ export class User {
     @Column({ default: false })
     isActive: boolean;
 
-    @ApiProperty({ description: 'Create at' })
+    @ApiProperty({ description: 'Created at' })
     @Column({ default: new Date().toISOString().slice(0, 19).replace('T', ' ') })
-    createAt: Date;
+    createdAt: Date;
 
-    @ApiProperty({ description: 'Update at' })
+    @ApiProperty({ description: 'Updated at' })
     @Column({ default: new Date().toISOString().slice(0, 19).replace('T', ' ') })
-    updateAt: Date;
+    updatedAt: Date;
 
     @ApiProperty({ description: 'Role' })
     @ManyToOne(() => Role)
