@@ -31,11 +31,9 @@ export class SliderController {
     @UseInterceptors(FileInterceptor('image'))
     @UsePipes(new JoiValidatorPipe(vCreateSliderDTO))
     async cCreateSlider(@Req() req: Request, @Res() res: Response, @Body() body: CreateSliderDTO, @UploadedFile() file: Express.Multer.File) {
-        const user = await this.userService.findUser('id', req.user.id);
-
         if (!file) throw new HttpException({ errorMessage: ResponseMessage.INVALID_IMAGE }, StatusCodes.BAD_REQUEST);
 
-        const customer = await this.marketingService.getMarketingByUserId(user.id);
+        const customer = await this.marketingService.getMarketingByUserId(req.user.id);
 
         const newSlider = new Slider();
         newSlider.title = body.title;
