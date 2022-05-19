@@ -7,6 +7,8 @@ import { SliderModule } from './slider/slider.module';
 import { join } from 'path';
 import { CustomerModule } from './customer/customer.module';
 import { MarketingModule } from './marketing/marketing.module';
+import { BlogModule } from './blog/blog.module';
+import { BlogCategoryModule } from './blog-category/blog-category.module';
 @Module({
     imports: [
         DbModule,
@@ -19,6 +21,8 @@ import { MarketingModule } from './marketing/marketing.module';
         }),
         CustomerModule,
         MarketingModule,
+        BlogModule,
+        BlogCategoryModule,
     ],
 })
 export class AppModule {}
