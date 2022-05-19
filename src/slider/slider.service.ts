@@ -14,10 +14,10 @@ export class SliderService {
         return await this.sliderRepository.findOneByField(field, value);
     }
 
-    async filterUsers(title: string, userId: string, createdAt: string, currentPage: number, pageSize: number): Promise<{ data: Slider[]; count: number }> {
+    async filterSliders(title: string, userId: string, createdAt: string, currentPage: number, pageSize: number): Promise<{ data: Slider[]; count: number }> {
         try {
             const date = new Date(createdAt);
-            const users = await this.sliderRepository
+            const sliders = await this.sliderRepository
                 .createQueryBuilder('slider')
                 .where(`slider.title LIKE (:title)`, {
                     title: `%${title}%`,
@@ -40,7 +40,7 @@ export class SliderService {
                 .andWhere('user.id LIKE (:userId)', { userId: `%${userId}%` })
                 .getCount();
 
-            return { data: users, count };
+            return { data: sliders, count };
         } catch (err) {
             return { data: [], count: 0 };
         }
