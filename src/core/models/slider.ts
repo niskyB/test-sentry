@@ -51,4 +51,8 @@ export const sliderValidateSchema = {
         .lowercase()
         .required()
         .messages(JoiMessage.createStringMessages({ field: 'Back Link', max: 255 })),
+    isShow: joi
+        .boolean()
+        .required()
+        .messages(JoiMessage.createBooleanMessages({ field: 'Is Show' })),
 };

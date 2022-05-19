@@ -12,6 +12,6 @@ import { SlidersController } from './sliders.controller';
     imports: [TypeOrmModule.forFeature([SliderRepository]), forwardRef(() => AuthModule), forwardRef(() => UserModule), S3Module],
     controllers: [SliderController, SlidersController],
     providers: [SliderService],
-    exports: [TypeOrmModule],
+    exports: [TypeOrmModule, SliderService],
 })
 export class SliderModule {}
