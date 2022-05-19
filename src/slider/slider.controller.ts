@@ -1,7 +1,7 @@
 import { S3Service } from 'src/core/providers/s3/s3.service';
 import { ResponseMessage } from './../core/interface';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { Slider } from './../core/models';
+import { Slider, UserRole } from './../core/models';
 import { UserService } from '../user/user.service';
 import { CreateSliderDTO, vCreateSliderDTO, vUpdateSliderDTO, UpdateSliderDTO } from './dto';
 import { JoiValidatorPipe } from './../core/pipe/validator.pipe';
@@ -54,13 +54,13 @@ export class SliderController {
         const slider = await this.sliderService.getSliderByField('id', id);
 
         if (!slider) throw new HttpException({ errorMessage: ResponseMessage.NOT_FOUND }, StatusCodes.NOT_FOUND);
-        if (slider.user.id !== user.id) throw new HttpException({ errorMessage: ResponseMessage.UNAUTHORIZED }, StatusCodes.UNAUTHORIZED);
+        if (user.role.name !== UserRole.ADMIN && slider.user.id !== user.id) throw new HttpException({ errorMessage: ResponseMessage.UNAUTHORIZED }, StatusCodes.UNAUTHORIZED);
 
         slider.title = body.title || slider.title;
         slider.backLink = body.backLink || slider.backLink;
         if (file) {
             const result = await this.s3Service.uploadFile(file);
-            if (result) user.imageUrl = result.Location;
+            if (result) slider.imageUrl = result.Location;
             else throw new HttpException({ errorMessage: ResponseMessage.SOMETHING_WRONG }, StatusCodes.INTERNAL_SERVER_ERROR);
         }
         await this.sliderService.saveSlider(slider);
