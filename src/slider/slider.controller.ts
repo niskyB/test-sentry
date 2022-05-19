@@ -39,7 +39,7 @@ export class SliderController {
         newSlider.backLink = body.backLink;
         newSlider.user = user;
         const result = await this.s3Service.uploadFile(file);
-        if (result) user.imageUrl = result.Location;
+        if (result) newSlider.imageUrl = result.Location;
         else throw new HttpException({ errorMessage: ResponseMessage.SOMETHING_WRONG }, StatusCodes.INTERNAL_SERVER_ERROR);
         await this.sliderService.saveSlider(newSlider);
 
