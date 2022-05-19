@@ -1,7 +1,7 @@
+import { Marketing } from './marketing';
 import { JoiMessage } from 'joi-message';
 import { Column, Entity, PrimaryGeneratedColumn, ManyToOne } from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
-import { User } from './user';
 import * as joi from 'joi';
 import { BlogCategory } from './blog-category';
 
@@ -35,9 +35,9 @@ export class Blog {
     @Column({ default: new Date().toISOString().slice(0, 19).replace('T', ' ') })
     updatedAt: Date;
 
-    @ApiProperty({ description: 'User' })
-    @ManyToOne(() => User)
-    user: User;
+    @ApiProperty({ description: 'Marketing' })
+    @ManyToOne(() => Marketing)
+    marketing: Marketing;
 
     @ApiProperty({ description: 'Blog Category' })
     @ManyToOne(() => BlogCategory)

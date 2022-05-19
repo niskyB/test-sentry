@@ -1,3 +1,4 @@
+import { MarketingModule } from './../marketing/marketing.module';
 import { S3Module } from './../core/providers/s3/s3.module';
 import { UserModule } from '../user/user.module';
 import { AuthModule } from './../auth/auth.module';
@@ -9,7 +10,7 @@ import { SliderRepository } from '../core/repositories';
 import { SlidersController } from './sliders.controller';
 
 @Module({
-    imports: [TypeOrmModule.forFeature([SliderRepository]), forwardRef(() => AuthModule), forwardRef(() => UserModule), S3Module],
+    imports: [TypeOrmModule.forFeature([SliderRepository]), forwardRef(() => AuthModule), forwardRef(() => UserModule), S3Module, forwardRef(() => MarketingModule)],
     controllers: [SliderController, SlidersController],
     providers: [SliderService],
     exports: [TypeOrmModule, SliderService],

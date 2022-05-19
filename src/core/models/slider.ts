@@ -1,7 +1,7 @@
+import { Marketing } from './marketing';
 import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
 import * as joi from 'joi';
-import { User } from './user';
 import JoiMessage from 'joi-message';
 
 @Entity()
@@ -30,9 +30,9 @@ export class Slider {
     @Column({ default: new Date().toISOString().slice(0, 19).replace('T', ' ') })
     createdAt: Date;
 
-    @ApiProperty({ description: 'User' })
-    @ManyToOne(() => User)
-    user: User;
+    @ApiProperty({ description: 'Marketing' })
+    @ManyToOne(() => Marketing)
+    marketing: Marketing;
 }
 
 export const sliderValidateSchema = {
