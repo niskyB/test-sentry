@@ -11,13 +11,14 @@ import { ApiTags, ApiBearerAuth } from '@nestjs/swagger';
 import { SliderService } from './slider.service';
 import { Request, Response } from 'express';
 import { StatusCodes } from 'http-status-codes';
+import { MarketingService } from '../marketing/marketing.service';
 
 @ApiTags('slider')
 @ApiBearerAuth()
 @UseGuards(MarketingGuard)
 @Controller('slider')
 export class SliderController {
-    constructor(private readonly sliderService: SliderService, private readonly userService: UserService, private readonly s3Service: S3Service) {}
+    constructor(private readonly sliderService: SliderService, private readonly userService: UserService, private readonly s3Service: S3Service, private readonly marketingService: MarketingService) {}
 
     @Get('/:id')
     async cGetSlider(@Param('id') id: string, @Req() req: Request, @Res() res: Response) {
@@ -34,10 +35,12 @@ export class SliderController {
 
         if (!file) throw new HttpException({ errorMessage: ResponseMessage.INVALID_IMAGE }, StatusCodes.BAD_REQUEST);
 
+        const customer = await this.marketingService.getMarketingByUserId(user.id);
+
         const newSlider = new Slider();
         newSlider.title = body.title;
         newSlider.backLink = body.backLink;
-        newSlider.user = user;
+        newSlider.marketing = customer;
         const result = await this.s3Service.uploadFile(file);
         if (result) newSlider.imageUrl = result.Location;
         else throw new HttpException({ errorMessage: ResponseMessage.SOMETHING_WRONG }, StatusCodes.INTERNAL_SERVER_ERROR);
@@ -54,7 +57,7 @@ export class SliderController {
         const slider = await this.sliderService.getSliderByField('id', id);
 
         if (!slider) throw new HttpException({ errorMessage: ResponseMessage.NOT_FOUND }, StatusCodes.NOT_FOUND);
-        if (user.role.name !== UserRole.ADMIN && slider.user.id !== user.id) throw new HttpException({ errorMessage: ResponseMessage.UNAUTHORIZED }, StatusCodes.UNAUTHORIZED);
+        if (user.role.name !== UserRole.ADMIN && slider.marketing.id !== user.typeId) throw new HttpException({ errorMessage: ResponseMessage.FORBIDDEN }, StatusCodes.FORBIDDEN);
 
         slider.title = body.title || slider.title;
         slider.backLink = body.backLink || slider.backLink;
