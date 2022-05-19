@@ -37,12 +37,12 @@ export class AuthController {
     async cVerifyEmail(@Param('otp') otp: string, @Res() res: Response) {
         const { data, error } = await this.authService.verifyToken<JwtToken>(otp);
         if (error) {
-            throw new HttpException({ errorMessage: '' }, StatusCodes.UNAUTHORIZED);
+            throw new HttpException({ errorMessage: ResponseMessage.UNAUTHORIZED }, StatusCodes.UNAUTHORIZED);
         }
 
         const user = await this.userService.findUser('id', data.id);
         if (!user) {
-            throw new HttpException({ errorMessage: '' }, StatusCodes.UNAUTHORIZED);
+            throw new HttpException({ errorMessage: ResponseMessage.UNAUTHORIZED }, StatusCodes.UNAUTHORIZED);
         }
 
         user.isActive = true;

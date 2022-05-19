@@ -9,4 +9,5 @@ export enum ResponseMessage {
     INVALID_GENDER = 'Invalid gender',
     INVALID_PASSWORD = 'Invalid password',
     INVALID_IMAGE = 'Invalid image',
+    UNAUTHORIZED = 'Sorry, your request could not be processed',
 }
