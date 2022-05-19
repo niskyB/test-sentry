@@ -31,7 +31,6 @@ export class S3Service {
 
         try {
             const s3Response = await this.s3.upload(params).promise();
-            console.log(s3Response);
             return s3Response;
         } catch (e) {
             console.log(e);

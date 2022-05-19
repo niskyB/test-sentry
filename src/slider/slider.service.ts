@@ -9,4 +9,8 @@ export class SliderService {
     async saveSlider(slider: Slider): Promise<Slider> {
         return await this.sliderRepository.save(slider);
     }
+
+    async getSliderByField(field: keyof Slider, value: any): Promise<Slider> {
+        return await this.sliderRepository.findOneByField(field, value);
+    }
 }
