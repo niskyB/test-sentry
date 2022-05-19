@@ -6,10 +6,11 @@ import { Module, forwardRef } from '@nestjs/common';
 import { SliderController } from './slider.controller';
 import { SliderService } from './slider.service';
 import { SliderRepository } from '../core/repositories';
+import { SlidersController } from './sliders.controller';
 
 @Module({
     imports: [TypeOrmModule.forFeature([SliderRepository]), forwardRef(() => AuthModule), forwardRef(() => UserModule), S3Module],
-    controllers: [SliderController],
+    controllers: [SliderController, SlidersController],
     providers: [SliderService],
     exports: [TypeOrmModule],
 })
