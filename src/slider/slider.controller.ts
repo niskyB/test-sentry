@@ -3,10 +3,10 @@ import { ResponseMessage } from './../core/interface';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { Slider } from './../core/models';
 import { UserService } from '../user/user.service';
-import { CreateSliderDTO, vCreateSliderDTO } from './dto';
+import { CreateSliderDTO, vCreateSliderDTO, vUpdateSliderDTO, UpdateSliderDTO } from './dto';
 import { JoiValidatorPipe } from './../core/pipe/validator.pipe';
 import { MarketingGuard } from './../auth/guard';
-import { Body, Controller, Post, Req, Res, UseGuards, UsePipes, UseInterceptors, UploadedFile, HttpException, Get, Param } from '@nestjs/common';
+import { Body, Controller, Post, Req, Res, UseGuards, UsePipes, UseInterceptors, UploadedFile, HttpException, Get, Param, Put } from '@nestjs/common';
 import { ApiTags, ApiBearerAuth } from '@nestjs/swagger';
 import { SliderService } from './slider.service';
 import { Request, Response } from 'express';
@@ -44,5 +44,27 @@ export class SliderController {
         await this.sliderService.saveSlider(newSlider);
 
         return res.send(newSlider);
+    }
+
+    @Put('/:id')
+    @UseInterceptors(FileInterceptor('image'))
+    @UsePipes(new JoiValidatorPipe(vUpdateSliderDTO))
+    async cUpdateSlider(@Param('id') id: string, @Req() req: Request, @Res() res: Response, @Body() body: UpdateSliderDTO, @UploadedFile() file: Express.Multer.File) {
+        const user = await this.userService.findUser('id', req.user.id);
+        const slider = await this.sliderService.getSliderByField('id', id);
+
+        if (!slider) throw new HttpException({ errorMessage: ResponseMessage.NOT_FOUND }, StatusCodes.NOT_FOUND);
+        if (slider.user.id !== user.id) throw new HttpException({ errorMessage: ResponseMessage.UNAUTHORIZED }, StatusCodes.UNAUTHORIZED);
+
+        slider.title = body.title || slider.title;
+        slider.backLink = body.backLink || slider.backLink;
+        if (file) {
+            const result = await this.s3Service.uploadFile(file);
+            if (result) user.imageUrl = result.Location;
+            else throw new HttpException({ errorMessage: ResponseMessage.SOMETHING_WRONG }, StatusCodes.INTERNAL_SERVER_ERROR);
+        }
+        await this.sliderService.saveSlider(slider);
+
+        return res.send(slider);
     }
 }
