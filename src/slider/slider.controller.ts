@@ -64,7 +64,7 @@ export class SliderController {
             if (result) slider.imageUrl = result.Location;
             else throw new HttpException({ errorMessage: ResponseMessage.SOMETHING_WRONG }, StatusCodes.INTERNAL_SERVER_ERROR);
         }
-        slider.isShow = body.isShow || slider.isShow;
+        slider.isShow = body.isShow === null || body.isShow === undefined ? slider.isShow : body.isShow;
         await this.sliderService.saveSlider(slider);
 
         return res.send(slider);
