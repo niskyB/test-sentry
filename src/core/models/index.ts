@@ -5,3 +5,4 @@ export * from './customer';
 export * from './marketing';
 export * from './blog';
 export * from './blog-category';
+export * from './admin';

@@ -60,18 +60,21 @@ export class AuthController {
         if (user) throw new HttpException({ email: ResponseMessage.EMAIL_TAKEN }, StatusCodes.BAD_REQUEST);
 
         const newUser = new User();
-        const newCustomer = new Customer();
+        let newCustomer = new Customer();
         newUser.fullName = body.fullName;
         newUser.email = body.email;
         newUser.password = await this.authService.encryptPassword(body.password, constant.default.hashingSalt);
         newUser.gender = body.gender;
         newUser.mobile = body.mobile;
         newCustomer.user = newUser;
-        newUser.typeId = newCustomer.id;
         newUser.role = await this.userService.findRole('name', UserRole.CUSTOMER);
 
         await this.userService.saveUser(newUser);
         await this.customerService.saveCustomer(newCustomer);
+
+        newCustomer = await this.customerService.getCustomerByUserId(newUser.id);
+        newUser.typeId = newCustomer.id;
+        await this.userService.saveUser(newUser);
 
         const isSend = await this.authService.sendEmailToken(newUser, EmailAction.VERIFY_EMAIL);
 
