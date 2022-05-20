@@ -23,7 +23,8 @@ export class SliderService {
                     title: `%${title}%`,
                 })
                 .andWhere(`slider.createdAt >= (:createdAt)`, { createdAt: date })
-                .leftJoinAndSelect('slider.user', 'user')
+                .leftJoinAndSelect('slider.marketing', 'marketing')
+                .leftJoinAndSelect('marketing.user', 'user')
                 .andWhere('user.id LIKE (:userId)', { userId: `%${userId}%` })
                 .orderBy(`slider.createdAt`, 'DESC')
                 .skip(currentPage * pageSize)
@@ -36,12 +37,14 @@ export class SliderService {
                     title: `%${title}%`,
                 })
                 .andWhere(`slider.createdAt >= (:createdAt)`, { createdAt: date })
-                .leftJoinAndSelect('slider.user', 'user')
+                .leftJoinAndSelect('slider.marketing', 'marketing')
+                .leftJoinAndSelect('marketing.user', 'user')
                 .andWhere('user.id LIKE (:userId)', { userId: `%${userId}%` })
                 .getCount();
 
             return { data: sliders, count };
         } catch (err) {
+            console.log(err);
             return { data: [], count: 0 };
         }
     }
