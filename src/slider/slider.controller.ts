@@ -33,12 +33,12 @@ export class SliderController {
     async cCreateSlider(@Req() req: Request, @Res() res: Response, @Body() body: CreateSliderDTO, @UploadedFile() file: Express.Multer.File) {
         if (!file) throw new HttpException({ errorMessage: ResponseMessage.INVALID_IMAGE }, StatusCodes.BAD_REQUEST);
 
-        const customer = await this.marketingService.getMarketingByUserId(req.user.id);
+        const marketing = await this.marketingService.getMarketingByUserId(req.user.id);
 
         const newSlider = new Slider();
         newSlider.title = body.title;
         newSlider.backLink = body.backLink;
-        newSlider.marketing = customer;
+        newSlider.marketing = marketing;
         const result = await this.s3Service.uploadFile(file);
         if (result) newSlider.imageUrl = result.Location;
         else throw new HttpException({ errorMessage: ResponseMessage.SOMETHING_WRONG }, StatusCodes.INTERNAL_SERVER_ERROR);
