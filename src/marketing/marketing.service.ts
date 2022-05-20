@@ -1,5 +1,5 @@
-import { Marketing } from './../core/models/marketing';
-import { MarketingRepository } from './../core/repositories/marketing.repository';
+import { Marketing } from './../core/models';
+import { MarketingRepository } from './../core/repositories';
 import { Injectable } from '@nestjs/common';
 
 @Injectable()
@@ -17,5 +17,9 @@ export class MarketingService {
         } catch (err) {
             return new Marketing();
         }
+    }
+
+    async saveMarketing(marketing: Marketing): Promise<Marketing> {
+        return await this.marketingRepository.save(marketing);
     }
 }

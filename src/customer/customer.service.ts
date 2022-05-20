@@ -9,4 +9,17 @@ export class CustomerService {
     async saveCustomer(customer: Customer): Promise<Customer> {
         return await this.customerRepository.save(customer);
     }
+
+    async getCustomerByUserId(userId: string): Promise<Customer> {
+        try {
+            const customer = await this.customerRepository
+                .createQueryBuilder('customer')
+                .leftJoinAndSelect('customer.user', 'user')
+                .andWhere('user.id LIKE (:userId)', { userId: `%${userId}%` })
+                .getOne();
+            return customer;
+        } catch (err) {
+            return new Customer();
+        }
+    }
 }
