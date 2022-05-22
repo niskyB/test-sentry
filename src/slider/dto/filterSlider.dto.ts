@@ -8,6 +8,9 @@ export class FilterSlidersDTO {
     @ApiProperty({ description: 'User Id', example: '123456789', nullable: true })
     userId: string;
 
+    @ApiProperty({ description: 'Is Show', example: 'true', nullable: true })
+    isShow: boolean;
+
     @ApiProperty({ description: 'Current Page', example: '0', nullable: true })
     currentPage: number;
 
@@ -21,6 +24,7 @@ export class FilterSlidersDTO {
 export const vFilterSlidersDTO = joi.object<FilterSlidersDTO>({
     title: sliderValidateSchema.title.failover(''),
     userId: joi.string().required().failover(''),
+    isShow: joi.boolean().required().failover(null),
     createdAt: joi.string().required().failover('1/1/2022'),
     currentPage: joi.number().min(0).required().failover(0),
     pageSize: joi.number().min(1).required().failover(4),

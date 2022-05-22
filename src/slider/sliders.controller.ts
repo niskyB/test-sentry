@@ -18,9 +18,9 @@ export class SlidersController {
     @Get('')
     @UsePipes(new QueryJoiValidatorPipe(vFilterSlidersDTO))
     async cFilterSliders(@Req() req: Request, @Res() res: Response, @Query() queries: FilterSlidersDTO) {
-        const { title, userId, createdAt, currentPage, pageSize } = queries;
+        const { title, userId, createdAt, currentPage, pageSize, isShow } = queries;
 
-        const result = await this.sliderService.filterSliders(title, userId, createdAt, currentPage, pageSize);
+        const result = await this.sliderService.filterSliders(title, userId, createdAt, currentPage, pageSize, isShow);
         return res.send(result);
     }
 }

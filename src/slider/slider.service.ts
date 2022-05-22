@@ -14,7 +14,7 @@ export class SliderService {
         return await this.sliderRepository.findOneByField(field, value);
     }
 
-    async filterSliders(title: string, userId: string, createdAt: string, currentPage: number, pageSize: number): Promise<{ data: Slider[]; count: number }> {
+    async filterSliders(title: string, userId: string, createdAt: string, currentPage: number, pageSize: number, isShow: boolean): Promise<{ data: Slider[]; count: number }> {
         try {
             const date = new Date(createdAt);
             const sliders = await this.sliderRepository
@@ -23,6 +23,7 @@ export class SliderService {
                     title: `%${title}%`,
                 })
                 .andWhere(`slider.createdAt >= (:createdAt)`, { createdAt: date })
+                .andWhere(`slider.isShow = (:isShow)`, { isShow: isShow })
                 .leftJoinAndSelect('slider.marketing', 'marketing')
                 .leftJoinAndSelect('marketing.user', 'user')
                 .andWhere('user.id LIKE (:userId)', { userId: `%${userId}%` })
