@@ -9,4 +9,8 @@ export class BlogService {
     async saveBlog(blog: Blog): Promise<Blog> {
         return await this.blogRepository.save(blog);
     }
+
+    async getBlogByField(field: keyof Blog, value: any): Promise<Blog> {
+        return await this.blogRepository.findOneByField(field, value);
+    }
 }

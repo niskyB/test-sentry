@@ -27,6 +27,10 @@ export class Blog {
     @Column({ default: null })
     briefInfo: string;
 
+    @ApiProperty({ description: 'Is Show' })
+    @Column({ default: true })
+    isShow: boolean;
+
     @ApiProperty({ description: 'Created at' })
     @Column({ default: new Date().toISOString().slice(0, 19).replace('T', ' ') })
     createdAt: Date;
@@ -65,4 +69,8 @@ export const blogValidateSchema = {
         .lowercase()
         .required()
         .messages(JoiMessage.createStringMessages({ field: 'Breaf Info' })),
+    isShow: joi
+        .boolean()
+        .required()
+        .messages(JoiMessage.createBooleanMessages({ field: 'Is Show' })),
 };
