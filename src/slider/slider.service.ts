@@ -38,6 +38,7 @@ export class SliderService {
                     title: `%${title}%`,
                 })
                 .andWhere(`slider.createdAt >= (:createdAt)`, { createdAt: date })
+                .andWhere(`slider.isShow = (:isShow)`, { isShow: isShow })
                 .leftJoinAndSelect('slider.marketing', 'marketing')
                 .leftJoinAndSelect('marketing.user', 'user')
                 .andWhere('user.id LIKE (:userId)', { userId: `%${userId}%` })

@@ -13,4 +13,5 @@ export enum ResponseMessage {
     NOT_FOUND = 'Page not found',
     DUPLICATE_PASSWORD = 'New password should not be same with current password',
     FORBIDDEN = 'Sorry, your request could not be processed',
+    INVALID_CATEGORY = 'Invalid category',
 }
