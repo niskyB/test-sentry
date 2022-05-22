@@ -38,6 +38,11 @@ export class BlogController {
         newBlog.title = body.title;
         newBlog.details = body.details;
         newBlog.briefInfo = body.briefInfo;
+
+        const blogCategory = await this.blogCategoryService.getBlogCategoryByField('name', body.category);
+        if (!blogCategory) throw new HttpException({ category: ResponseMessage.INVALID_CATEGORY }, StatusCodes.BAD_REQUEST);
+        newBlog.category = blogCategory;
+
         newBlog.marketing = customer;
         const result = await this.s3Service.uploadFile(file);
         if (result) newBlog.thumbnailUrl = result.Location;
@@ -62,7 +67,7 @@ export class BlogController {
         blog.details = body.details || blog.details;
         blog.isShow = body.isShow === null || body.isShow === undefined ? blog.isShow : body.isShow;
 
-        const blogCategory = await this.blogCategoryService.getBlogCategoryByField('name', blog.category);
+        const blogCategory = await this.blogCategoryService.getBlogCategoryByField('name', body.category);
         if (!blogCategory) throw new HttpException({ category: ResponseMessage.INVALID_CATEGORY }, StatusCodes.BAD_REQUEST);
         blog.category = blogCategory;
 
