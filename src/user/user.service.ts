@@ -1,6 +1,6 @@
 import { SortOrder } from '../core/interface';
 import { Injectable } from '@nestjs/common';
-import { Role, User } from '../core/models';
+import { Role, User, Gender } from '../core/models';
 import { RoleRepository, UserRepository } from '../core/repositories';
 
 @Injectable()
@@ -26,13 +26,14 @@ export class UserService {
         return await this.userRepository.findManyByField(field, value);
     }
 
-    async filterUsers(name: string, currentPage: number, pageSize: number, orderBy: string, order: SortOrder): Promise<{ data: User[]; count: number }> {
+    async filterUsers(role: string, gender: Gender, isActive: boolean, currentPage: number, pageSize: number, orderBy: string, order: SortOrder): Promise<{ data: User[]; count: number }> {
         try {
             const users = await this.userRepository
                 .createQueryBuilder('user')
-                .where(`user.name LIKE (:name)`, {
-                    name: `%${name}%`,
-                })
+                .where(`user.gender = (:gender)`, { gender })
+                .andWhere(`user.isActive = (:isActive)`, { isActive })
+                .leftJoinAndSelect(`user.role`, 'role')
+                .andWhere(`role.name Like (:role)`, { role: `%${role}%` })
                 .orderBy(`user.${orderBy}`, order)
                 .skip(currentPage * pageSize)
                 .take(pageSize)
@@ -40,9 +41,10 @@ export class UserService {
 
             const count = await this.userRepository
                 .createQueryBuilder('user')
-                .where(`user.name LIKE (:name)`, {
-                    name: `%${name}%`,
-                })
+                .where(`user.gender = (:gender)`, { gender })
+                .andWhere(`user.isActive = (:isActive)`, { isActive })
+                .leftJoinAndSelect(`user.role`, 'role')
+                .andWhere(`role.name Like (:role)`, { role: `%${role}%` })
                 .getCount();
 
             return { data: users, count };
