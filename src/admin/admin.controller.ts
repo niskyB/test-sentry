@@ -3,12 +3,12 @@ import { User, UserRole, Marketing } from './../core/models';
 import { StatusCodes } from 'http-status-codes';
 import { ResponseMessage } from './../core/interface/message.enum';
 import { UserService } from './../user/user.service';
-import { vCreateUserDTO, CreateUserDTO } from './dto';
-import { JoiValidatorPipe } from './../core/pipe/validator.pipe';
+import { vCreateUserDTO, CreateUserDTO, vFilterUsersDTO, FilterUsersDTO } from './dto';
+import { JoiValidatorPipe, QueryJoiValidatorPipe } from './../core/pipe';
 import { MarketingService } from './../marketing/marketing.service';
 import { AdminGuard } from './../auth/guard';
 import { ApiTags, ApiBearerAuth } from '@nestjs/swagger';
-import { Controller, UseGuards, Post, UsePipes, Body, Res, HttpException } from '@nestjs/common';
+import { Controller, UseGuards, Post, UsePipes, Body, Res, HttpException, Get, Query } from '@nestjs/common';
 import { Response } from 'express';
 import { constant } from '../core';
 
@@ -19,9 +19,19 @@ import { constant } from '../core';
 export class AdminController {
     constructor(private readonly marketingService: MarketingService, private readonly userService: UserService, private readonly authService: AuthService) {}
 
+    @Get('/users')
+    @UsePipes(new QueryJoiValidatorPipe(vFilterUsersDTO))
+    async cFilterUsers(@Res() res: Response, @Query() queries: FilterUsersDTO) {
+        const { role, gender, isActive, currentPage, orderBy, order, pageSize } = queries;
+
+        const users = await this.userService.filterUsers(role, gender, isActive, currentPage, pageSize, orderBy, order);
+
+        return res.send(users);
+    }
+
     @Post('/user')
     @UsePipes(new JoiValidatorPipe(vCreateUserDTO))
-    async cSendVerifyEmail(@Body() body: CreateUserDTO, @Res() res: Response) {
+    async cAddNewUser(@Body() body: CreateUserDTO, @Res() res: Response) {
         const user = await this.userService.findUser('email', body.email);
         if (user) throw new HttpException({ email: ResponseMessage.EMAIL_TAKEN }, StatusCodes.BAD_REQUEST);
 
