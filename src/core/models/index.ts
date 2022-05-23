@@ -6,3 +6,5 @@ export * from './marketing';
 export * from './blog';
 export * from './blog-category';
 export * from './admin';
+export * from './sale';
+export * from './expert';
