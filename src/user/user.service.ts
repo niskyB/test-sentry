@@ -26,12 +26,26 @@ export class UserService {
         return await this.userRepository.findManyByField(field, value);
     }
 
-    async filterUsers(role: string, gender: Gender, isActive: boolean, currentPage: number, pageSize: number, orderBy: string, order: SortOrder): Promise<{ data: User[]; count: number }> {
+    async filterUsers(
+        role: string,
+        gender: Gender,
+        isActive: boolean,
+        currentPage: number,
+        pageSize: number,
+        orderBy: string,
+        order: SortOrder,
+        fullName: string,
+        email: string,
+        mobile: string,
+    ): Promise<{ data: User[]; count: number }> {
         try {
             const users = await this.userRepository
                 .createQueryBuilder('user')
                 .where(`user.gender = (:gender)`, { gender })
                 .andWhere(`user.isActive = (:isActive)`, { isActive })
+                .andWhere(`user.fullName Like (:fullName)`, { fullName: `%${fullName}%` })
+                .andWhere(`user.email Like (:email)`, { email: `%${email}%` })
+                .andWhere(`user.mobile Like (:mobile)`, { mobile: `%${mobile}%` })
                 .leftJoinAndSelect(`user.role`, 'role')
                 .andWhere(`role.name Like (:role)`, { role: `%${role}%` })
                 .orderBy(`user.${orderBy}`, order)
@@ -43,6 +57,9 @@ export class UserService {
                 .createQueryBuilder('user')
                 .where(`user.gender = (:gender)`, { gender })
                 .andWhere(`user.isActive = (:isActive)`, { isActive })
+                .andWhere(`user.fullName Like (:fullName)`, { fullName: `%${fullName}%` })
+                .andWhere(`user.email Like (:email)`, { email: `%${email}%` })
+                .andWhere(`user.mobile Like (:mobile)`, { mobile: `%${mobile}%` })
                 .leftJoinAndSelect(`user.role`, 'role')
                 .andWhere(`role.name Like (:role)`, { role: `%${role}%` })
                 .getCount();
