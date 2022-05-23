@@ -1,5 +1,6 @@
+import { ExpertService } from './../expert/expert.service';
 import { AuthService } from './../auth/auth.service';
-import { User, UserRole, Marketing } from './../core/models';
+import { User, UserRole, Marketing, Expert, Sale } from './../core/models';
 import { StatusCodes } from 'http-status-codes';
 import { ResponseMessage } from './../core/interface/message.enum';
 import { UserService } from './../user/user.service';
@@ -11,13 +12,20 @@ import { ApiTags, ApiBearerAuth } from '@nestjs/swagger';
 import { Controller, UseGuards, Post, UsePipes, Body, Res, HttpException, Get, Query, Param } from '@nestjs/common';
 import { Response } from 'express';
 import { constant } from '../core';
+import { SaleService } from '../sale/sale.service';
 
 @ApiTags('admin')
 @ApiBearerAuth()
 @UseGuards(AdminGuard)
 @Controller('admin')
 export class AdminController {
-    constructor(private readonly marketingService: MarketingService, private readonly userService: UserService, private readonly authService: AuthService) {}
+    constructor(
+        private readonly marketingService: MarketingService,
+        private readonly userService: UserService,
+        private readonly authService: AuthService,
+        private readonly saleService: SaleService,
+        private readonly expertService: ExpertService,
+    ) {}
 
     @Get('/users')
     @UsePipes(new QueryJoiValidatorPipe(vFilterUsersDTO))
@@ -46,6 +54,8 @@ export class AdminController {
         const newUser = new User();
         let newEmployee;
         if (body.role === UserRole.MARKETING) newEmployee = new Marketing();
+        if (body.role === UserRole.EXPERT) newEmployee = new Expert();
+        if (body.role === UserRole.SALE) newEmployee = new Sale();
 
         newUser.fullName = body.fullName;
         newUser.email = body.email;
@@ -60,6 +70,16 @@ export class AdminController {
         if (body.role === UserRole.MARKETING) {
             await this.marketingService.saveMarketing(newEmployee);
             newEmployee = await this.marketingService.getMarketingByUserId(newUser.id);
+        }
+
+        if (body.role === UserRole.EXPERT) {
+            await this.expertService.saveExpert(newEmployee);
+            newEmployee = await this.expertService.getExpertByUserId(newUser.id);
+        }
+
+        if (body.role === UserRole.SALE) {
+            await this.saleService.saveSale(newEmployee);
+            newEmployee = await this.saleService.getSaleByUserId(newUser.id);
         }
 
         newUser.typeId = newEmployee.id;

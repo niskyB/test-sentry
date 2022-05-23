@@ -6,3 +6,5 @@ export * from './customer.repository';
 export * from './marketing.repository';
 export * from './blog.repository';
 export * from './blogCategory.repository';
+export * from './expert.repository';
+export * from './sale.repository';
