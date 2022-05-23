@@ -22,11 +22,20 @@ export class FilterUsersDTO {
     @ApiProperty({ description: 'Page Size', example: '4', nullable: true })
     pageSize: number;
 
-    @ApiProperty({ description: 'Order by', example: 'name', nullable: true })
+    @ApiProperty({ description: 'Order by', example: 'fullName', nullable: true })
     orderBy: string;
 
-    @ApiProperty({ description: 'Order', example: 'asc', nullable: true })
+    @ApiProperty({ description: 'Order', example: 'ASC', nullable: true })
     order: SortOrder;
+
+    @ApiProperty({ description: 'Full name', example: 'loc', nullable: true })
+    fullName: string;
+
+    @ApiProperty({ description: 'Email', example: 'loc@gmail.com', nullable: true })
+    email: string;
+
+    @ApiProperty({ description: 'Mobile', example: '01234457712', nullable: true })
+    mobile: string;
 }
 
 export const vFilterUsersDTO = joi.object<FilterUsersDTO>({
@@ -37,4 +46,12 @@ export const vFilterUsersDTO = joi.object<FilterUsersDTO>({
     pageSize: joi.number().failover(pageSize).min(0).required(),
     orderBy: joi.string().failover(orderBy).required(),
     order: joi.string().failover(SortOrder.ASC).valid(SortOrder.ASC, SortOrder.DESC).required(),
+    fullName: userValidateSchema.fullName.failover(''),
+    email: joi.string().required().failover(''),
+    mobile: joi
+        .string()
+        .required()
+        .max(20)
+        .pattern(/^[0-9]+$/)
+        .failover(''),
 });

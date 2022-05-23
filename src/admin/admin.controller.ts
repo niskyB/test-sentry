@@ -22,9 +22,9 @@ export class AdminController {
     @Get('/users')
     @UsePipes(new QueryJoiValidatorPipe(vFilterUsersDTO))
     async cFilterUsers(@Res() res: Response, @Query() queries: FilterUsersDTO) {
-        const { role, gender, isActive, currentPage, orderBy, order, pageSize } = queries;
+        const { role, gender, isActive, currentPage, orderBy, order, pageSize, fullName, email, mobile } = queries;
 
-        const users = await this.userService.filterUsers(role, gender, isActive, currentPage, pageSize, orderBy, order);
+        const users = await this.userService.filterUsers(role, gender, isActive, currentPage, pageSize, orderBy, order, fullName, email, mobile);
 
         return res.send(users);
     }
