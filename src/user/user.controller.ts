@@ -27,9 +27,11 @@ export class UserController {
     }
 
     @Get('/:userId')
-    async cGetOneById(@Param('userId') userId: string, @Res() res: Response) {
+    async cGetOneById(@Param('userId') userId: string, @Res() res: Response, @Req() req: Request) {
         const user = await this.userService.findUser('id', userId);
+
         if (!user) throw new HttpException({ errorMessage: ResponseMessage.NOT_EXISTED_USER }, StatusCodes.NOT_FOUND);
+        if (user.id !== req.user.id) throw new HttpException({ errorMessage: ResponseMessage.FORBIDDEN }, StatusCodes.FORBIDDEN);
         return res.send(user);
     }
 
