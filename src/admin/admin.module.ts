@@ -1,3 +1,5 @@
+import { ExpertModule } from './../expert/expert.module';
+import { SaleModule } from './../sale/sale.module';
 import { AuthModule } from './../auth/auth.module';
 import { UserModule } from './../user/user.module';
 import { MarketingModule } from './../marketing/marketing.module';
@@ -6,7 +8,7 @@ import { AdminService } from './admin.service';
 import { AdminController } from './admin.controller';
 
 @Module({
-    imports: [MarketingModule, UserModule, AuthModule],
+    imports: [MarketingModule, UserModule, AuthModule, SaleModule, ExpertModule],
     providers: [AdminService],
     controllers: [AdminController],
 })
