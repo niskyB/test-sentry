@@ -14,12 +14,12 @@ import { S3Service } from '../core/providers/s3/s3.service';
 
 @ApiTags('user')
 @ApiBearerAuth()
+@UseGuards(CommonGuard)
 @Controller('user')
 export class UserController {
     constructor(private readonly userService: UserService, private readonly s3Service: S3Service, private readonly authService: AuthService) {}
 
     @Get('/me')
-    @UseGuards(CommonGuard)
     async cGetMe(@Req() req: Request, @Res() res: Response) {
         const user = req.user;
         user.token = '';
@@ -34,7 +34,6 @@ export class UserController {
     }
 
     @Put('/password')
-    @UseGuards(CommonGuard)
     @UsePipes(new JoiValidatorPipe(vChangePasswordDTO))
     async changePassword(@Body() body: ChangePasswordDTO, @Res() res: Response, @Req() req: Request) {
         //get current user data
@@ -52,7 +51,6 @@ export class UserController {
     }
 
     @Put('/')
-    @UseGuards(CommonGuard)
     @UseInterceptors(FileInterceptor('image'))
     @UsePipes(new JoiValidatorPipe(vUpdateUserDTO))
     async updateUserInformation(@Body() body: UpdateUserDTO, @Res() res: Response, @Req() req: Request, @UploadedFile() file: Express.Multer.File) {
