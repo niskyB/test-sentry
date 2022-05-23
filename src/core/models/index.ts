@@ -8,3 +8,5 @@ export * from './blog-category';
 export * from './admin';
 export * from './sale';
 export * from './expert';
+export * from './subject';
+export * from './subject-category';

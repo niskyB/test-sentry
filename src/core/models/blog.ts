@@ -54,21 +54,18 @@ export const blogValidateSchema = {
         .min(3)
         .max(40)
         .trim()
-        .lowercase()
         .required()
         .messages(JoiMessage.createStringMessages({ field: 'Title', min: 3, max: 40 })),
     details: joi
         .string()
         .trim()
-        .lowercase()
         .required()
         .messages(JoiMessage.createStringMessages({ field: 'Details' })),
     briefInfo: joi
         .string()
         .trim()
-        .lowercase()
         .required()
-        .messages(JoiMessage.createStringMessages({ field: 'Breaf Info' })),
+        .messages(JoiMessage.createStringMessages({ field: 'Brief Info' })),
     isShow: joi
         .boolean()
         .required()
