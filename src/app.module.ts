@@ -12,6 +12,10 @@ import { BlogCategoryModule } from './blog-category/blog-category.module';
 import { AdminModule } from './admin/admin.module';
 import { SaleModule } from './sale/sale.module';
 import { ExpertModule } from './expert/expert.module';
+import { SubjectModule } from './subject/subject.module';
+import { SubjectCategoryService } from './subject-category/subject-category.service';
+import { SubjectCategoryController } from './subject-category/subject-category.controller';
+import { SubjectCategoryModule } from './subject-category/subject-category.module';
 @Module({
     imports: [
         DbModule,
@@ -29,6 +33,10 @@ import { ExpertModule } from './expert/expert.module';
         AdminModule,
         SaleModule,
         ExpertModule,
+        SubjectModule,
+        SubjectCategoryModule,
     ],
+    providers: [SubjectCategoryService],
+    controllers: [SubjectCategoryController],
 })
 export class AppModule {}
