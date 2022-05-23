@@ -8,7 +8,7 @@ import { JoiValidatorPipe, QueryJoiValidatorPipe } from './../core/pipe';
 import { MarketingService } from './../marketing/marketing.service';
 import { AdminGuard } from './../auth/guard';
 import { ApiTags, ApiBearerAuth } from '@nestjs/swagger';
-import { Controller, UseGuards, Post, UsePipes, Body, Res, HttpException, Get, Query } from '@nestjs/common';
+import { Controller, UseGuards, Post, UsePipes, Body, Res, HttpException, Get, Query, Param } from '@nestjs/common';
 import { Response } from 'express';
 import { constant } from '../core';
 
@@ -27,6 +27,14 @@ export class AdminController {
         const users = await this.userService.filterUsers(role, gender, isActive, currentPage, pageSize, orderBy, order, fullName, email, mobile);
 
         return res.send(users);
+    }
+
+    @Get('/:id')
+    async cGetOneById(@Param('id') id: string, @Res() res: Response) {
+        const user = await this.userService.findUser('id', id);
+
+        if (!user) throw new HttpException({ errorMessage: ResponseMessage.NOT_EXISTED_USER }, StatusCodes.NOT_FOUND);
+        return res.send(user);
     }
 
     @Post('/user')
