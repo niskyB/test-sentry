@@ -4,10 +4,10 @@ import { ResponseMessage } from './../core/interface';
 import { DimensionTypeService } from './../dimension-type/dimension-type.service';
 import { JoiValidatorPipe } from './../core/pipe';
 import { ExpertGuard } from './../auth/guard';
-import { Controller, Post, UseGuards, UsePipes, Res, Body, HttpException, Get, Param } from '@nestjs/common';
+import { Controller, Post, UseGuards, UsePipes, Res, Body, HttpException, Get, Param, Put } from '@nestjs/common';
 import { DimensionService } from './dimension.service';
 import { Response } from 'express';
-import { CreateDimensionDTO, vCreateDimensionDTO } from './dto';
+import { CreateDimensionDTO, UpdateDimensionDTO, vCreateDimensionDTO, vUpdateDimensionDTO } from './dto';
 import { StatusCodes } from 'http-status-codes';
 
 @Controller('dimension')
@@ -36,6 +36,24 @@ export class DimensionController {
         dimension.description = body.description;
         dimension.type = dimensionType;
         dimension.subject = subject;
+
+        await this.dimensionService.saveDimension(dimension);
+
+        return res.send(dimension);
+    }
+
+    @Put('/:id')
+    @UsePipes(new JoiValidatorPipe(vUpdateDimensionDTO))
+    async cUpdateSlider(@Param('id') id: string, @Res() res: Response, @Body() body: UpdateDimensionDTO) {
+        const dimension = await this.dimensionService.getDimensionByField('id', id);
+
+        if (!dimension) throw new HttpException({ errorMessage: ResponseMessage.NOT_FOUND }, StatusCodes.NOT_FOUND);
+
+        const type = await this.dimensionTypeService.getDimensionTypeByField('id', body.type);
+
+        dimension.name = body.name || dimension.name;
+        dimension.description = body.description || dimension.description;
+        dimension.type = type || dimension.type;
 
         await this.dimensionService.saveDimension(dimension);
 
