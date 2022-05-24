@@ -21,7 +21,7 @@ export class SliderController {
     constructor(private readonly sliderService: SliderService, private readonly userService: UserService, private readonly s3Service: S3Service, private readonly marketingService: MarketingService) {}
 
     @Get('/:id')
-    async cGetSlider(@Param('id') id: string, @Req() req: Request, @Res() res: Response) {
+    async cGetSlider(@Param('id') id: string, @Res() res: Response) {
         const slider = await this.sliderService.getSliderByField('id', id);
         if (!slider) throw new HttpException({ errorMessage: ResponseMessage.NOT_FOUND }, StatusCodes.NOT_FOUND);
         return res.send(slider);

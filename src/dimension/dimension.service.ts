@@ -9,4 +9,8 @@ export class DimensionService {
     async saveDimension(dimension: Dimension): Promise<Dimension> {
         return await this.dimensionRepository.save(dimension);
     }
+
+    async getDimensionByField(field: keyof Dimension, value: any): Promise<Dimension> {
+        return await this.dimensionRepository.findOneByField(field, value);
+    }
 }
