@@ -6,6 +6,10 @@ import { Injectable } from '@nestjs/common';
 export class SubjectService {
     constructor(private readonly subjectRepository: SubjectRepository) {}
 
+    async getSubjectByField(field: keyof Subject, value: any): Promise<Subject> {
+        return await this.subjectRepository.findOneByField(field, value);
+    }
+
     async saveSubject(subject: Subject): Promise<Subject> {
         return await this.subjectRepository.save(subject);
     }

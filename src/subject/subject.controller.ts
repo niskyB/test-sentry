@@ -7,7 +7,7 @@ import { StatusCodes } from 'http-status-codes';
 import { ResponseMessage } from './../core/interface';
 import { JoiValidatorPipe } from './../core/pipe';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { Controller, Post, UseInterceptors, Req, Res, Body, UploadedFile, HttpException, UsePipes, UseGuards } from '@nestjs/common';
+import { Controller, Post, UseInterceptors, Req, Res, Body, UploadedFile, HttpException, UsePipes, UseGuards, Get, Param } from '@nestjs/common';
 import { SubjectService } from './subject.service';
 import { CreateSubjectDTO, vCreateSubjectDTO } from './dto';
 import { Request, Response } from 'express';
@@ -21,6 +21,13 @@ export class SubjectController {
         private readonly s3Service: S3Service,
         private readonly subjectCategoryService: SubjectCategoryService,
     ) {}
+
+    @Get('/:id')
+    async cGetSlider(@Param('id') id: string, @Res() res: Response) {
+        const subject = await this.subjectService.getSubjectByField('id', id);
+        if (!subject) throw new HttpException({ errorMessage: ResponseMessage.NOT_FOUND }, StatusCodes.NOT_FOUND);
+        return res.send(subject);
+    }
 
     @Post('')
     @UseInterceptors(FileInterceptor('image'))
