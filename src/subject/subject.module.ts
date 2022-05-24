@@ -13,5 +13,6 @@ import { SubjectService } from './subject.service';
     imports: [ExpertModule, TypeOrmModule.forFeature([SubjectRepository]), S3Module, AuthModule, UserModule, SubjectCategoryModule],
     controllers: [SubjectController],
     providers: [SubjectService],
+    exports: [SubjectService],
 })
 export class SubjectModule {}

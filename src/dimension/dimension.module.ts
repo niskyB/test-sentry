@@ -1,3 +1,4 @@
+import { SubjectModule } from './../subject/subject.module';
 import { DimensionTypeModule } from './../dimension-type/dimension-type.module';
 import { UserModule } from './../user/user.module';
 import { AuthModule } from './../auth/auth.module';
@@ -8,7 +9,7 @@ import { DimensionService } from './dimension.service';
 import { DimensionController } from './dimension.controller';
 
 @Module({
-    imports: [TypeOrmModule.forFeature([DimensionRepository]), AuthModule, UserModule, DimensionTypeModule],
+    imports: [TypeOrmModule.forFeature([DimensionRepository]), AuthModule, UserModule, DimensionTypeModule, SubjectModule],
     providers: [DimensionService],
     controllers: [DimensionController],
 })
