@@ -1,3 +1,4 @@
+import { ExpertGuard } from './../auth/guard';
 import { SubjectCategoryService } from './../subject-category/subject-category.service';
 import { S3Service } from './../core/providers/s3/s3.service';
 import { Subject } from './../core/models';
@@ -6,12 +7,13 @@ import { StatusCodes } from 'http-status-codes';
 import { ResponseMessage } from './../core/interface';
 import { JoiValidatorPipe } from './../core/pipe';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { Controller, Post, UseInterceptors, Req, Res, Body, UploadedFile, HttpException, UsePipes } from '@nestjs/common';
+import { Controller, Post, UseInterceptors, Req, Res, Body, UploadedFile, HttpException, UsePipes, UseGuards } from '@nestjs/common';
 import { SubjectService } from './subject.service';
 import { CreateSubjectDTO, vCreateSubjectDTO } from './dto';
 import { Request, Response } from 'express';
 
 @Controller('subject')
+@UseGuards(ExpertGuard)
 export class SubjectController {
     constructor(
         private readonly subjectService: SubjectService,
@@ -32,7 +34,7 @@ export class SubjectController {
         const expert = await this.expertService.getExpertByUserId(body.assignTo);
 
         const newSubject = new Subject();
-        newSubject.title = body.title;
+        newSubject.name = body.name;
         newSubject.tagLine = body.tagLine;
         newSubject.description = body.description;
         newSubject.category = subjectCategory;

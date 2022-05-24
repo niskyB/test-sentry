@@ -4,8 +4,8 @@ import * as joi from 'joi';
 import JoiMessage from 'joi-message';
 
 export class CreateSubjectDTO {
-    @ApiProperty({ description: 'Title', example: 'Subject 1' })
-    title: string;
+    @ApiProperty({ description: 'Name', example: 'Subject 1' })
+    name: string;
 
     @ApiProperty({ description: 'Tag Line', example: 'Tag Line 1' })
     tagLine: string;
@@ -21,7 +21,7 @@ export class CreateSubjectDTO {
 }
 
 export const vCreateSubjectDTO = joi.object<CreateSubjectDTO>({
-    title: subjectValidateSchema.title,
+    name: subjectValidateSchema.name,
     tagLine: subjectValidateSchema.tagLine,
     description: subjectValidateSchema.description,
     category: joi

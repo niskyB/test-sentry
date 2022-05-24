@@ -11,9 +11,9 @@ export class Subject {
     @PrimaryGeneratedColumn('uuid')
     id: string;
 
-    @ApiProperty({ description: 'Title' })
+    @ApiProperty({ description: 'Name' })
     @Column({ default: null })
-    title: string;
+    name: string;
 
     @ApiProperty({ description: 'Tag Line' })
     @Column({ default: null })
@@ -26,6 +26,10 @@ export class Subject {
     @ApiProperty({ description: 'Thumbnail url' })
     @Column({ default: null })
     thumbnailUrl: string;
+
+    @ApiProperty({ description: 'Is Active' })
+    @Column({ default: true })
+    isActive: boolean;
 
     @ApiProperty({ description: 'Created at' })
     @Column({ default: new Date().toISOString().slice(0, 19).replace('T', ' ') })
@@ -45,7 +49,7 @@ export class Subject {
 }
 
 export const subjectValidateSchema = {
-    title: joi
+    name: joi
         .string()
         .min(3)
         .max(40)
