@@ -13,8 +13,6 @@ import { AdminModule } from './admin/admin.module';
 import { SaleModule } from './sale/sale.module';
 import { ExpertModule } from './expert/expert.module';
 import { SubjectModule } from './subject/subject.module';
-import { SubjectCategoryService } from './subject-category/subject-category.service';
-import { SubjectCategoryController } from './subject-category/subject-category.controller';
 import { SubjectCategoryModule } from './subject-category/subject-category.module';
 import { DimensionModule } from './dimension/dimension.module';
 import { DimensionTypeModule } from './dimension-type/dimension-type.module';
@@ -40,7 +38,5 @@ import { DimensionTypeModule } from './dimension-type/dimension-type.module';
         DimensionModule,
         DimensionTypeModule,
     ],
-    providers: [SubjectCategoryService],
-    controllers: [SubjectCategoryController],
 })
 export class AppModule {}
