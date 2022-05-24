@@ -10,3 +10,5 @@ export * from './sale';
 export * from './expert';
 export * from './subject';
 export * from './subject-category';
+export * from './dimension-type';
+export * from './dimension';
