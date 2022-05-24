@@ -1,5 +1,5 @@
 import { UserService } from './../user/user.service';
-import { ExpertGuard } from './../auth/guard';
+import { AdminGuard, ExpertGuard } from './../auth/guard';
 import { SubjectCategoryService } from './../subject-category/subject-category.service';
 import { S3Service } from './../core/providers/s3/s3.service';
 import { Subject, UserRole } from './../core/models';
@@ -10,7 +10,7 @@ import { JoiValidatorPipe } from './../core/pipe';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { Controller, Post, UseInterceptors, Req, Res, Body, UploadedFile, HttpException, UsePipes, UseGuards, Get, Param, Put } from '@nestjs/common';
 import { SubjectService } from './subject.service';
-import { CreateSubjectDTO, UpdateSubjectDTO, vCreateSubjectDTO, vUpdateSubjectDTO } from './dto';
+import { CreateSubjectDTO, UpdateSubjectAdminDTO, UpdateSubjectDTO, vCreateSubjectDTO, vUpdateSubjectAdminDTO, vUpdateSubjectDTO } from './dto';
 import { Request, Response } from 'express';
 
 @Controller('subject')
@@ -34,7 +34,7 @@ export class SubjectController {
     @Post('')
     @UseInterceptors(FileInterceptor('image'))
     @UsePipes(new JoiValidatorPipe(vCreateSubjectDTO))
-    async cCreateSlider(@Req() req: Request, @Res() res: Response, @Body() body: CreateSubjectDTO, @UploadedFile() file: Express.Multer.File) {
+    async cCreateSlider(@Res() res: Response, @Body() body: CreateSubjectDTO, @UploadedFile() file: Express.Multer.File) {
         if (!file) throw new HttpException({ errorMessage: ResponseMessage.INVALID_IMAGE }, StatusCodes.BAD_REQUEST);
 
         const subjectCategory = await this.subjectCategoryService.getSubjectCategoryByField('name', body.category);
@@ -58,6 +58,23 @@ export class SubjectController {
         return res.send(newSubject);
     }
 
+    @Put('/isActive/:id')
+    @UseGuards(AdminGuard)
+    @UsePipes(new JoiValidatorPipe(vUpdateSubjectAdminDTO))
+    async cUpdateIsActive(@Param('id') id: string, @Res() res: Response, @Body() body: UpdateSubjectAdminDTO) {
+        const subject = await this.subjectService.getSubjectByField('id', id);
+
+        if (!subject) throw new HttpException({ errorMessage: ResponseMessage.NOT_FOUND }, StatusCodes.NOT_FOUND);
+
+        const expert = await this.expertService.getExpertByUserId(body.assignTo);
+        subject.assignTo = expert || subject.assignTo;
+        subject.isActive = body.isActive === null || body.isActive === undefined ? subject.isActive : body.isActive;
+
+        await this.subjectService.saveSubject(subject);
+
+        return res.send(subject);
+    }
+
     @Put('/:id')
     @UseInterceptors(FileInterceptor('image'))
     @UsePipes(new JoiValidatorPipe(vUpdateSubjectDTO))
@@ -68,13 +85,9 @@ export class SubjectController {
         if (!subject) throw new HttpException({ errorMessage: ResponseMessage.NOT_FOUND }, StatusCodes.NOT_FOUND);
         if (user.role.name !== UserRole.ADMIN && subject.assignTo.id !== user.typeId) throw new HttpException({ errorMessage: ResponseMessage.FORBIDDEN }, StatusCodes.FORBIDDEN);
 
-        const expert = await this.expertService.getExpertByUserId(body.assignTo);
-
         subject.name = body.name || subject.name;
         subject.tagLine = body.tagLine || subject.tagLine;
         subject.description = body.description || subject.description;
-        subject.isActive = body.isActive === null || body.isActive === undefined ? subject.isActive : body.isActive;
-        subject.assignTo = expert || subject.assignTo;
 
         if (file) {
             const result = await this.s3Service.uploadFile(file);

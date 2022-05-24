@@ -59,12 +59,14 @@ export class SliderController {
 
         slider.title = body.title || slider.title;
         slider.backLink = body.backLink || slider.backLink;
+        slider.isShow = body.isShow === null || body.isShow === undefined ? slider.isShow : body.isShow;
+
         if (file) {
             const result = await this.s3Service.uploadFile(file);
             if (result) slider.imageUrl = result.Location;
             else throw new HttpException({ errorMessage: ResponseMessage.SOMETHING_WRONG }, StatusCodes.INTERNAL_SERVER_ERROR);
         }
-        slider.isShow = body.isShow === null || body.isShow === undefined ? slider.isShow : body.isShow;
+
         await this.sliderService.saveSlider(slider);
 
         return res.send(slider);
