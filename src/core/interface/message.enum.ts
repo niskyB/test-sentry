@@ -15,4 +15,5 @@ export enum ResponseMessage {
     FORBIDDEN = 'Sorry, your request could not be processed',
     INVALID_CATEGORY = 'Invalid category',
     INVALID_TYPE = 'Invalid type',
+    INVALID_SUBJECT = 'Invalid subject',
 }

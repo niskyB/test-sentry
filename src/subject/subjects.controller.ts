@@ -18,7 +18,7 @@ export class SlidersController {
     async cFilterSliders(@Res() res: Response, @Query() queries: FilterSubjectsDTO) {
         const { name, isActive, category, currentPage, createdAt, pageSize } = queries;
 
-        const result = await this.subjectService.filterSliders(name, createdAt, currentPage, pageSize, isActive, category);
+        const result = await this.subjectService.filterSubjects(name, createdAt, currentPage, pageSize, isActive, category);
         return res.send(result);
     }
 }

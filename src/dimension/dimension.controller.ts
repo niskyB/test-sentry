@@ -1,3 +1,4 @@
+import { SubjectService } from './../subject/subject.service';
 import { Dimension } from './../core/models';
 import { ResponseMessage } from './../core/interface';
 import { DimensionTypeService } from './../dimension-type/dimension-type.service';
@@ -12,7 +13,7 @@ import { StatusCodes } from 'http-status-codes';
 @Controller('dimension')
 @UseGuards(ExpertGuard)
 export class DimensionController {
-    constructor(private readonly dimensionService: DimensionService, private readonly dimensionTypeService: DimensionTypeService) {}
+    constructor(private readonly dimensionService: DimensionService, private readonly dimensionTypeService: DimensionTypeService, private readonly subjectService: SubjectService) {}
 
     @Get('/:id')
     async cGetSlider(@Param('id') id: string, @Res() res: Response) {
@@ -27,10 +28,14 @@ export class DimensionController {
         const dimensionType = await this.dimensionTypeService.getDimensionTypeByField('name', body.type);
         if (!dimensionType) throw new HttpException({ category: ResponseMessage.INVALID_TYPE }, StatusCodes.BAD_REQUEST);
 
+        const subject = await this.subjectService.getSubjectByField('id', body.subject);
+        if (!subject) throw new HttpException({ category: ResponseMessage.INVALID_SUBJECT }, StatusCodes.BAD_REQUEST);
+
         const dimension = new Dimension();
         dimension.name = body.name;
         dimension.description = body.description;
         dimension.type = dimensionType;
+        dimension.subject = subject;
 
         await this.dimensionService.saveDimension(dimension);
 
