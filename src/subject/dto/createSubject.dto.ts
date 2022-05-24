@@ -1,0 +1,35 @@
+import { subjectValidateSchema } from './../../core/models';
+import { ApiProperty } from '@nestjs/swagger';
+import * as joi from 'joi';
+import JoiMessage from 'joi-message';
+
+export class CreateSubjectDTO {
+    @ApiProperty({ description: 'Title', example: 'Subject 1' })
+    title: string;
+
+    @ApiProperty({ description: 'Tag Line', example: 'Tag Line 1' })
+    tagLine: string;
+
+    @ApiProperty({ description: 'Description', example: 'Description 1' })
+    description: string;
+
+    @ApiProperty({ description: 'Category', example: 'Category 1' })
+    category: string;
+
+    @ApiProperty({ description: 'Assign To', example: 'aoss-sf-asfaass-sfasd' })
+    assignTo: string;
+}
+
+export const vCreateSubjectDTO = joi.object<CreateSubjectDTO>({
+    title: subjectValidateSchema.title,
+    tagLine: subjectValidateSchema.tagLine,
+    description: subjectValidateSchema.description,
+    category: joi
+        .string()
+        .required()
+        .messages(JoiMessage.createStringMessages({ field: 'Category' })),
+    assignTo: joi
+        .string()
+        .required()
+        .messages(JoiMessage.createStringMessages({ field: 'Assign To' })),
+});

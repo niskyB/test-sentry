@@ -8,3 +8,5 @@ export * from './blog.repository';
 export * from './blogCategory.repository';
 export * from './expert.repository';
 export * from './sale.repository';
+export * from './subject.repository';
+export * from './subjectCategory.repository';
