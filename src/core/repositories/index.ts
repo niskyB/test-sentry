@@ -10,3 +10,5 @@ export * from './expert.repository';
 export * from './sale.repository';
 export * from './subject.repository';
 export * from './subjectCategory.repository';
+export * from './dimension.repository';
+export * from './dimensionType.repository';

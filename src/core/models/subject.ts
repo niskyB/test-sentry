@@ -55,7 +55,7 @@ export const subjectValidateSchema = {
         .max(40)
         .trim()
         .required()
-        .messages(JoiMessage.createStringMessages({ field: 'Title', min: 3, max: 40 })),
+        .messages(JoiMessage.createStringMessages({ field: 'Name', min: 3, max: 40 })),
     tagLine: joi
         .string()
         .trim()
