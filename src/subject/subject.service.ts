@@ -14,7 +14,7 @@ export class SubjectService {
         return await this.subjectRepository.save(subject);
     }
 
-    async filterSliders(name: string, createdAt: string, currentPage: number, pageSize: number, isActive: boolean, category: string): Promise<{ data: Subject[]; count: number }> {
+    async filterSubjects(name: string, createdAt: string, currentPage: number, pageSize: number, isActive: boolean, category: string): Promise<{ data: Subject[]; count: number }> {
         try {
             const date = new Date(createdAt);
             const sliders = await this.subjectRepository

@@ -12,6 +12,9 @@ export class CreateDimensionDTO {
 
     @ApiProperty({ description: 'Type', example: 'Type 1' })
     type: string;
+
+    @ApiProperty({ description: 'Subject Id', example: 'asfsdf-asdfsdf-ss' })
+    subject: string;
 }
 
 export const vCreateDimensionDTO = joi.object<CreateDimensionDTO>({
@@ -21,4 +24,8 @@ export const vCreateDimensionDTO = joi.object<CreateDimensionDTO>({
         .string()
         .required()
         .messages(JoiMessage.createStringMessages({ field: 'Type' })),
+    subject: joi
+        .string()
+        .required()
+        .messages(JoiMessage.createStringMessages({ field: 'Subject' })),
 });

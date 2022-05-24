@@ -3,6 +3,7 @@ import { ApiProperty } from '@nestjs/swagger';
 import * as joi from 'joi';
 import { JoiMessage } from 'joi-message';
 import { DimensionType } from './dimension-type';
+import { Subject } from './subject';
 
 @Entity()
 export class Dimension {
@@ -21,6 +22,10 @@ export class Dimension {
     @ApiProperty({ description: 'Dimension Type' })
     @ManyToOne(() => DimensionType)
     type: DimensionType;
+
+    @ApiProperty({ description: 'Subject' })
+    @ManyToOne(() => Subject)
+    subject: Subject;
 }
 
 export const dimensionValidateSchema = {
