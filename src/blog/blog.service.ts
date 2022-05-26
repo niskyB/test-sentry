@@ -14,7 +14,7 @@ export class BlogService {
         return await this.blogRepository.findOneByField(field, value);
     }
 
-    async filterBlogs(title: string, userId: string, createdAt: string, currentPage: number, pageSize: number, isShow: boolean, category: string): Promise<{ data: Blog[]; count: number }> {
+    async filterBlogs(title: string, userId: string, createdAt: string, currentPage: number, pageSize: number, isShow: boolean, categoryId: string): Promise<{ data: Blog[]; count: number }> {
         try {
             const date = new Date(createdAt);
             const sliders = await this.blogRepository
@@ -25,7 +25,7 @@ export class BlogService {
                 .andWhere(`blog.createdAt >= (:createdAt)`, { createdAt: date })
                 .andWhere(`blog.isShow = (:isShow)`, { isShow: isShow })
                 .leftJoinAndSelect('blog.category', 'category')
-                .andWhere(`category.name = (:category)`, { category })
+                .andWhere(`category.id = (:id)`, { id: categoryId })
                 .leftJoinAndSelect('blog.marketing', 'marketing')
                 .leftJoinAndSelect('marketing.user', 'user')
                 .andWhere('user.id LIKE (:userId)', { userId: `%${userId}%` })
@@ -42,7 +42,7 @@ export class BlogService {
                 .andWhere(`blog.createdAt >= (:createdAt)`, { createdAt: date })
                 .andWhere(`blog.isShow = (:isShow)`, { isShow: isShow })
                 .leftJoinAndSelect('blog.category', 'category')
-                .andWhere(`category.name = (:category)`, { category })
+                .andWhere(`category.id = (:id)`, { id: categoryId })
                 .leftJoinAndSelect('blog.marketing', 'marketing')
                 .leftJoinAndSelect('marketing.user', 'user')
                 .andWhere('user.id LIKE (:userId)', { userId: `%${userId}%` })
