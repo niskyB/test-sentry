@@ -16,6 +16,9 @@ import { SubjectModule } from './subject/subject.module';
 import { SubjectCategoryModule } from './subject-category/subject-category.module';
 import { DimensionModule } from './dimension/dimension.module';
 import { DimensionTypeModule } from './dimension-type/dimension-type.module';
+import { PricePackageModule } from './price-package/price-package.module';
+import { LessonModule } from './lesson/lesson.module';
+import { LessonTypeModule } from './lesson-type/lesson-type.module';
 @Module({
     imports: [
         DbModule,
@@ -37,6 +40,9 @@ import { DimensionTypeModule } from './dimension-type/dimension-type.module';
         SubjectCategoryModule,
         DimensionModule,
         DimensionTypeModule,
+        PricePackageModule,
+        LessonModule,
+        LessonTypeModule,
     ],
 })
 export class AppModule {}

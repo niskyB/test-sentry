@@ -1,6 +1,6 @@
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { config } from './core';
-import { User, Slider, Role, Customer, Marketing, Blog, Admin, Sale, Expert, Subject, SubjectCategory, Dimension, DimensionType, BlogCategory } from './core/models';
+import { User, Slider, Role, Customer, Marketing, Blog, Admin, Sale, Expert, Subject, SubjectCategory, Dimension, DimensionType, BlogCategory, Lesson, PricePackage, LessonType } from './core/models';
 
 export const DbModule = TypeOrmModule.forRoot({
     type: 'mysql',
@@ -11,6 +11,6 @@ export const DbModule = TypeOrmModule.forRoot({
     database: config.DB_NAME,
     synchronize: true,
     keepConnectionAlive: true,
-    entities: [User, Role, Slider, Customer, Marketing, Blog, BlogCategory, Admin, Sale, Expert, Subject, SubjectCategory, Dimension, DimensionType],
+    entities: [User, Role, Slider, Customer, Marketing, Blog, BlogCategory, Admin, Sale, Expert, Subject, SubjectCategory, Dimension, DimensionType, Lesson, LessonType, PricePackage],
     extra: { connectionLimit: 1 },
 });
