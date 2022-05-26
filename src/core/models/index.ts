@@ -12,3 +12,6 @@ export * from './subject';
 export * from './subject-category';
 export * from './dimension-type';
 export * from './dimension';
+export * from './price-package';
+export * from './lesson-type';
+export * from './lesson';
