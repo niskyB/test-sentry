@@ -8,10 +8,11 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { Module } from '@nestjs/common';
 import { BlogController } from './blog.controller';
 import { BlogService } from './blog.service';
+import { BlogsController } from './blogs.controller';
 
 @Module({
     imports: [TypeOrmModule.forFeature([BlogRepository]), AuthModule, UserModule, MarketingModule, S3Module, BlogCategoryModule],
-    controllers: [BlogController],
+    controllers: [BlogController, BlogsController],
     providers: [BlogService],
     exports: [BlogService],
 })
