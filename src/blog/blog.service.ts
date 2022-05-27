@@ -29,7 +29,7 @@ export class BlogService {
                 .leftJoinAndSelect('blog.marketing', 'marketing')
                 .leftJoinAndSelect('marketing.user', 'user')
                 .andWhere('user.id LIKE (:userId)', { userId: `%${userId}%` })
-                .orderBy(`slider.createdAt`, 'DESC')
+                .orderBy(`blog.createdAt`, 'DESC')
                 .skip(currentPage * pageSize)
                 .take(pageSize)
                 .getMany();
