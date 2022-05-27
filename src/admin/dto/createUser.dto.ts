@@ -27,5 +27,5 @@ export const vCreateUserDTO = joi.object<CreateUserDTO>({
     fullName: userValidateSchema.fullName,
     gender: userValidateSchema.gender,
     mobile: userValidateSchema.mobile,
-    role: joi.string().trim().valid(UserRole.MARKETING).required(),
+    role: joi.string().trim().valid(UserRole.MARKETING, UserRole.SALE, UserRole.EXPERT).required(),
 });
