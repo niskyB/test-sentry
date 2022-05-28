@@ -62,7 +62,7 @@ export class BlogController {
     @Put('/:id')
     @UseInterceptors(FileInterceptor('image'))
     @UsePipes(new JoiValidatorPipe(vUpdateBlogDTO))
-    async cUpdateSlider(@Param('id') id: string, @Req() req: Request, @Res() res: Response, @Body() body: UpdateBlogDTO, @UploadedFile() file: Express.Multer.File) {
+    async cUpdateBlog(@Param('id') id: string, @Req() req: Request, @Res() res: Response, @Body() body: UpdateBlogDTO, @UploadedFile() file: Express.Multer.File) {
         const user = await this.userService.findUser('id', req.user.id);
         const blog = await this.blogService.getBlogByField('id', id);
 
