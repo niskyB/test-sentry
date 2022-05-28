@@ -25,7 +25,7 @@ export class FilterBlogsDTO {
 }
 
 export const vFilterBlogsDTO = joi.object<FilterBlogsDTO>({
-    title: sliderValidateSchema.title.failover(''),
+    title: joi.string().required().failover(''),
     userId: joi.string().required().failover(''),
     isShow: joi.boolean().required().failover(null),
     createdAt: joi.string().required().failover('1/1/2022'),
