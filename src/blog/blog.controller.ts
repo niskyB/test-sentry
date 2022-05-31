@@ -62,7 +62,7 @@ export class BlogController {
     @Put('/:id')
     @UseInterceptors(FileInterceptor('image'))
     @UsePipes(new JoiValidatorPipe(vUpdateBlogDTO))
-    async cUpdateSlider(@Param('id') id: string, @Req() req: Request, @Res() res: Response, @Body() body: UpdateBlogDTO, @UploadedFile() file: Express.Multer.File) {
+    async cUpdateBlog(@Param('id') id: string, @Req() req: Request, @Res() res: Response, @Body() body: UpdateBlogDTO, @UploadedFile() file: Express.Multer.File) {
         const user = await this.userService.findUser('id', req.user.id);
         const blog = await this.blogService.getBlogByField('id', id);
 
@@ -74,7 +74,7 @@ export class BlogController {
         blog.details = body.details || blog.details;
         blog.isShow = body.isShow === null || body.isShow === undefined ? blog.isShow : body.isShow;
 
-        const blogCategory = await this.blogCategoryService.getBlogCategoryByField('name', body.category);
+        const blogCategory = await this.blogCategoryService.getBlogCategoryByField('id', body.category);
         if (!blogCategory) throw new HttpException({ category: ResponseMessage.INVALID_CATEGORY }, StatusCodes.BAD_REQUEST);
         blog.category = blogCategory;
 

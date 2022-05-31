@@ -10,7 +10,7 @@ export class BlogCategoryService {
         return await this.blogCategoryRepository.findOneByField(field, value);
     }
 
-    async getAllBlogCategory(): Promise<BlogCategory[]> {
+    async getAllBlogCategories(): Promise<BlogCategory[]> {
         return await this.blogCategoryRepository.createQueryBuilder('BlogCategory').getMany();
     }
 }
