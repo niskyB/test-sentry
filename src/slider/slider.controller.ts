@@ -7,7 +7,7 @@ import { CreateSliderDTO, vCreateSliderDTO, vUpdateSliderDTO, UpdateSliderDTO } 
 import { JoiValidatorPipe } from './../core/pipe/validator.pipe';
 import { MarketingGuard } from './../auth/guard';
 import { Body, Controller, Post, Req, Res, UseGuards, UsePipes, UseInterceptors, UploadedFile, HttpException, Get, Param, Put } from '@nestjs/common';
-import { ApiTags, ApiBearerAuth } from '@nestjs/swagger';
+import { ApiTags, ApiBearerAuth, ApiParam } from '@nestjs/swagger';
 import { SliderService } from './slider.service';
 import { Request, Response } from 'express';
 import { StatusCodes } from 'http-status-codes';
@@ -21,6 +21,7 @@ export class SliderController {
     constructor(private readonly sliderService: SliderService, private readonly userService: UserService, private readonly s3Service: S3Service, private readonly marketingService: MarketingService) {}
 
     @Get('/:id')
+    @ApiParam({ name: 'id', example: 'TVgJIjsRFmIvyjUeBOLv4gOD3eQZY' })
     async cGetSlider(@Param('id') id: string, @Res() res: Response) {
         const slider = await this.sliderService.getSliderByField('id', id);
         if (!slider) throw new HttpException({ errorMessage: ResponseMessage.NOT_FOUND }, StatusCodes.NOT_FOUND);
@@ -48,6 +49,7 @@ export class SliderController {
     }
 
     @Put('/:id')
+    @ApiParam({ name: 'id', example: 'TVgJIjsRFmIvyjUeBOLv4gOD3eQZY' })
     @UseInterceptors(FileInterceptor('image'))
     @UsePipes(new JoiValidatorPipe(vUpdateSliderDTO))
     async cUpdateSlider(@Param('id') id: string, @Req() req: Request, @Res() res: Response, @Body() body: UpdateSliderDTO, @UploadedFile() file: Express.Multer.File) {

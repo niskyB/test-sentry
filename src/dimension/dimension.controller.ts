@@ -9,6 +9,7 @@ import { DimensionService } from './dimension.service';
 import { Response } from 'express';
 import { CreateDimensionDTO, UpdateDimensionDTO, vCreateDimensionDTO, vUpdateDimensionDTO } from './dto';
 import { StatusCodes } from 'http-status-codes';
+import { ApiParam } from '@nestjs/swagger';
 
 @Controller('dimension')
 @UseGuards(ExpertGuard)
@@ -16,6 +17,7 @@ export class DimensionController {
     constructor(private readonly dimensionService: DimensionService, private readonly dimensionTypeService: DimensionTypeService, private readonly subjectService: SubjectService) {}
 
     @Get('/:id')
+    @ApiParam({ name: 'id', example: 'TVgJIjsRFmIvyjUeBOLv4gOD3eQZY' })
     async cGetSlider(@Param('id') id: string, @Res() res: Response) {
         const dimension = await this.dimensionService.getDimensionByField('id', id);
         if (!dimension) throw new HttpException({ errorMessage: ResponseMessage.NOT_FOUND }, StatusCodes.NOT_FOUND);
@@ -43,6 +45,7 @@ export class DimensionController {
     }
 
     @Put('/:id')
+    @ApiParam({ name: 'id', example: 'TVgJIjsRFmIvyjUeBOLv4gOD3eQZY' })
     @UsePipes(new JoiValidatorPipe(vUpdateDimensionDTO))
     async cUpdateSlider(@Param('id') id: string, @Res() res: Response, @Body() body: UpdateDimensionDTO) {
         const dimension = await this.dimensionService.getDimensionByField('id', id);
