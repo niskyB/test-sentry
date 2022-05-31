@@ -12,6 +12,7 @@ import { Controller, Post, UseInterceptors, Req, Res, Body, UploadedFile, HttpEx
 import { SubjectService } from './subject.service';
 import { CreateSubjectDTO, UpdateSubjectAdminDTO, UpdateSubjectDTO, vCreateSubjectDTO, vUpdateSubjectAdminDTO, vUpdateSubjectDTO } from './dto';
 import { Request, Response } from 'express';
+import { ApiParam } from '@nestjs/swagger';
 
 @Controller('subject')
 @UseGuards(ExpertGuard)
@@ -25,6 +26,7 @@ export class SubjectController {
     ) {}
 
     @Get('/:id')
+    @ApiParam({ name: 'id', example: 'TVgJIjsRFmIvyjUeBOLv4gOD3eQZY' })
     async cGetSlider(@Param('id') id: string, @Res() res: Response) {
         const subject = await this.subjectService.getSubjectByField('id', id);
         if (!subject) throw new HttpException({ errorMessage: ResponseMessage.NOT_FOUND }, StatusCodes.NOT_FOUND);
@@ -59,6 +61,7 @@ export class SubjectController {
     }
 
     @Put('/isActive/:id')
+    @ApiParam({ name: 'id', example: 'TVgJIjsRFmIvyjUeBOLv4gOD3eQZY' })
     @UseGuards(AdminGuard)
     @UsePipes(new JoiValidatorPipe(vUpdateSubjectAdminDTO))
     async cUpdateIsActive(@Param('id') id: string, @Res() res: Response, @Body() body: UpdateSubjectAdminDTO) {
@@ -76,6 +79,7 @@ export class SubjectController {
     }
 
     @Put('/:id')
+    @ApiParam({ name: 'id', example: 'TVgJIjsRFmIvyjUeBOLv4gOD3eQZY' })
     @UseInterceptors(FileInterceptor('image'))
     @UsePipes(new JoiValidatorPipe(vUpdateSubjectDTO))
     async cUpdateSlider(@Param('id') id: string, @Req() req: Request, @Res() res: Response, @Body() body: UpdateSubjectDTO, @UploadedFile() file: Express.Multer.File) {

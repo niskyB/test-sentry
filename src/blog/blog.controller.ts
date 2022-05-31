@@ -9,7 +9,7 @@ import { vCreateBlogDTO, CreateBlogDTO, vUpdateBlogDTO, UpdateBlogDTO } from './
 import { JoiValidatorPipe } from './../core/pipe/validator.pipe';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { BlogService } from './blog.service';
-import { ApiTags, ApiBearerAuth } from '@nestjs/swagger';
+import { ApiTags, ApiBearerAuth, ApiParam } from '@nestjs/swagger';
 import { Controller, Post, UseInterceptors, UsePipes, Req, Res, Body, UploadedFile, HttpException, UseGuards, Put, Param, Get } from '@nestjs/common';
 import { Request, Response } from 'express';
 import { MarketingService } from '../marketing/marketing.service';
@@ -28,6 +28,7 @@ export class BlogController {
     ) {}
 
     @Get('/:id')
+    @ApiParam({ name: 'id', example: 'TVgJIjsRFmIvyjUeBOLv4gOD3eQZY' })
     async cGetSlider(@Param('id') id: string, @Req() req: Request, @Res() res: Response) {
         const blog = await this.blogService.getBlogByField('id', id);
         if (!blog) throw new HttpException({ errorMessage: ResponseMessage.NOT_FOUND }, StatusCodes.NOT_FOUND);
@@ -60,6 +61,7 @@ export class BlogController {
     }
 
     @Put('/:id')
+    @ApiParam({ name: 'id', example: 'TVgJIjsRFmIvyjUeBOLv4gOD3eQZY' })
     @UseInterceptors(FileInterceptor('image'))
     @UsePipes(new JoiValidatorPipe(vUpdateBlogDTO))
     async cUpdateBlog(@Param('id') id: string, @Req() req: Request, @Res() res: Response, @Body() body: UpdateBlogDTO, @UploadedFile() file: Express.Multer.File) {
