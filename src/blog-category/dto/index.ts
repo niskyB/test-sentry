@@ -1,1 +1,1 @@
-export * from './createBlog.dto';
+export * from './blogCategory.dto';
