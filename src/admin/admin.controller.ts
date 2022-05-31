@@ -8,7 +8,7 @@ import { vCreateUserDTO, CreateUserDTO, vFilterUsersDTO, FilterUsersDTO } from '
 import { JoiValidatorPipe, QueryJoiValidatorPipe } from './../core/pipe';
 import { MarketingService } from './../marketing/marketing.service';
 import { AdminGuard } from './../auth/guard';
-import { ApiTags, ApiBearerAuth } from '@nestjs/swagger';
+import { ApiTags, ApiBearerAuth, ApiParam } from '@nestjs/swagger';
 import { Controller, UseGuards, Post, UsePipes, Body, Res, HttpException, Get, Query, Param } from '@nestjs/common';
 import { Response } from 'express';
 import { constant } from '../core';
@@ -38,6 +38,7 @@ export class AdminController {
     }
 
     @Get('/:id')
+    @ApiParam({ name: 'id', example: 'TVgJIjsRFmIvyjUeBOLv4gOD3eQZY' })
     async cGetOneById(@Param('id') id: string, @Res() res: Response) {
         const user = await this.userService.findUser('id', id);
 

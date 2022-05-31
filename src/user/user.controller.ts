@@ -1,7 +1,7 @@
 import { ResponseMessage } from './../core/interface';
 import { Body, Controller, Get, HttpException, Param, Put, Req, Res, UploadedFile, UseGuards, UseInterceptors, UsePipes } from '@nestjs/common';
 import { UserService } from './user.service';
-import { ApiTags, ApiBearerAuth } from '@nestjs/swagger';
+import { ApiTags, ApiBearerAuth, ApiParam } from '@nestjs/swagger';
 import { Request, Response } from 'express';
 import { StatusCodes } from 'http-status-codes';
 import { CommonGuard } from '../auth/guard';
@@ -27,6 +27,7 @@ export class UserController {
     }
 
     @Get('/:userId')
+    @ApiParam({ name: 'userId', example: 'TVgJIjsRFmIvyjUeBOLv4gOD3eQZY' })
     async cGetOneById(@Param('userId') userId: string, @Res() res: Response, @Req() req: Request) {
         const user = await this.userService.findUser('id', userId);
 
