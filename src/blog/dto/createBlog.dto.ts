@@ -11,7 +11,7 @@ export class CreateBlogDTO {
     @ApiProperty({ description: 'Brief Info', example: 'brief information' })
     briefInfo: string;
 
-    @ApiProperty({ description: 'Category', example: 'Category' })
+    @ApiProperty({ description: 'Category Id', example: '21312-aad-1231' })
     categoryId: string;
 }
 

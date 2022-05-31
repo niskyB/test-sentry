@@ -20,11 +20,11 @@ export class Blog {
     thumbnailUrl: string;
 
     @ApiProperty({ description: 'Details' })
-    @Column({ default: null })
+    @Column('longtext', { default: null })
     details: string;
 
     @ApiProperty({ description: 'Brief Info' })
-    @Column({ default: null })
+    @Column('longtext', { default: null })
     briefInfo: string;
 
     @ApiProperty({ description: 'Is Show' })
@@ -52,10 +52,10 @@ export const blogValidateSchema = {
     title: joi
         .string()
         .min(3)
-        .max(40)
+        .max(255)
         .trim()
         .required()
-        .messages(JoiMessage.createStringMessages({ field: 'Title', min: 3, max: 40 })),
+        .messages(JoiMessage.createStringMessages({ field: 'Title', min: 3, max: 255 })),
     details: joi
         .string()
         .trim()
