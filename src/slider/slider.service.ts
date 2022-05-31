@@ -17,32 +17,56 @@ export class SliderService {
     async filterSliders(title: string, userId: string, createdAt: string, currentPage: number, pageSize: number, isShow: boolean): Promise<{ data: Slider[]; count: number }> {
         try {
             const date = new Date(createdAt);
-            const sliders = await this.sliderRepository
-                .createQueryBuilder('slider')
-                .where(`slider.title LIKE (:title)`, {
-                    title: `%${title}%`,
-                })
-                .andWhere(`slider.createdAt >= (:createdAt)`, { createdAt: date })
-                .andWhere(`slider.isShow = (:isShow)`, { isShow: isShow })
-                .leftJoinAndSelect('slider.marketing', 'marketing')
-                .leftJoinAndSelect('marketing.user', 'user')
-                .andWhere('user.id LIKE (:userId)', { userId: `%${userId}%` })
-                .orderBy(`slider.createdAt`, 'DESC')
-                .skip(currentPage * pageSize)
-                .take(pageSize)
-                .getMany();
+            let sliders, count;
+            if (userId) {
+                sliders = await this.sliderRepository
+                    .createQueryBuilder('slider')
+                    .where(`slider.title LIKE (:title)`, {
+                        title: `%${title}%`,
+                    })
+                    .andWhere(`slider.createdAt >= (:createdAt)`, { createdAt: date })
+                    .andWhere(`slider.isShow = (:isShow)`, { isShow: isShow })
+                    .leftJoinAndSelect('slider.marketing', 'marketing')
+                    .leftJoinAndSelect('marketing.user', 'user')
+                    .andWhere('user.id LIKE (:userId)', { userId: `%${userId}%` })
+                    .orderBy(`slider.createdAt`, 'DESC')
+                    .skip(currentPage * pageSize)
+                    .take(pageSize)
+                    .getMany();
 
-            const count = await this.sliderRepository
-                .createQueryBuilder('slider')
-                .where(`slider.title LIKE (:title)`, {
-                    title: `%${title}%`,
-                })
-                .andWhere(`slider.createdAt >= (:createdAt)`, { createdAt: date })
-                .andWhere(`slider.isShow = (:isShow)`, { isShow: isShow })
-                .leftJoinAndSelect('slider.marketing', 'marketing')
-                .leftJoinAndSelect('marketing.user', 'user')
-                .andWhere('user.id LIKE (:userId)', { userId: `%${userId}%` })
-                .getCount();
+                count = await this.sliderRepository
+                    .createQueryBuilder('slider')
+                    .where(`slider.title LIKE (:title)`, {
+                        title: `%${title}%`,
+                    })
+                    .andWhere(`slider.createdAt >= (:createdAt)`, { createdAt: date })
+                    .andWhere(`slider.isShow = (:isShow)`, { isShow: isShow })
+                    .leftJoinAndSelect('slider.marketing', 'marketing')
+                    .leftJoinAndSelect('marketing.user', 'user')
+                    .andWhere('user.id LIKE (:userId)', { userId: `%${userId}%` })
+                    .getCount();
+            } else {
+                sliders = await this.sliderRepository
+                    .createQueryBuilder('slider')
+                    .where(`slider.title LIKE (:title)`, {
+                        title: `%${title}%`,
+                    })
+                    .andWhere(`slider.createdAt >= (:createdAt)`, { createdAt: date })
+                    .andWhere(`slider.isShow = (:isShow)`, { isShow: isShow })
+                    .orderBy(`slider.createdAt`, 'DESC')
+                    .skip(currentPage * pageSize)
+                    .take(pageSize)
+                    .getMany();
+
+                count = await this.sliderRepository
+                    .createQueryBuilder('slider')
+                    .where(`slider.title LIKE (:title)`, {
+                        title: `%${title}%`,
+                    })
+                    .andWhere(`slider.createdAt >= (:createdAt)`, { createdAt: date })
+                    .andWhere(`slider.isShow = (:isShow)`, { isShow: isShow })
+                    .getCount();
+            }
 
             return { data: sliders, count };
         } catch (err) {
