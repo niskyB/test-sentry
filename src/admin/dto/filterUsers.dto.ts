@@ -39,7 +39,7 @@ export class FilterUsersDTO {
 }
 
 export const vFilterUsersDTO = joi.object<FilterUsersDTO>({
-    gender: userValidateSchema.gender.failover(Gender.MALE),
+    gender: userValidateSchema.gender.failover(''),
     role: joi.string().required().failover(''),
     isActive: joi.boolean().required().failover(null),
     currentPage: joi.number().failover(currentPage).min(0).required(),
