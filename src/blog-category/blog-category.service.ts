@@ -9,4 +9,8 @@ export class BlogCategoryService {
     async getBlogCategoryByField(field: keyof BlogCategory, value: any): Promise<BlogCategory> {
         return await this.blogCategoryRepository.findOneByField(field, value);
     }
+
+    async getAllBlogCategory(): Promise<BlogCategory[]> {
+        return await this.blogCategoryRepository.createQueryBuilder('BlogCategory').getMany();
+    }
 }
