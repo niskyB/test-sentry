@@ -38,6 +38,7 @@ export class PricePackageController {
         newPricePackage.originalPrice = body.originalPrice;
         newPricePackage.salePrice = body.salePrice;
         newPricePackage.duration = body.duration;
+        newPricePackage.description = body.description;
         newPricePackage.subject = subject;
 
         await this.pricePackageService.savePricePackage(newPricePackage);

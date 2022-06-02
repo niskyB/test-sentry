@@ -26,6 +26,10 @@ export class PricePackage {
     @Column({ default: null })
     duration: number;
 
+    @ApiProperty({ description: 'Description' })
+    @Column('longtext', { default: null })
+    description: string;
+
     @ApiProperty({ description: 'Is Active' })
     @Column({ default: true })
     isActive: boolean;
@@ -66,4 +70,9 @@ export const pricePackageValidateSchema = {
         .min(1)
         .required()
         .messages(JoiMessage.createNumberMessages({ field: 'Duration', min: 1 })),
+    description: joi
+        .string()
+        .required()
+        .trim()
+        .messages(JoiMessage.createStringMessages({ field: 'Description' })),
 };
