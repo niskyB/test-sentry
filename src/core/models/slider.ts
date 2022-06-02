@@ -39,10 +39,10 @@ export const sliderValidateSchema = {
     title: joi
         .string()
         .min(3)
-        .max(40)
+        .max(255)
         .trim()
         .required()
-        .messages(JoiMessage.createStringMessages({ field: 'Title', min: 3, max: 40 })),
+        .messages(JoiMessage.createStringMessages({ field: 'Title', min: 3, max: 255 })),
     backLink: joi
         .string()
         .max(255)

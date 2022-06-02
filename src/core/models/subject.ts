@@ -20,7 +20,7 @@ export class Subject {
     tagLine: string;
 
     @ApiProperty({ description: 'Description' })
-    @Column({ default: null })
+    @Column('longtext', { default: null })
     description: string;
 
     @ApiProperty({ description: 'Thumbnail url' })
@@ -52,10 +52,10 @@ export const subjectValidateSchema = {
     name: joi
         .string()
         .min(3)
-        .max(40)
+        .max(255)
         .trim()
         .required()
-        .messages(JoiMessage.createStringMessages({ field: 'Name', min: 3, max: 40 })),
+        .messages(JoiMessage.createStringMessages({ field: 'Name', min: 3, max: 255 })),
     tagLine: joi
         .string()
         .trim()
