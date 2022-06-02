@@ -16,6 +16,9 @@ export class CreatePricePackageDTO {
     @ApiProperty({ description: 'Duration', example: '3' })
     duration: number;
 
+    @ApiProperty({ description: 'Description', example: 'abcdefg' })
+    description: string;
+
     @ApiProperty({ description: 'Subject Id', example: '123-123-123' })
     subjectId: string;
 }
@@ -25,6 +28,7 @@ export const vCreatePricePackageDTO = joi.object<CreatePricePackageDTO>({
     originalPrice: pricePackageValidateSchema.originalPrice,
     salePrice: pricePackageValidateSchema.salePrice,
     duration: pricePackageValidateSchema.duration,
+    description: pricePackageValidateSchema.description,
     subjectId: joi
         .string()
         .required()
