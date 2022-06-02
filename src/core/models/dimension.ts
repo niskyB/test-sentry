@@ -16,7 +16,7 @@ export class Dimension {
     name: string;
 
     @ApiProperty({ description: 'Description' })
-    @Column({ default: null })
+    @Column('longtext', { default: null })
     description: string;
 
     @ApiProperty({ description: 'Dimension Type' })
@@ -32,10 +32,10 @@ export const dimensionValidateSchema = {
     name: joi
         .string()
         .min(3)
-        .max(40)
+        .max(255)
         .trim()
         .required()
-        .messages(JoiMessage.createStringMessages({ field: 'Name', min: 3, max: 40 })),
+        .messages(JoiMessage.createStringMessages({ field: 'Name', min: 3, max: 255 })),
     description: joi
         .string()
         .trim()
