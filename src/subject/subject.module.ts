@@ -8,10 +8,11 @@ import { ExpertModule } from './../expert/expert.module';
 import { Module } from '@nestjs/common';
 import { SubjectController } from './subject.controller';
 import { SubjectService } from './subject.service';
+import { SubjectsController } from './subjects.controller';
 
 @Module({
     imports: [ExpertModule, TypeOrmModule.forFeature([SubjectRepository]), S3Module, AuthModule, UserModule, SubjectCategoryModule],
-    controllers: [SubjectController],
+    controllers: [SubjectController, SubjectsController],
     providers: [SubjectService],
     exports: [SubjectService],
 })

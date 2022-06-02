@@ -8,7 +8,7 @@ import { SubjectService } from './subject.service';
 @ApiTags('subjects')
 @ApiBearerAuth()
 @Controller('subjects')
-export class SlidersController {
+export class SubjectsController {
     constructor(private readonly subjectService: SubjectService) {}
 
     @Get('')
