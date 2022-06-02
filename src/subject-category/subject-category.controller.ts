@@ -1,7 +1,9 @@
+import { StatusCodes } from 'http-status-codes';
+import { ResponseMessage } from './../core/interface';
 import { AdminGuard } from './../auth/guard';
 import { SubjectCategory } from './../core/models';
 import { JoiValidatorPipe } from './../core/pipe';
-import { Body, Controller, Post, Put, Res, UseGuards, UsePipes, Param } from '@nestjs/common';
+import { Body, Controller, Post, Put, Res, UseGuards, UsePipes, Param, HttpException } from '@nestjs/common';
 import { Response } from 'express';
 import { SubjectCategoryDTO, vSubjectCategoryDTO } from './dto';
 import { ApiBearerAuth, ApiParam, ApiTags } from '@nestjs/swagger';
@@ -20,7 +22,11 @@ export class SubjectCategoryController {
         const subjectCategory = new SubjectCategory();
         subjectCategory.name = body.name;
 
-        await this.subjectCategoryService.saveSubjectCategory(subjectCategory);
+        try {
+            await this.subjectCategoryService.saveSubjectCategory(subjectCategory);
+        } catch (err) {
+            throw new HttpException({ errorMessage: ResponseMessage.DUPLICATED_CATEGORY }, StatusCodes.BAD_REQUEST);
+        }
 
         return res.send(subjectCategory);
     }
@@ -32,7 +38,11 @@ export class SubjectCategoryController {
         const subjectCategory = await this.subjectCategoryService.getSubjectCategoryByField('id', id);
         subjectCategory.name = body.name;
 
-        await this.subjectCategoryService.saveSubjectCategory(subjectCategory);
+        try {
+            await this.subjectCategoryService.saveSubjectCategory(subjectCategory);
+        } catch (err) {
+            throw new HttpException({ errorMessage: ResponseMessage.DUPLICATED_CATEGORY }, StatusCodes.BAD_REQUEST);
+        }
 
         return res.send(subjectCategory);
     }

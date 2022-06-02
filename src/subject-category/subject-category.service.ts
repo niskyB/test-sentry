@@ -13,4 +13,8 @@ export class SubjectCategoryService {
     async getSubjectCategoryByField(field: keyof SubjectCategory, value: any): Promise<SubjectCategory> {
         return await this.subjectCategoryRepository.findOneByField(field, value);
     }
+
+    async getAllSubjectCategories(): Promise<SubjectCategory[]> {
+        return await this.subjectCategoryRepository.createQueryBuilder('SubjectCategory').getMany();
+    }
 }
