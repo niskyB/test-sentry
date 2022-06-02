@@ -41,7 +41,7 @@ export class SubjectController {
     async cCreateSlider(@Res() res: Response, @Body() body: CreateSubjectDTO, @UploadedFile() file: Express.Multer.File) {
         if (!file) throw new HttpException({ errorMessage: ResponseMessage.INVALID_IMAGE }, StatusCodes.BAD_REQUEST);
 
-        const subjectCategory = await this.subjectCategoryService.getSubjectCategoryByField('name', body.category);
+        const subjectCategory = await this.subjectCategoryService.getSubjectCategoryByField('id', body.category);
         if (!subjectCategory) throw new HttpException({ category: ResponseMessage.INVALID_CATEGORY }, StatusCodes.BAD_REQUEST);
 
         const expert = await this.expertService.getExpertByUserId(body.assignTo);
