@@ -6,6 +6,10 @@ import { Injectable } from '@nestjs/common';
 export class PricePackageService {
     constructor(private readonly pricePackageRepository: PricePackageRepository) {}
 
+    async getPricePackageByField(field: keyof PricePackage, value: any): Promise<PricePackage> {
+        return await this.pricePackageRepository.findOneByField(field, value);
+    }
+
     async savePricePackage(pricePackage: PricePackage): Promise<PricePackage> {
         return await this.pricePackageRepository.save(pricePackage);
     }
