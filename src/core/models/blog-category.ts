@@ -8,6 +8,6 @@ export class BlogCategory {
     id: string;
 
     @ApiProperty({ description: 'Name' })
-    @Column({ default: null })
+    @Column({ default: null, unique: true })
     name: string;
 }

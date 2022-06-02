@@ -11,9 +11,10 @@ export enum ResponseMessage {
     INVALID_IMAGE = 'Invalid image',
     UNAUTHORIZED = 'Sorry, your request could not be processed',
     NOT_FOUND = 'Page not found',
-    DUPLICATE_PASSWORD = 'New password should not be same with current password',
+    DUPLICATED_PASSWORD = 'New password should not be same with current password',
     FORBIDDEN = 'Sorry, your request could not be processed',
     INVALID_CATEGORY = 'Invalid category',
     INVALID_TYPE = 'Invalid type',
     INVALID_SUBJECT = 'Invalid subject',
+    DUPLICATED_CATEGORY = 'This category has already existed',
 }

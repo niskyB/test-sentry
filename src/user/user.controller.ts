@@ -46,7 +46,7 @@ export class UserController {
         if (!isCorrectPassword) {
             throw new HttpException({ currentPassword: ResponseMessage.INVALID_PASSWORD }, StatusCodes.BAD_REQUEST);
         }
-        if (body.currentPassword === body.newPassword) throw new HttpException({ errorMessage: ResponseMessage.DUPLICATE_PASSWORD }, StatusCodes.BAD_REQUEST);
+        if (body.currentPassword === body.newPassword) throw new HttpException({ errorMessage: ResponseMessage.DUPLICATED_PASSWORD }, StatusCodes.BAD_REQUEST);
         //change password to new password
         user.password = await this.authService.encryptPassword(body.newPassword, constant.default.hashingSalt);
         await this.userService.saveUser(user);
