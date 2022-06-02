@@ -13,4 +13,8 @@ export class PricePackageService {
     async savePricePackage(pricePackage: PricePackage): Promise<PricePackage> {
         return await this.pricePackageRepository.save(pricePackage);
     }
+
+    async getPricePackagesBySubjectId(id: string): Promise<PricePackage[]> {
+        return await this.pricePackageRepository.createQueryBuilder('PricePackage').leftJoinAndSelect('PricePackage.subject', 'subject').where('subject.id = (:id)', { id }).getMany();
+    }
 }

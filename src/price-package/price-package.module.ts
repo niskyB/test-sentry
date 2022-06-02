@@ -6,11 +6,12 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { Module } from '@nestjs/common';
 import { PricePackageService } from './price-package.service';
 import { PricePackageController } from './price-package.controller';
+import { PricePackagesController } from './price-packages.controller';
 
 @Module({
     imports: [TypeOrmModule.forFeature([PricePackageRepository]), AuthModule, UserModule, SubjectModule],
     providers: [PricePackageService],
-    controllers: [PricePackageController],
+    controllers: [PricePackageController, PricePackagesController],
     exports: [PricePackageService],
 })
 export class PricePackageModule {}
