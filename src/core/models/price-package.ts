@@ -40,26 +40,30 @@ export class PricePackage {
 
     @ApiProperty({ description: 'Marketing' })
     @ManyToOne(() => Subject)
-    subject: Subject[];
+    subject: Subject;
 }
 
 export const pricePackageValidateSchema = {
-    title: joi
+    name: joi
         .string()
         .min(3)
-        .max(40)
-        .trim()
-        .required()
-        .messages(JoiMessage.createStringMessages({ field: 'Title', min: 3, max: 40 })),
-    backLink: joi
-        .string()
         .max(255)
         .trim()
-        .lowercase()
         .required()
-        .messages(JoiMessage.createStringMessages({ field: 'Back Link', max: 255 })),
-    isShow: joi
-        .boolean()
+        .messages(JoiMessage.createStringMessages({ field: 'Name', min: 3, max: 255 })),
+    originalPrice: joi
+        .number()
+        .min(1)
         .required()
-        .messages(JoiMessage.createBooleanMessages({ field: 'Is Show' })),
+        .messages(JoiMessage.createNumberMessages({ field: 'Original Price', min: 1 })),
+    salePrice: joi
+        .number()
+        .min(1)
+        .required()
+        .messages(JoiMessage.createNumberMessages({ field: 'Sale Price', min: 1 })),
+    duration: joi
+        .number()
+        .min(1)
+        .required()
+        .messages(JoiMessage.createNumberMessages({ field: 'Duration', min: 1 })),
 };
