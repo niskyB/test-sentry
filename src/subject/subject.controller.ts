@@ -12,8 +12,10 @@ import { Controller, Post, UseInterceptors, Req, Res, Body, UploadedFile, HttpEx
 import { SubjectService } from './subject.service';
 import { CreateSubjectDTO, UpdateSubjectAdminDTO, UpdateSubjectDTO, vCreateSubjectDTO, vUpdateSubjectAdminDTO, vUpdateSubjectDTO } from './dto';
 import { Request, Response } from 'express';
-import { ApiParam } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiParam, ApiTags } from '@nestjs/swagger';
 
+@ApiTags('subject')
+@ApiBearerAuth()
 @Controller('subject')
 @UseGuards(ExpertGuard)
 export class SubjectController {
