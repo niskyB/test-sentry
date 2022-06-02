@@ -1,8 +1,8 @@
-import { Column, Entity, JoinTable, ManyToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { Subject } from './subject';
+import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
 import * as joi from 'joi';
 import JoiMessage from 'joi-message';
-import { Lesson } from './lesson';
 
 @Entity()
 export class PricePackage {
@@ -39,9 +39,8 @@ export class PricePackage {
     updatedAt: Date;
 
     @ApiProperty({ description: 'Marketing' })
-    @ManyToMany(() => Lesson, { cascade: true })
-    @JoinTable()
-    lessons: Lesson[];
+    @ManyToOne(() => Subject)
+    subject: Subject[];
 }
 
 export const pricePackageValidateSchema = {

@@ -1,14 +1,12 @@
 import { QueryJoiValidatorPipe } from './../core/pipe/queryValidator.pipe';
 import { vFilterSlidersDTO, FilterSlidersDTO } from './dto';
-import { MarketingGuard } from './../auth/guard';
-import { Controller, Res, UseGuards, UsePipes, Get, Query } from '@nestjs/common';
+import { Controller, Res, UsePipes, Get, Query } from '@nestjs/common';
 import { ApiTags, ApiBearerAuth } from '@nestjs/swagger';
 import { SliderService } from './slider.service';
 import { Response } from 'express';
 
 @ApiTags('sliders')
 @ApiBearerAuth()
-@UseGuards(MarketingGuard)
 @Controller('sliders')
 export class SlidersController {
     constructor(private readonly sliderService: SliderService) {}

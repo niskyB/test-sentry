@@ -9,12 +9,12 @@ import { ApiBearerAuth, ApiParam, ApiTags } from '@nestjs/swagger';
 
 @ApiTags('blog-category')
 @ApiBearerAuth()
+@UseGuards(AdminGuard)
 @Controller('blog-category')
 export class BlogCategoryController {
     constructor(private readonly blogCategoryService: BlogCategoryService) {}
 
     @Post('')
-    @UseGuards(AdminGuard)
     @UsePipes(new JoiValidatorPipe(vBlogCategoryDTO))
     async cCreateBlogCategory(@Res() res: Response, @Body() body: BlogCategoryDTO) {
         const blogCategory = new BlogCategory();
@@ -27,7 +27,6 @@ export class BlogCategoryController {
 
     @Put('/:id')
     @ApiParam({ name: 'id', example: 'TVgJIjsRFmIvyjUeBOLv4gOD3eQZY' })
-    @UseGuards(AdminGuard)
     @UsePipes(new JoiValidatorPipe(vBlogCategoryDTO))
     async cUpdateBlogCategory(@Res() res: Response, @Body() body: BlogCategoryDTO, @Param('id') id: string) {
         const blogCategory = await this.blogCategoryService.getBlogCategoryByField('id', id);
