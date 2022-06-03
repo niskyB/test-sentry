@@ -10,8 +10,10 @@ import { DimensionService } from './dimension.service';
 import { Response, Request } from 'express';
 import { CreateDimensionDTO, UpdateDimensionDTO, vCreateDimensionDTO, vUpdateDimensionDTO } from './dto';
 import { StatusCodes } from 'http-status-codes';
-import { ApiParam } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiParam, ApiTags } from '@nestjs/swagger';
 
+@ApiTags('dimension')
+@ApiBearerAuth()
 @Controller('dimension')
 @UseGuards(ExpertGuard)
 export class DimensionController {

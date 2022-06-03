@@ -4,7 +4,10 @@ import { Controller, UseGuards, Res, Get, UsePipes, Body } from '@nestjs/common'
 import { DimensionService } from './dimension.service';
 import { Response } from 'express';
 import { GetDimensionsDTO, vGetDimensionsDTO } from './dto';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 
+@ApiTags('dimensions')
+@ApiBearerAuth()
 @Controller('dimensions')
 @UseGuards(ExpertGuard)
 export class DimensionsController {
