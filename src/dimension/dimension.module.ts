@@ -7,10 +7,11 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { Module } from '@nestjs/common';
 import { DimensionService } from './dimension.service';
 import { DimensionController } from './dimension.controller';
+import { DimensionsController } from './dimensions.controller';
 
 @Module({
     imports: [TypeOrmModule.forFeature([DimensionRepository]), AuthModule, UserModule, DimensionTypeModule, SubjectModule],
     providers: [DimensionService],
-    controllers: [DimensionController],
+    controllers: [DimensionController, DimensionsController],
 })
 export class DimensionModule {}
