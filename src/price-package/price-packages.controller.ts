@@ -14,8 +14,8 @@ export class PricePackagesController {
     @Get('/:id')
     @ApiParam({ name: 'id', example: 'TVgJIjsRFmIvyjUeBOLv4gOD3eQZY', description: 'subject id' })
     async cGetPricePackagesBySubjectId(@Param('id') id: string, @Res() res: Response) {
-        const pricePackage = await this.pricePackageService.getPricePackageByField('id', id);
-        if (!pricePackage) throw new HttpException({ errorMessage: ResponseMessage.NOT_FOUND }, StatusCodes.NOT_FOUND);
-        return res.send(pricePackage);
+        const pricePackages = await this.pricePackageService.getPricePackagesBySubjectId(id);
+        if (!pricePackages) throw new HttpException({ errorMessage: ResponseMessage.NOT_FOUND }, StatusCodes.NOT_FOUND);
+        return res.send(pricePackages);
     }
 }

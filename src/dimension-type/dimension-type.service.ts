@@ -9,4 +9,8 @@ export class DimensionTypeService {
     async getDimensionTypeByField(field: keyof DimensionType, value: any): Promise<DimensionType> {
         return await this.dimensionTypeRepository.findOneByField(field, value);
     }
+
+    async getAllDimensionTypes(): Promise<DimensionType[]> {
+        return await this.dimensionTypeRepository.createQueryBuilder('DimensionType').getMany();
+    }
 }
