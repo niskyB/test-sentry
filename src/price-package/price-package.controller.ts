@@ -3,11 +3,11 @@ import { ResponseMessage } from './../core/interface';
 import { SubjectService } from './../subject/subject.service';
 import { PricePackage } from './../core/models';
 import { AdminGuard, ExpertGuard } from './../auth/guard';
-import { Body, Controller, Post, Res, UseGuards, UsePipes, HttpException, Get, Param } from '@nestjs/common';
+import { Body, Controller, Post, Res, UseGuards, UsePipes, HttpException, Get, Param, Put } from '@nestjs/common';
 import { ApiBearerAuth, ApiParam, ApiTags } from '@nestjs/swagger';
 import { PricePackageService } from './price-package.service';
 import { JoiValidatorPipe } from '../core/pipe';
-import { CreatePricePackageDTO, vCreatePricePackageDTO } from './dto';
+import { CreatePricePackageDTO, UpdatePricePackageDTO, vCreatePricePackageDTO, vUpdatePricePackageDTO } from './dto';
 import { Response } from 'express';
 
 @ApiTags('price package')
@@ -44,5 +44,28 @@ export class PricePackageController {
         await this.pricePackageService.savePricePackage(newPricePackage);
 
         return res.send(newPricePackage);
+    }
+
+    @Put('/:id')
+    @ApiParam({ name: 'id', example: 'TVgJIjsRFmIvyjUeBOLv4gOD3eQZY' })
+    @UseGuards(AdminGuard)
+    @UsePipes(new JoiValidatorPipe(vUpdatePricePackageDTO))
+    async cUpdatePricePackage(@Param('id') id: string, @Res() res: Response, @Body() body: UpdatePricePackageDTO) {
+        const pricePackage = await this.pricePackageService.getPricePackageByField('id', id);
+
+        if (!pricePackage) throw new HttpException({ errorMessage: ResponseMessage.NOT_FOUND }, StatusCodes.NOT_FOUND);
+        const subject = await this.subjectService.getSubjectByField('id', body.subjectId);
+
+        pricePackage.name = body.name || pricePackage.name;
+        pricePackage.description = body.description || pricePackage.description;
+        pricePackage.duration = body.duration >= 0 ? body.duration : pricePackage.duration;
+        pricePackage.originalPrice = body.originalPrice >= 1 ? body.originalPrice : pricePackage.originalPrice;
+        pricePackage.salePrice = body.salePrice >= 1 ? body.salePrice : pricePackage.salePrice;
+        pricePackage.subject = subject || pricePackage.subject;
+        pricePackage.isActive = body.isActive === null || body.isActive === undefined ? pricePackage.isActive : body.isActive;
+
+        await this.pricePackageService.savePricePackage(pricePackage);
+
+        return res.send(pricePackage);
     }
 }
