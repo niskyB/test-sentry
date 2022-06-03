@@ -12,7 +12,7 @@ export class DimensionsController {
 
     @Get('')
     @UsePipes(new QueryJoiValidatorPipe(vGetDimensionsDTO))
-    async cGetSlider(@Res() res: Response, @Body() body: GetDimensionsDTO) {
+    async cGetDimensionBySubjectId(@Res() res: Response, @Body() body: GetDimensionsDTO) {
         const dimensions = await this.dimensionService.getDimensionsBySubjectId(body.id, body.currentPage, body.pageSize);
         return res.send(dimensions);
     }

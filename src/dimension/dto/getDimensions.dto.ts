@@ -2,7 +2,7 @@ import { ApiProperty } from '@nestjs/swagger';
 import * as joi from 'joi';
 import JoiMessage from 'joi-message';
 export class GetDimensionsDTO {
-    @ApiProperty({ description: 'Id', example: 'asdf-asdf-wer-123123', nullable: false })
+    @ApiProperty({ description: 'Subject id', example: 'asdf-asdf-wer-123123', nullable: false })
     id: string;
 
     @ApiProperty({ description: 'Current Page', example: '0', nullable: true })

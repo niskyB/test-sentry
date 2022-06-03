@@ -18,7 +18,7 @@ export class DimensionController {
 
     @Get('/:id')
     @ApiParam({ name: 'id', example: 'TVgJIjsRFmIvyjUeBOLv4gOD3eQZY' })
-    async cGetSlider(@Param('id') id: string, @Res() res: Response) {
+    async cGetDimension(@Param('id') id: string, @Res() res: Response) {
         const dimension = await this.dimensionService.getDimensionByField('id', id);
         if (!dimension) throw new HttpException({ errorMessage: ResponseMessage.NOT_FOUND }, StatusCodes.NOT_FOUND);
         return res.send(dimension);
@@ -47,7 +47,7 @@ export class DimensionController {
     @Put('/:id')
     @ApiParam({ name: 'id', example: 'TVgJIjsRFmIvyjUeBOLv4gOD3eQZY' })
     @UsePipes(new JoiValidatorPipe(vUpdateDimensionDTO))
-    async cUpdateSlider(@Param('id') id: string, @Res() res: Response, @Body() body: UpdateDimensionDTO) {
+    async cUpdateDimension(@Param('id') id: string, @Res() res: Response, @Body() body: UpdateDimensionDTO) {
         const dimension = await this.dimensionService.getDimensionByField('id', id);
 
         if (!dimension) throw new HttpException({ errorMessage: ResponseMessage.NOT_FOUND }, StatusCodes.NOT_FOUND);
