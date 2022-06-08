@@ -6,7 +6,7 @@ import { Injectable } from '@nestjs/common';
 export class LessonTypeService {
     constructor(private readonly lessonTypeRepository: LessonTypeRepository) {}
 
-    async getAllBlogCategories(): Promise<LessonType[]> {
+    async getAllLessonTypes(): Promise<LessonType[]> {
         return await this.lessonTypeRepository.createQueryBuilder('LessonType').getMany();
     }
 }

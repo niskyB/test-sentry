@@ -6,7 +6,7 @@ import { Request, Response } from 'express';
 import { StatusCodes } from 'http-status-codes';
 import { CommonGuard } from '../auth/guard';
 import { AuthService } from '../auth/auth.service';
-import { JoiValidatorPipe } from '../core/pipe/validator.pipe';
+import { JoiValidatorPipe } from '../core/pipe';
 import { ChangePasswordDTO, vChangePasswordDTO, UpdateUserDTO, vUpdateUserDTO } from './dto';
 import { constant } from '../core';
 import { FileInterceptor } from '@nestjs/platform-express';

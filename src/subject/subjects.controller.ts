@@ -1,4 +1,4 @@
-import { QueryJoiValidatorPipe } from './../core/pipe/queryValidator.pipe';
+import { QueryJoiValidatorPipe } from './../core/pipe';
 import { FilterSubjectsDTO, vFilterSubjectsDTO } from './dto';
 import { Controller, Res, UsePipes, Get, Query } from '@nestjs/common';
 import { ApiTags, ApiBearerAuth } from '@nestjs/swagger';
@@ -13,7 +13,7 @@ export class SubjectsController {
 
     @Get('')
     @UsePipes(new QueryJoiValidatorPipe(vFilterSubjectsDTO))
-    async cFilterSliders(@Res() res: Response, @Query() queries: FilterSubjectsDTO) {
+    async cFilterSubjects(@Res() res: Response, @Query() queries: FilterSubjectsDTO) {
         const { name, isActive, category, currentPage, createdAt, pageSize } = queries;
 
         const result = await this.subjectService.filterSubjects(name, createdAt, currentPage, pageSize, isActive, category);

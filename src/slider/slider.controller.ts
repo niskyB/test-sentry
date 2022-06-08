@@ -1,10 +1,10 @@
-import { S3Service } from 'src/core/providers/s3/s3.service';
+import { S3Service } from '../core/providers/s3/s3.service';
 import { ResponseMessage } from './../core/interface';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { Slider, UserRole } from './../core/models';
 import { UserService } from '../user/user.service';
 import { CreateSliderDTO, vCreateSliderDTO, vUpdateSliderDTO, UpdateSliderDTO } from './dto';
-import { JoiValidatorPipe } from './../core/pipe/validator.pipe';
+import { JoiValidatorPipe } from './../core/pipe';
 import { MarketingGuard } from './../auth/guard';
 import { Body, Controller, Post, Req, Res, UseGuards, UsePipes, UseInterceptors, UploadedFile, HttpException, Get, Param, Put } from '@nestjs/common';
 import { ApiTags, ApiBearerAuth, ApiParam } from '@nestjs/swagger';

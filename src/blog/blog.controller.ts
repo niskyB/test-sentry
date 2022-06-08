@@ -29,7 +29,7 @@ export class BlogController {
 
     @Get('/:id')
     @ApiParam({ name: 'id', example: 'TVgJIjsRFmIvyjUeBOLv4gOD3eQZY' })
-    async cGetSlider(@Param('id') id: string, @Req() req: Request, @Res() res: Response) {
+    async cGetBlog(@Param('id') id: string, @Res() res: Response) {
         const blog = await this.blogService.getBlogByField('id', id);
         if (!blog) throw new HttpException({ errorMessage: ResponseMessage.NOT_FOUND }, StatusCodes.NOT_FOUND);
         return res.send(blog);
@@ -38,7 +38,7 @@ export class BlogController {
     @Post('')
     @UseInterceptors(FileInterceptor('image'))
     @UsePipes(new JoiValidatorPipe(vCreateBlogDTO))
-    async cCreateSlider(@Req() req: Request, @Res() res: Response, @Body() body: CreateBlogDTO, @UploadedFile() file: Express.Multer.File) {
+    async cCreateBlog(@Req() req: Request, @Res() res: Response, @Body() body: CreateBlogDTO, @UploadedFile() file: Express.Multer.File) {
         if (!file) throw new HttpException({ errorMessage: ResponseMessage.INVALID_IMAGE }, StatusCodes.BAD_REQUEST);
 
         const customer = await this.marketingService.getMarketingByUserId(req.user.id);

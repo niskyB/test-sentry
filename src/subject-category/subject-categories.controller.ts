@@ -10,7 +10,7 @@ export class SubjectCategoriesController {
     constructor(private readonly subjectCategoryService: SubjectCategoryService) {}
 
     @Get('')
-    async cFilterSubjectCategories(@Res() res: Response) {
+    async cGetAllSubjectCategories(@Res() res: Response) {
         const result = await this.subjectCategoryService.getAllSubjectCategories();
         return res.send(result);
     }

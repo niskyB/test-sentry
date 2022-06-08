@@ -11,7 +11,7 @@ export class LessonTypesController {
 
     @Get('')
     async cGetAllLessonTypes(@Res() res: Response) {
-        const lessonTypes = await this.lessonTypeService.getAllBlogCategories();
+        const lessonTypes = await this.lessonTypeService.getAllLessonTypes();
         return res.send(lessonTypes);
     }
 }

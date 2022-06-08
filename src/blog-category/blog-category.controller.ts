@@ -1,6 +1,6 @@
 import { AdminGuard } from './../auth/guard';
 import { BlogCategory } from './../core/models';
-import { JoiValidatorPipe } from './../core/pipe/validator.pipe';
+import { JoiValidatorPipe } from './../core/pipe';
 import { BlogCategoryService } from './blog-category.service';
 import { Body, Controller, Post, Put, Res, UseGuards, UsePipes, Param, HttpException, Get } from '@nestjs/common';
 import { Response } from 'express';
@@ -52,6 +52,8 @@ export class BlogCategoryController {
     @ApiParam({ name: 'id', example: 'TVgJIjsRFmIvyjUeBOLv4gOD3eQZY' })
     async cGetBlogCategoryById(@Res() res: Response, @Param('id') id: string) {
         const blogCategory = await this.blogCategoryService.getBlogCategoryByField('id', id);
+
+        if (!blogCategory) throw new HttpException({ errorMessage: ResponseMessage.NOT_FOUND }, StatusCodes.NOT_FOUND);
 
         return res.send(blogCategory);
     }

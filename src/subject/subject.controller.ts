@@ -29,7 +29,7 @@ export class SubjectController {
 
     @Get('/:id')
     @ApiParam({ name: 'id', example: 'TVgJIjsRFmIvyjUeBOLv4gOD3eQZY' })
-    async cGetSlider(@Param('id') id: string, @Res() res: Response) {
+    async cGetSubject(@Param('id') id: string, @Res() res: Response) {
         const subject = await this.subjectService.getSubjectByField('id', id);
         if (!subject) throw new HttpException({ errorMessage: ResponseMessage.NOT_FOUND }, StatusCodes.NOT_FOUND);
         return res.send(subject);
@@ -38,7 +38,7 @@ export class SubjectController {
     @Post('')
     @UseInterceptors(FileInterceptor('image'))
     @UsePipes(new JoiValidatorPipe(vCreateSubjectDTO))
-    async cCreateSlider(@Res() res: Response, @Body() body: CreateSubjectDTO, @UploadedFile() file: Express.Multer.File) {
+    async cCreateSubject(@Res() res: Response, @Body() body: CreateSubjectDTO, @UploadedFile() file: Express.Multer.File) {
         if (!file) throw new HttpException({ errorMessage: ResponseMessage.INVALID_IMAGE }, StatusCodes.BAD_REQUEST);
 
         const subjectCategory = await this.subjectCategoryService.getSubjectCategoryByField('id', body.category);
@@ -84,7 +84,7 @@ export class SubjectController {
     @ApiParam({ name: 'id', example: 'TVgJIjsRFmIvyjUeBOLv4gOD3eQZY' })
     @UseInterceptors(FileInterceptor('image'))
     @UsePipes(new JoiValidatorPipe(vUpdateSubjectDTO))
-    async cUpdateSlider(@Param('id') id: string, @Req() req: Request, @Res() res: Response, @Body() body: UpdateSubjectDTO, @UploadedFile() file: Express.Multer.File) {
+    async cUpdateSubject(@Param('id') id: string, @Req() req: Request, @Res() res: Response, @Body() body: UpdateSubjectDTO, @UploadedFile() file: Express.Multer.File) {
         const user = await this.userService.findUser('id', req.user.id);
         const subject = await this.subjectService.getSubjectByField('id', id);
 
