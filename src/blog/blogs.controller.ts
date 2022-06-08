@@ -13,7 +13,7 @@ export class BlogsController {
 
     @Get('')
     @UsePipes(new QueryJoiValidatorPipe(vFilterBlogsDTO))
-    async cFilterSliders(@Res() res: Response, @Query() queries: FilterBlogsDTO) {
+    async cFilterBlogs(@Res() res: Response, @Query() queries: FilterBlogsDTO) {
         const { title, userId, createdAt, currentPage, pageSize, isShow, category } = queries;
 
         const result = await this.blogService.filterBlogs(title, userId, createdAt, currentPage, pageSize, isShow, category);

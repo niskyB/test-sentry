@@ -10,7 +10,7 @@ export class BlogCategoriesController {
     constructor(private readonly blogCategoryService: BlogCategoryService) {}
 
     @Get('')
-    async cFilterBlogCategories(@Res() res: Response) {
+    async cGetAllBlogCategories(@Res() res: Response) {
         const categories = await this.blogCategoryService.getAllBlogCategories();
         return res.send(categories);
     }

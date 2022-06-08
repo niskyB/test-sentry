@@ -26,7 +26,7 @@ export class DimensionController {
 
     @Get('/:id')
     @ApiParam({ name: 'id', example: 'TVgJIjsRFmIvyjUeBOLv4gOD3eQZY' })
-    async cGetDimension(@Param('id') id: string, @Res() res: Response) {
+    async cGetDimensionById(@Param('id') id: string, @Res() res: Response) {
         const dimension = await this.dimensionService.getDimensionByField('id', id);
         if (!dimension) throw new HttpException({ errorMessage: ResponseMessage.NOT_FOUND }, StatusCodes.NOT_FOUND);
         return res.send(dimension);

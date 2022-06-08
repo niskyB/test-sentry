@@ -9,7 +9,7 @@ import { JoiValidatorPipe, QueryJoiValidatorPipe } from './../core/pipe';
 import { MarketingService } from './../marketing/marketing.service';
 import { AdminGuard } from './../auth/guard';
 import { ApiTags, ApiBearerAuth, ApiParam } from '@nestjs/swagger';
-import { Controller, UseGuards, Post, UsePipes, Body, Res, HttpException, Get, Query, Param, Put } from '@nestjs/common';
+import { Controller, UseGuards, Post, UsePipes, Body, Res, HttpException, Get, Query, Param } from '@nestjs/common';
 import { Response } from 'express';
 import { constant } from '../core';
 import { SaleService } from '../sale/sale.service';
