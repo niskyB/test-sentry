@@ -10,7 +10,7 @@ export class DimensionTypesController {
     constructor(private readonly dimensionTypeService: DimensionTypeService) {}
 
     @Get('')
-    async cFilterBlogCategories(@Res() res: Response) {
+    async cGetAllDimensionTypes(@Res() res: Response) {
         const dimensionTypes = await this.dimensionTypeService.getAllDimensionTypes();
         return res.send(dimensionTypes);
     }
