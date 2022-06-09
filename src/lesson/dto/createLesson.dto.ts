@@ -1,4 +1,4 @@
-import { lessonValidateSchema } from './../../core/models';
+import { lessonDetailValidateSchema, lessonValidateSchema } from './../../core/models';
 import { ApiProperty } from '@nestjs/swagger';
 import * as joi from 'joi';
 import JoiMessage from 'joi-message';
@@ -6,6 +6,12 @@ import JoiMessage from 'joi-message';
 export class CreateLessonDTO {
     @ApiProperty({ description: 'Name', example: 'Javascript' })
     name: string;
+
+    @ApiProperty({ description: 'Description' })
+    description: string;
+
+    @ApiProperty({ description: 'Video link' })
+    videoLink: string;
 
     @ApiProperty({ description: 'Order', example: '1' })
     order: number;
@@ -20,6 +26,8 @@ export class CreateLessonDTO {
 export const vCreateLessonDTO = joi.object<CreateLessonDTO>({
     name: lessonValidateSchema.name,
     order: lessonValidateSchema.order,
+    description: lessonDetailValidateSchema.description.failover(''),
+    videoLink: lessonDetailValidateSchema.videoLink.failover(''),
     typeId: joi
         .string()
         .required()
