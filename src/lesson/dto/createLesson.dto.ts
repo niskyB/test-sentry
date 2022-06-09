@@ -21,12 +21,20 @@ export class CreateLessonDTO {
 
     @ApiProperty({ description: 'Subject id', example: '12a-123asdf-a23ad-32a' })
     subjectId: string;
+
+    @ApiProperty({ description: 'Array of quiz id', example: '12a-123asdf-a23ad-32a,129-a2sf-123a-23aa' })
+    quiz: string;
 }
 
 export const vCreateLessonDTO = joi.object<CreateLessonDTO>({
     name: lessonValidateSchema.name,
     order: lessonValidateSchema.order,
     description: lessonDetailValidateSchema.description.failover(''),
+    quiz: joi
+        .string()
+        .required()
+        .failover('')
+        .messages(JoiMessage.createStringMessages({ field: 'Quiz' })),
     videoLink: lessonDetailValidateSchema.videoLink.failover(''),
     typeId: joi
         .string()

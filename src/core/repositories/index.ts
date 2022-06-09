@@ -17,3 +17,5 @@ export * from './lessonType.repository';
 export * from './pricePackage.repository';
 export * from './subjectTopic.repository';
 export * from './lessonDetail.repository';
+export * from './lessonQuiz.repository';
+export * from './quiz.repository';

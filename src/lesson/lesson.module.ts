@@ -1,3 +1,5 @@
+import { QuizModule } from './../quiz/quiz.module';
+import { LessonQuizModule } from './../lesson-quiz/lesson-quiz.module';
 import { LessonDetailModule } from './../lesson-detail/lesson-detail.module';
 import { SubjectTopicModule } from './../subject-topic/subject-topic.module';
 import { SubjectModule } from './../subject/subject.module';
@@ -12,7 +14,7 @@ import { LessonService } from './lesson.service';
 import { LessonsController } from './lessons.controller';
 
 @Module({
-    imports: [TypeOrmModule.forFeature([LessonRepository]), AuthModule, UserModule, LessonTypeModule, SubjectModule, SubjectTopicModule, LessonDetailModule],
+    imports: [TypeOrmModule.forFeature([LessonRepository]), AuthModule, UserModule, LessonTypeModule, SubjectModule, SubjectTopicModule, LessonDetailModule, LessonQuizModule, QuizModule],
     controllers: [LessonController, LessonsController],
     providers: [LessonService],
     exports: [LessonService],
