@@ -1,3 +1,4 @@
+import { SubjectTopicModule } from './../subject-topic/subject-topic.module';
 import { SubjectModule } from './../subject/subject.module';
 import { LessonTypeModule } from './../lesson-type/lesson-type.module';
 import { UserModule } from './../user/user.module';
@@ -10,7 +11,7 @@ import { LessonService } from './lesson.service';
 import { LessonsController } from './lessons.controller';
 
 @Module({
-    imports: [TypeOrmModule.forFeature([LessonRepository]), AuthModule, UserModule, LessonTypeModule, SubjectModule],
+    imports: [TypeOrmModule.forFeature([LessonRepository]), AuthModule, UserModule, LessonTypeModule, SubjectModule, SubjectTopicModule],
     controllers: [LessonController, LessonsController],
     providers: [LessonService],
     exports: [LessonService],

@@ -1,4 +1,5 @@
-import { Lesson } from './../core/models';
+import { SubjectTopicService } from './../subject-topic/subject-topic.service';
+import { Lesson, SubjectTopic } from './../core/models';
 import { SubjectService } from './../subject/subject.service';
 import { LessonTypeService } from './../lesson-type/lesson-type.service';
 import { ExpertGuard } from './../auth/guard';
@@ -15,7 +16,12 @@ import { CreateLessonDTO, vCreateLessonDTO } from './dto';
 @ApiBearerAuth()
 @Controller('lesson')
 export class LessonController {
-    constructor(private readonly lessonService: LessonService, private readonly lessonTypeService: LessonTypeService, private readonly subjectService: SubjectService) {}
+    constructor(
+        private readonly lessonService: LessonService,
+        private readonly lessonTypeService: LessonTypeService,
+        private readonly subjectService: SubjectService,
+        private readonly subjectTopicService: SubjectTopicService,
+    ) {}
 
     @Get('/:id')
     @ApiParam({ name: 'id', example: 'TVgJIjsRFmIvyjUeBOLv4gOD3eQZY', description: 'lesson id' })
@@ -42,6 +48,12 @@ export class LessonController {
         newLesson.order = body.order;
 
         await this.lessonService.saveLesson(newLesson);
+
+        if (lessonType.name === 'Subject Topic') {
+            const subjectTopic = new SubjectTopic();
+            subjectTopic.lesson = newLesson;
+            await this.subjectTopicService.saveSubjectTopic(subjectTopic);
+        }
 
         return res.send(newLesson);
     }
