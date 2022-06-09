@@ -24,6 +24,8 @@ import {
     SubjectTopic,
     LessonDetail,
     LessonQuiz,
+    Question,
+    Answer,
 } from './core/models';
 
 export const DbModule = TypeOrmModule.forRoot({
@@ -61,6 +63,8 @@ export const DbModule = TypeOrmModule.forRoot({
         SubjectTopic,
         LessonDetail,
         LessonQuiz,
+        Question,
+        Answer,
     ],
     extra: { connectionLimit: 1 },
 });
