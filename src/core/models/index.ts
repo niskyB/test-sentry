@@ -19,3 +19,4 @@ export * from './exam-level';
 export * from './lesson-quiz';
 export * from './quiz-type';
 export * from './quiz';
+export * from './lesson-detail';
