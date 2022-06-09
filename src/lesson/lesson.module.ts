@@ -1,3 +1,7 @@
+import { SubjectModule } from './../subject/subject.module';
+import { LessonTypeModule } from './../lesson-type/lesson-type.module';
+import { UserModule } from './../user/user.module';
+import { AuthModule } from './../auth/auth.module';
 import { LessonRepository } from './../core/repositories';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Module } from '@nestjs/common';
@@ -6,7 +10,7 @@ import { LessonService } from './lesson.service';
 import { LessonsController } from './lessons.controller';
 
 @Module({
-    imports: [TypeOrmModule.forFeature([LessonRepository])],
+    imports: [TypeOrmModule.forFeature([LessonRepository]), AuthModule, UserModule, LessonTypeModule, SubjectModule],
     controllers: [LessonController, LessonsController],
     providers: [LessonService],
     exports: [LessonService],

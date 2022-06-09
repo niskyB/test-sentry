@@ -13,7 +13,7 @@ export class CreateSubjectDTO {
     @ApiProperty({ description: 'Description', example: 'Description 1' })
     description: string;
 
-    @ApiProperty({ description: 'Category', example: 'Category 1' })
+    @ApiProperty({ description: 'Category Id', example: 'aoss-sf-asfaass-sfasd' })
     category: string;
 
     @ApiProperty({ description: 'Assign To', example: 'aoss-sf-asfaass-sfasd' })
