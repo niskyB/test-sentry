@@ -19,5 +19,7 @@ export enum ResponseMessage {
     INVALID_DESCRIPTION = 'Invalid description',
     INVALID_VIDEO_LINK = 'Invalid video link',
     INVALID_QUIZ = 'Invalid quiz',
+    INVALID_DIMENSION = 'Invalid dimension',
+    INVALID_LESSON = 'Invalid lesson',
     DUPLICATED_CATEGORY = 'This category has already existed',
 }

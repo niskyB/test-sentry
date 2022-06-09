@@ -18,6 +18,9 @@ export class CreateQuestionDTO {
 
     @ApiProperty({ description: 'Dimension ids', example: '123-asd21-asd2,12aaa-2aca-aq2,12asd-2asc-123zs' })
     dimensions: string;
+
+    @ApiProperty({ description: 'Lesson id', example: '123-asd21-asd2' })
+    lesson: string;
 }
 
 export const vCreateQuestionDTO = joi.object<CreateQuestionDTO>({
@@ -29,4 +32,8 @@ export const vCreateQuestionDTO = joi.object<CreateQuestionDTO>({
         .string()
         .required()
         .messages(JoiMessage.createStringMessages({ field: 'Dimensions' })),
+    lesson: joi
+        .string()
+        .required()
+        .messages(JoiMessage.createStringMessages({ field: 'Lesson' })),
 });
