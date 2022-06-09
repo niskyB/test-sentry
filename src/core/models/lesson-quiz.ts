@@ -30,5 +30,5 @@ export const lessonQuizValidateSchema = {
         .min(3)
         .trim()
         .required()
-        .messages(JoiMessage.createStringMessages({ field: 'Name', min: 3 })),
+        .messages(JoiMessage.createStringMessages({ field: 'Description', min: 3 })),
 };

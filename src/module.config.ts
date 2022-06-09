@@ -54,6 +54,7 @@ export const DbModule = TypeOrmModule.forRoot({
         LessonType,
         Quiz,
         QuizType,
+        LessonType,
     ],
     extra: { connectionLimit: 1 },
 });
