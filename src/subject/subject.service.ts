@@ -14,20 +14,21 @@ export class SubjectService {
         return await this.subjectRepository.save(subject);
     }
 
-    async filterSubjects(name: string, createdAt: string, currentPage: number, pageSize: number, isActive: boolean, category: string): Promise<{ data: Subject[]; count: number }> {
+    async filterSubjects(name: string, createdAt: string, currentPage: number, pageSize: number, isActive: boolean, category: string, assignTo: string): Promise<{ data: Subject[]; count: number }> {
         try {
             const date = new Date(createdAt);
             const sliders = await this.subjectRepository
                 .createQueryBuilder('subject')
-                .where(`subject.name LIKE (:title)`, {
+                .where(`subject.name LIKE (:name)`, {
                     name: `%${name}%`,
                 })
                 .andWhere(`subject.createdAt >= (:createdAt)`, { createdAt: date })
                 .andWhere(`subject.isActive = (:isActive)`, { isActive: isActive })
                 .leftJoinAndSelect('subject.assignTo', 'assignTo')
                 .leftJoinAndSelect('assignTo.user', 'user')
+                .andWhere(`user.id LIKE (:id)`, { id: `%${assignTo}%` })
                 .leftJoinAndSelect(`subject.category`, 'category')
-                .andWhere(`category.name = (:name)`, { name: category })
+                .andWhere(`category.id LIKE (:id)`, { id: `%${category}%` })
                 .orderBy(`subject.createdAt`, 'DESC')
                 .skip(currentPage * pageSize)
                 .take(pageSize)
@@ -35,15 +36,16 @@ export class SubjectService {
 
             const count = await this.subjectRepository
                 .createQueryBuilder('subject')
-                .where(`subject.name LIKE (:title)`, {
+                .where(`subject.name LIKE (:name)`, {
                     name: `%${name}%`,
                 })
                 .andWhere(`subject.createdAt >= (:createdAt)`, { createdAt: date })
                 .andWhere(`subject.isActive = (:isActive)`, { isActive: isActive })
                 .leftJoinAndSelect('subject.assignTo', 'assignTo')
                 .leftJoinAndSelect('assignTo.user', 'user')
+                .andWhere(`user.id LIKE (:id)`, { id: `%${assignTo}%` })
                 .leftJoinAndSelect(`subject.category`, 'category')
-                .andWhere(`category.name = (:name)`, { name: category })
+                .andWhere(`category.id LIKE (:id)`, { id: `%${category}%` })
                 .getCount();
 
             return { data: sliders, count };
