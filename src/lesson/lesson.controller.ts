@@ -1,5 +1,6 @@
+import { LessonDetailService } from './../lesson-detail/lesson-detail.service';
 import { SubjectTopicService } from './../subject-topic/subject-topic.service';
-import { Lesson, SubjectTopic } from './../core/models';
+import { Lesson, LessonDetail, SubjectTopic } from './../core/models';
 import { SubjectService } from './../subject/subject.service';
 import { LessonTypeService } from './../lesson-type/lesson-type.service';
 import { ExpertGuard } from './../auth/guard';
@@ -21,6 +22,7 @@ export class LessonController {
         private readonly lessonTypeService: LessonTypeService,
         private readonly subjectService: SubjectService,
         private readonly subjectTopicService: SubjectTopicService,
+        private readonly lessonDetailService: LessonDetailService,
     ) {}
 
     @Get('/:id')
@@ -53,6 +55,16 @@ export class LessonController {
             const subjectTopic = new SubjectTopic();
             subjectTopic.lesson = newLesson;
             await this.subjectTopicService.saveSubjectTopic(subjectTopic);
+        }
+
+        if (lessonType.name === 'Lesson Detail') {
+            if (!body.description) throw new HttpException({ description: ResponseMessage.INVALID_DESCRIPTION }, StatusCodes.BAD_REQUEST);
+            if (!body.videoLink) throw new HttpException({ videoLink: ResponseMessage.INVALID_VIDEO_LINK }, StatusCodes.BAD_REQUEST);
+            const lessonDetail = new LessonDetail();
+            lessonDetail.description = body.description;
+            lessonDetail.videoLink = body.videoLink;
+            lessonDetail.lesson = newLesson;
+            await this.lessonDetailService.saveLessonDetail(lessonDetail);
         }
 
         return res.send(newLesson);
