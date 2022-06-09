@@ -1,3 +1,5 @@
+import { UserModule } from './../user/user.module';
+import { AuthModule } from './../auth/auth.module';
 import { DimensionModule } from './../dimension/dimension.module';
 import { S3Module } from '../core/providers/s3/s3.module';
 import { QuestionRepository } from './../core/repositories';
@@ -7,7 +9,7 @@ import { QuestionController } from './question.controller';
 import { QuestionService } from './question.service';
 
 @Module({
-    imports: [TypeOrmModule.forFeature([QuestionRepository]), S3Module, DimensionModule],
+    imports: [TypeOrmModule.forFeature([QuestionRepository]), S3Module, DimensionModule, AuthModule, UserModule],
     controllers: [QuestionController],
     providers: [QuestionService],
     exports: [QuestionService],
