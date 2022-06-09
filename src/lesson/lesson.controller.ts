@@ -1,6 +1,8 @@
+import { QuizService } from './../quiz/quiz.service';
+import { LessonQuizService } from './../lesson-quiz/lesson-quiz.service';
 import { LessonDetailService } from './../lesson-detail/lesson-detail.service';
 import { SubjectTopicService } from './../subject-topic/subject-topic.service';
-import { Lesson, LessonDetail, SubjectTopic } from './../core/models';
+import { Lesson, LessonDetail, LessonQuiz, SubjectTopic } from './../core/models';
 import { SubjectService } from './../subject/subject.service';
 import { LessonTypeService } from './../lesson-type/lesson-type.service';
 import { ExpertGuard } from './../auth/guard';
@@ -23,6 +25,8 @@ export class LessonController {
         private readonly subjectService: SubjectService,
         private readonly subjectTopicService: SubjectTopicService,
         private readonly lessonDetailService: LessonDetailService,
+        private readonly lessonQuizService: LessonQuizService,
+        private readonly quizService: QuizService,
     ) {}
 
     @Get('/:id')
@@ -65,6 +69,22 @@ export class LessonController {
             lessonDetail.videoLink = body.videoLink;
             lessonDetail.lesson = newLesson;
             await this.lessonDetailService.saveLessonDetail(lessonDetail);
+        }
+
+        if (lessonType.name === 'Lesson Quiz') {
+            if (!body.description) throw new HttpException({ description: ResponseMessage.INVALID_DESCRIPTION }, StatusCodes.BAD_REQUEST);
+            if (!body.quiz) throw new HttpException({ videoLink: ResponseMessage.INVALID_QUIZ }, StatusCodes.BAD_REQUEST);
+
+            const quiz = body.quiz.split(',');
+
+            const lessonQuiz = new LessonQuiz();
+            for (const item of quiz) {
+                const res = await this.quizService.getQuizByField('id', item);
+                lessonQuiz.quizs.push(res);
+            }
+            lessonQuiz.description = body.description;
+            lessonQuiz.lesson = newLesson;
+            await this.lessonQuizService.saveLessonQuiz(lessonQuiz);
         }
 
         return res.send(newLesson);
