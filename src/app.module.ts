@@ -19,6 +19,9 @@ import { DimensionTypeModule } from './dimension-type/dimension-type.module';
 import { PricePackageModule } from './price-package/price-package.module';
 import { LessonModule } from './lesson/lesson.module';
 import { LessonTypeModule } from './lesson-type/lesson-type.module';
+import { LessonQuizModule } from './lesson-quiz/lesson-quiz.module';
+import { LessonDetailModule } from './lesson-detail/lesson-detail.module';
+import { SubjectTopicModule } from './subject-topic/subject-topic.module';
 @Module({
     imports: [
         DbModule,
@@ -43,6 +46,9 @@ import { LessonTypeModule } from './lesson-type/lesson-type.module';
         PricePackageModule,
         LessonModule,
         LessonTypeModule,
+        LessonQuizModule,
+        LessonDetailModule,
+        SubjectTopicModule,
     ],
 })
 export class AppModule {}
