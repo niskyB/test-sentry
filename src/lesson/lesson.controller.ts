@@ -78,6 +78,7 @@ export class LessonController {
             const quiz = body.quiz.split(',');
 
             const lessonQuiz = new LessonQuiz();
+            lessonQuiz.quizs = [];
             for (const item of quiz) {
                 const res = await this.quizService.getQuizByField('id', item);
                 lessonQuiz.quizs.push(res);

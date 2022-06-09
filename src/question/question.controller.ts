@@ -1,10 +1,11 @@
+import { ExpertGuard } from './../auth/guard';
 import { DimensionService } from './../dimension/dimension.service';
 import { S3Service } from '../core/providers/s3/s3.service';
 import { Question } from './../core/models';
 import { JoiValidatorPipe } from './../core/pipe';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { QuestionService } from './question.service';
-import { Body, Controller, Get, HttpException, Param, Post, Res, UploadedFile, UseInterceptors, UsePipes } from '@nestjs/common';
+import { Body, Controller, Get, HttpException, Param, Post, Res, UploadedFile, UseGuards, UseInterceptors, UsePipes } from '@nestjs/common';
 import { ApiBearerAuth, ApiParam, ApiTags } from '@nestjs/swagger';
 import { Response } from 'express';
 import { ResponseMessage } from '../core/interface';
@@ -28,6 +29,7 @@ export class QuestionController {
     }
 
     @Post('')
+    @UseGuards(ExpertGuard)
     @UseInterceptors(FileInterceptor('image'))
     @UsePipes(new JoiValidatorPipe(vCreateQuestionDTO))
     async cCreateQuestion(@Res() res: Response, @Body() body: CreateQuestionDTO, @UploadedFile() file: Express.Multer.File) {
