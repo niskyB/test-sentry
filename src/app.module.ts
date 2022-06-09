@@ -23,6 +23,8 @@ import { LessonQuizModule } from './lesson-quiz/lesson-quiz.module';
 import { LessonDetailModule } from './lesson-detail/lesson-detail.module';
 import { SubjectTopicModule } from './subject-topic/subject-topic.module';
 import { QuizModule } from './quiz/quiz.module';
+import { QuestionModule } from './question/question.module';
+import { AnswerModule } from './answer/answer.module';
 @Module({
     imports: [
         DbModule,
@@ -51,6 +53,8 @@ import { QuizModule } from './quiz/quiz.module';
         LessonDetailModule,
         SubjectTopicModule,
         QuizModule,
+        QuestionModule,
+        AnswerModule,
     ],
 })
 export class AppModule {}

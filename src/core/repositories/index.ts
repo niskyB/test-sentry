@@ -19,3 +19,5 @@ export * from './subjectTopic.repository';
 export * from './lessonDetail.repository';
 export * from './lessonQuiz.repository';
 export * from './quiz.repository';
+export * from './answer.repository';
+export * from './question.repository';

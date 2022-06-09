@@ -21,3 +21,5 @@ export * from './quiz-type';
 export * from './quiz';
 export * from './lesson-detail';
 export * from './subject-topic';
+export * from './question';
+export * from './answer';
