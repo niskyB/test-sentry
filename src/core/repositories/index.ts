@@ -15,3 +15,4 @@ export * from './dimensionType.repository';
 export * from './lesson.repository';
 export * from './lessonType.repository';
 export * from './pricePackage.repository';
+export * from './subjectTopic.repository';
