@@ -62,7 +62,7 @@ export class SubjectController {
         return res.send(newSubject);
     }
 
-    @Put('/isActive/:id')
+    @Put('/admin/:id')
     @ApiParam({ name: 'id', example: 'TVgJIjsRFmIvyjUeBOLv4gOD3eQZY' })
     @UseGuards(AdminGuard)
     @UsePipes(new JoiValidatorPipe(vUpdateSubjectAdminDTO))
