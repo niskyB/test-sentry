@@ -1,5 +1,5 @@
 import { Dimension } from './dimension';
-import { Column, Entity, ManyToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, JoinTable, ManyToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
 import * as joi from 'joi';
 import JoiMessage from 'joi-message';
@@ -35,7 +35,8 @@ export class Question {
     isActive: boolean;
 
     @ApiProperty({ description: 'Dimensions' })
-    @ManyToMany(() => Dimension)
+    @ManyToMany(() => Dimension, { cascade: true })
+    @JoinTable()
     dimensions: Dimension[];
 }
 
@@ -55,9 +56,5 @@ export const questionValidateSchema = {
         .string()
         .trim()
         .messages(JoiMessage.createStringMessages({ field: 'Audio Link' })),
-    imageUrl: joi
-        .string()
-        .trim()
-        .messages(JoiMessage.createStringMessages({ field: 'Image' })),
     isMultipleChoice: joi.boolean().messages(JoiMessage.createBooleanMessages({ field: 'Is Multiple Choice' })),
 };

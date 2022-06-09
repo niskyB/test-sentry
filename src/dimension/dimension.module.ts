@@ -13,5 +13,6 @@ import { DimensionsController } from './dimensions.controller';
     imports: [TypeOrmModule.forFeature([DimensionRepository]), AuthModule, UserModule, DimensionTypeModule, SubjectModule],
     providers: [DimensionService],
     controllers: [DimensionController, DimensionsController],
+    exports: [DimensionService],
 })
 export class DimensionModule {}
