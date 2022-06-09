@@ -1,3 +1,4 @@
+import { QuestionsController } from './questions.controller';
 import { LessonModule } from './../lesson/lesson.module';
 import { UserModule } from './../user/user.module';
 import { AuthModule } from './../auth/auth.module';
@@ -11,7 +12,7 @@ import { QuestionService } from './question.service';
 
 @Module({
     imports: [TypeOrmModule.forFeature([QuestionRepository]), S3Module, DimensionModule, AuthModule, UserModule, LessonModule],
-    controllers: [QuestionController],
+    controllers: [QuestionController, QuestionsController],
     providers: [QuestionService],
     exports: [QuestionService],
 })
