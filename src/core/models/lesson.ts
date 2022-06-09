@@ -40,7 +40,7 @@ export class Lesson {
     subject: Subject;
 }
 
-export const LessonValidateSchema = {
+export const lessonValidateSchema = {
     name: joi
         .string()
         .min(3)
