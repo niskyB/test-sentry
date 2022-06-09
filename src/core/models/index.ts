@@ -15,3 +15,7 @@ export * from './dimension';
 export * from './price-package';
 export * from './lesson-type';
 export * from './lesson';
+export * from './exam-level';
+export * from './lesson-quiz';
+export * from './quiz-type';
+export * from './quiz';

@@ -1,6 +1,27 @@
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { config } from './core';
-import { User, Slider, Role, Customer, Marketing, Blog, Admin, Sale, Expert, Subject, SubjectCategory, Dimension, DimensionType, BlogCategory, Lesson, PricePackage, LessonType } from './core/models';
+import {
+    User,
+    Slider,
+    Role,
+    Customer,
+    Marketing,
+    Blog,
+    Admin,
+    Sale,
+    Expert,
+    Subject,
+    SubjectCategory,
+    Dimension,
+    DimensionType,
+    BlogCategory,
+    Lesson,
+    PricePackage,
+    LessonType,
+    ExamLevel,
+    Quiz,
+    QuizType,
+} from './core/models';
 
 export const DbModule = TypeOrmModule.forRoot({
     type: 'mysql',
@@ -11,6 +32,28 @@ export const DbModule = TypeOrmModule.forRoot({
     database: config.DB_NAME,
     synchronize: true,
     keepConnectionAlive: true,
-    entities: [User, Role, Slider, Customer, Marketing, Blog, BlogCategory, Admin, Sale, Expert, Subject, SubjectCategory, Dimension, DimensionType, Lesson, LessonType, PricePackage],
+    entities: [
+        User,
+        Role,
+        Slider,
+        Customer,
+        Marketing,
+        Blog,
+        BlogCategory,
+        Admin,
+        Sale,
+        Expert,
+        Subject,
+        SubjectCategory,
+        Dimension,
+        DimensionType,
+        Lesson,
+        LessonType,
+        PricePackage,
+        ExamLevel,
+        LessonType,
+        Quiz,
+        QuizType,
+    ],
     extra: { connectionLimit: 1 },
 });
