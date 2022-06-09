@@ -1,3 +1,4 @@
+import { LessonService } from './../lesson/lesson.service';
 import { ExpertGuard } from './../auth/guard';
 import { DimensionService } from './../dimension/dimension.service';
 import { S3Service } from '../core/providers/s3/s3.service';
@@ -16,7 +17,12 @@ import { CreateQuestionDTO, vCreateQuestionDTO } from './dto';
 @ApiBearerAuth()
 @Controller('question')
 export class QuestionController {
-    constructor(private readonly questionService: QuestionService, private readonly s3Service: S3Service, private readonly dimensionService: DimensionService) {}
+    constructor(
+        private readonly questionService: QuestionService,
+        private readonly s3Service: S3Service,
+        private readonly dimensionService: DimensionService,
+        private readonly lessonService: LessonService,
+    ) {}
 
     @Get('/:id')
     @ApiParam({ name: 'id', example: 'TVgJIjsRFmIvyjUeBOLv4gOD3eQZY' })
@@ -51,6 +57,12 @@ export class QuestionController {
             const dimension = await this.dimensionService.getDimensionByField('id', item);
             newQuestion.dimensions.push(dimension);
         }
+
+        if (newQuestion.dimensions.length === 0) throw new HttpException({ dimensions: ResponseMessage.INVALID_DIMENSION }, StatusCodes.BAD_REQUEST);
+
+        const lesson = await this.lessonService.getLessonByField('id', body.lesson);
+        if (!lesson) throw new HttpException({ lesson: ResponseMessage.INVALID_LESSON }, StatusCodes.BAD_REQUEST);
+        newQuestion.lesson = lesson;
 
         await this.questionService.saveQuestion(newQuestion);
 

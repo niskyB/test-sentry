@@ -1,5 +1,6 @@
+import { Lesson } from './lesson';
 import { Dimension } from './dimension';
-import { Column, Entity, JoinTable, ManyToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, JoinTable, ManyToMany, PrimaryGeneratedColumn, ManyToOne } from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
 import * as joi from 'joi';
 import JoiMessage from 'joi-message';
@@ -38,6 +39,10 @@ export class Question {
     @ManyToMany(() => Dimension, { cascade: true })
     @JoinTable()
     dimensions: Dimension[];
+
+    @ApiProperty({ description: 'Lesson' })
+    @ManyToOne(() => Lesson)
+    lesson: Lesson;
 }
 
 export const questionValidateSchema = {

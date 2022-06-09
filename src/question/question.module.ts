@@ -1,3 +1,4 @@
+import { LessonModule } from './../lesson/lesson.module';
 import { UserModule } from './../user/user.module';
 import { AuthModule } from './../auth/auth.module';
 import { DimensionModule } from './../dimension/dimension.module';
@@ -9,7 +10,7 @@ import { QuestionController } from './question.controller';
 import { QuestionService } from './question.service';
 
 @Module({
-    imports: [TypeOrmModule.forFeature([QuestionRepository]), S3Module, DimensionModule, AuthModule, UserModule],
+    imports: [TypeOrmModule.forFeature([QuestionRepository]), S3Module, DimensionModule, AuthModule, UserModule, LessonModule],
     controllers: [QuestionController],
     providers: [QuestionService],
     exports: [QuestionService],
