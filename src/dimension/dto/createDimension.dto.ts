@@ -10,7 +10,7 @@ export class CreateDimensionDTO {
     @ApiProperty({ description: 'Description', example: 'Description 1' })
     description: string;
 
-    @ApiProperty({ description: 'Type', example: 'Type 1' })
+    @ApiProperty({ description: 'Type Id', example: '1aa-a2d-asxd' })
     type: string;
 
     @ApiProperty({ description: 'Subject Id', example: 'asfsdf-asdfsdf-ss' })

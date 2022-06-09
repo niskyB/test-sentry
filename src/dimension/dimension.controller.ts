@@ -36,7 +36,7 @@ export class DimensionController {
     @UsePipes(new JoiValidatorPipe(vCreateDimensionDTO))
     async cCreateDimension(@Req() req: Request, @Res() res: Response, @Body() body: CreateDimensionDTO) {
         const user = await this.userService.findUser('id', req.user.id);
-        const dimensionType = await this.dimensionTypeService.getDimensionTypeByField('name', body.type);
+        const dimensionType = await this.dimensionTypeService.getDimensionTypeByField('id', body.type);
         if (!dimensionType) throw new HttpException({ category: ResponseMessage.INVALID_TYPE }, StatusCodes.BAD_REQUEST);
 
         const subject = await this.subjectService.getSubjectByField('id', body.subject);
