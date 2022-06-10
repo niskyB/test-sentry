@@ -14,7 +14,16 @@ export class SubjectService {
         return await this.subjectRepository.save(subject);
     }
 
-    async filterSubjects(name: string, createdAt: string, currentPage: number, pageSize: number, isActive: boolean, category: string, assignTo: string): Promise<{ data: Subject[]; count: number }> {
+    async filterSubjects(
+        name: string,
+        createdAt: string,
+        currentPage: number,
+        pageSize: number,
+        isActive: boolean,
+        isFeature: boolean,
+        category: string,
+        assignTo: string,
+    ): Promise<{ data: Subject[]; count: number }> {
         try {
             const date = new Date(createdAt);
             const sliders = await this.subjectRepository
@@ -23,7 +32,8 @@ export class SubjectService {
                     name: `%${name}%`,
                 })
                 .andWhere(`subject.createdAt >= (:createdAt)`, { createdAt: date })
-                .andWhere(`subject.isActive = (:isActive)`, { isActive: isActive })
+                .andWhere(`subject.isActive = (:isActive)`, { isActive })
+                .andWhere(`subject.isFeature = (:isFeature)`, { isFeature })
                 .leftJoinAndSelect('subject.assignTo', 'assignTo')
                 .leftJoinAndSelect('assignTo.user', 'user')
                 .andWhere(`user.id LIKE (:id)`, { id: `%${assignTo}%` })

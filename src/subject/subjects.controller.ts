@@ -14,9 +14,9 @@ export class SubjectsController {
     @Get('')
     @UsePipes(new QueryJoiValidatorPipe(vFilterSubjectsDTO))
     async cFilterSubjects(@Res() res: Response, @Query() queries: FilterSubjectsDTO) {
-        const { name, isActive, category, currentPage, createdAt, pageSize, assignTo } = queries;
+        const { name, isActive, isFeature, category, currentPage, createdAt, pageSize, assignTo } = queries;
 
-        const result = await this.subjectService.filterSubjects(name, createdAt, currentPage, pageSize, isActive, category, assignTo);
+        const result = await this.subjectService.filterSubjects(name, createdAt, currentPage, pageSize, isActive, isFeature, category, assignTo);
         return res.send(result);
     }
 }

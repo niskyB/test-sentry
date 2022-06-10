@@ -8,6 +8,9 @@ export class FilterSubjectsDTO {
     @ApiProperty({ description: 'Is Active', example: 'true', nullable: true })
     isActive: boolean;
 
+    @ApiProperty({ description: 'Is Feature', example: 'true', nullable: true })
+    isFeature: boolean;
+
     @ApiProperty({ description: 'Category Id', example: '123-adf-asdf', nullable: true })
     category: string;
 
@@ -26,7 +29,8 @@ export class FilterSubjectsDTO {
 
 export const vFilterSubjectsDTO = joi.object<FilterSubjectsDTO>({
     name: subjectValidateSchema.name.failover(''),
-    isActive: joi.boolean().required().failover(null),
+    isActive: joi.boolean().required().failover(true),
+    isFeature: joi.boolean().required().failover(true),
     category: joi.string().required().failover(''),
     assignTo: joi.string().required().failover(''),
     createdAt: joi.string().required().failover('1/1/2022'),
