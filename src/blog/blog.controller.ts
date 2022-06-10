@@ -47,7 +47,7 @@ export class BlogController {
         newBlog.details = body.details;
         newBlog.briefInfo = body.briefInfo;
 
-        const blogCategory = await this.blogCategoryService.getBlogCategoryByField('id', body.categoryId);
+        const blogCategory = await this.blogCategoryService.getBlogCategoryByField('id', body.category);
         if (!blogCategory) throw new HttpException({ category: ResponseMessage.INVALID_CATEGORY }, StatusCodes.BAD_REQUEST);
         newBlog.category = blogCategory;
 
