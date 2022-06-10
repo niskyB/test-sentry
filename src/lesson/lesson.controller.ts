@@ -43,10 +43,10 @@ export class LessonController {
     @UseGuards(ExpertGuard)
     @UsePipes(new JoiValidatorPipe(vCreateLessonDTO))
     async cCreateLesson(@Res() res: Response, @Body() body: CreateLessonDTO) {
-        const lessonType = await this.lessonTypeService.getLessonTypeByField('id', body.typeId);
+        const lessonType = await this.lessonTypeService.getLessonTypeByField('id', body.type);
         if (!lessonType) throw new HttpException({ errorMessage: ResponseMessage.INVALID_TYPE }, StatusCodes.BAD_REQUEST);
 
-        const subject = await this.subjectService.getSubjectByField('id', body.subjectId);
+        const subject = await this.subjectService.getSubjectByField('id', body.subject);
         if (!subject) throw new HttpException({ errorMessage: ResponseMessage.INVALID_SUBJECT }, StatusCodes.BAD_REQUEST);
 
         const newLesson = new Lesson();

@@ -17,10 +17,10 @@ export class CreateLessonDTO {
     order: number;
 
     @ApiProperty({ description: 'Type id', example: '12a-123asdf-a23ad-32a' })
-    typeId: string;
+    type: string;
 
     @ApiProperty({ description: 'Subject id', example: '12a-123asdf-a23ad-32a' })
-    subjectId: string;
+    subject: string;
 
     @ApiProperty({ description: 'Array of quiz id', example: '12a-123asdf-a23ad-32a,129-a2sf-123a-23aa' })
     quiz: string;
@@ -36,11 +36,11 @@ export const vCreateLessonDTO = joi.object<CreateLessonDTO>({
         .failover('')
         .messages(JoiMessage.createStringMessages({ field: 'Quiz' })),
     videoLink: lessonDetailValidateSchema.videoLink.failover(''),
-    typeId: joi
+    type: joi
         .string()
         .required()
         .messages(JoiMessage.createStringMessages({ field: 'Type' })),
-    subjectId: joi
+    subject: joi
         .string()
         .required()
         .messages(JoiMessage.createStringMessages({ field: 'Subject' })),
