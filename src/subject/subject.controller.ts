@@ -95,6 +95,7 @@ export class SubjectController {
         subject.name = body.name || subject.name;
         subject.tagLine = body.tagLine || subject.tagLine;
         subject.description = body.description || subject.description;
+        subject.isFeature = body.isFeature === null || body.isFeature === undefined ? subject.isFeature : body.isFeature;
 
         if (file) {
             const result = await this.s3Service.uploadFile(file);
