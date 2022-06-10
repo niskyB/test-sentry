@@ -1,3 +1,4 @@
+import { JoiMessage } from 'joi-message';
 import { subjectValidateSchema } from './../../core/models';
 import { ApiProperty } from '@nestjs/swagger';
 import * as joi from 'joi';
@@ -11,6 +12,9 @@ export class UpdateSubjectDTO {
     @ApiProperty({ description: 'Description', example: 'description 1' })
     description: string;
 
+    @ApiProperty({ description: 'Category', example: 'asdf-13a-123aa' })
+    category: string;
+
     @ApiProperty({ description: 'Is Feature', example: 'true' })
     isFeature: boolean;
 }
@@ -20,4 +24,9 @@ export const vUpdateSubjectDTO = joi.object<UpdateSubjectDTO>({
     tagLine: subjectValidateSchema.tagLine.failover(''),
     description: subjectValidateSchema.description.failover(''),
     isFeature: subjectValidateSchema.isFeature.failover(null),
+    category: joi
+        .string()
+        .required()
+        .failover('')
+        .messages(JoiMessage.createStringMessages({ field: 'Category' })),
 });

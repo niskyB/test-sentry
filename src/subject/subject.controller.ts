@@ -17,7 +17,6 @@ import { ApiBearerAuth, ApiParam, ApiTags } from '@nestjs/swagger';
 @ApiTags('subject')
 @ApiBearerAuth()
 @Controller('subject')
-@UseGuards(ExpertGuard)
 export class SubjectController {
     constructor(
         private readonly subjectService: SubjectService,
@@ -36,6 +35,7 @@ export class SubjectController {
     }
 
     @Post('')
+    @UseGuards(AdminGuard)
     @UseInterceptors(FileInterceptor('image'))
     @UsePipes(new JoiValidatorPipe(vCreateSubjectDTO))
     async cCreateSubject(@Res() res: Response, @Body() body: CreateSubjectDTO, @UploadedFile() file: Express.Multer.File) {
@@ -82,15 +82,21 @@ export class SubjectController {
     }
 
     @Put('/:id')
+    @UseGuards(ExpertGuard)
     @ApiParam({ name: 'id', example: 'TVgJIjsRFmIvyjUeBOLv4gOD3eQZY' })
     @UseInterceptors(FileInterceptor('image'))
     @UsePipes(new JoiValidatorPipe(vUpdateSubjectDTO))
     async cUpdateSubject(@Param('id') id: string, @Req() req: Request, @Res() res: Response, @Body() body: UpdateSubjectDTO, @UploadedFile() file: Express.Multer.File) {
         const user = await this.userService.findUser('id', req.user.id);
-        const subject = await this.subjectService.getSubjectByField('id', id);
 
+        const subject = await this.subjectService.getSubjectByField('id', id);
         if (!subject) throw new HttpException({ errorMessage: ResponseMessage.NOT_FOUND }, StatusCodes.NOT_FOUND);
         if (user.role.name !== UserRole.ADMIN && subject.assignTo.id !== user.typeId) throw new HttpException({ errorMessage: ResponseMessage.FORBIDDEN }, StatusCodes.FORBIDDEN);
+
+        if (body.category) {
+            const category = await this.subjectCategoryService.getSubjectCategoryByField('id', body.category);
+            subject.category = category;
+        }
 
         subject.name = body.name || subject.name;
         subject.tagLine = body.tagLine || subject.tagLine;
