@@ -31,6 +31,10 @@ export class Subject {
     @Column({ default: true })
     isActive: boolean;
 
+    @ApiProperty({ description: 'Is Feature' })
+    @Column({ default: true })
+    isFeature: boolean;
+
     @ApiProperty({ description: 'Created at' })
     @Column({ default: new Date().toISOString().slice(0, 19).replace('T', ' ') })
     createdAt: Date;
@@ -66,4 +70,8 @@ export const subjectValidateSchema = {
         .trim()
         .required()
         .messages(JoiMessage.createStringMessages({ field: 'Description' })),
+    isFeature: joi
+        .boolean()
+        .required()
+        .messages(JoiMessage.createBooleanMessages({ field: 'Is Feature' })),
 };
