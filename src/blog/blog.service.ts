@@ -1,3 +1,4 @@
+import { SortOrder } from './../core/interface';
 import { Blog } from './../core/models';
 import { BlogRepository } from './../core/repositories';
 import { Injectable } from '@nestjs/common';
@@ -14,7 +15,16 @@ export class BlogService {
         return await this.blogRepository.findOneByField(field, value);
     }
 
-    async filterBlogs(title: string, userId: string, createdAt: string, currentPage: number, pageSize: number, isShow: boolean, categoryId: string): Promise<{ data: Blog[]; count: number }> {
+    async filterBlogs(
+        title: string,
+        userId: string,
+        createdAt: string,
+        currentPage: number,
+        pageSize: number,
+        isShow: boolean,
+        categoryId: string,
+        order: SortOrder,
+    ): Promise<{ data: Blog[]; count: number }> {
         try {
             const date = new Date(createdAt);
             let blogs, count;
@@ -30,7 +40,7 @@ export class BlogService {
                     .andWhere(`category.id LIKE (:id)`, { id: `%${categoryId}%` })
                     .leftJoinAndSelect('blog.marketing', 'marketing')
                     .leftJoinAndSelect('marketing.user', 'user')
-                    .orderBy(`blog.createdAt`, 'DESC')
+                    .orderBy(`blog.updatedAt`, order)
                     .skip(currentPage * pageSize)
                     .take(pageSize)
                     .getMany();

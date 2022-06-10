@@ -1,3 +1,4 @@
+import { SortOrder } from './../../core/interface';
 import { ApiProperty } from '@nestjs/swagger';
 import * as joi from 'joi';
 export class FilterBlogsDTO {
@@ -21,14 +22,18 @@ export class FilterBlogsDTO {
 
     @ApiProperty({ description: 'Created At', example: '18/5/2022', nullable: true })
     createdAt: string;
+
+    @ApiProperty({ description: 'Order', example: 'ASC', nullable: true })
+    order: SortOrder;
 }
 
 export const vFilterBlogsDTO = joi.object<FilterBlogsDTO>({
     title: joi.string().required().failover(''),
     userId: joi.string().required().failover(''),
-    isShow: joi.boolean().required().failover(null),
+    isShow: joi.boolean().required().failover(true),
     createdAt: joi.string().required().failover('1/1/2022'),
     currentPage: joi.number().min(0).required().failover(0),
     pageSize: joi.number().min(1).required().failover(4),
     category: joi.string().required().failover(''),
+    order: joi.string().failover(SortOrder.ASC).valid(SortOrder.ASC, SortOrder.DESC).required(),
 });
