@@ -52,6 +52,7 @@ export class SubjectController {
         newSubject.description = body.description;
         newSubject.category = subjectCategory;
         newSubject.isFeature = body.isFeature;
+        newSubject.isActive = body.isActive;
         newSubject.assignTo = expert;
 
         const result = await this.s3Service.uploadFile(file);
