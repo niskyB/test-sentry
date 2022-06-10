@@ -12,12 +12,12 @@ export class CreateBlogDTO {
     briefInfo: string;
 
     @ApiProperty({ description: 'Category Id', example: '21312-aad-1231' })
-    categoryId: string;
+    category: string;
 }
 
 export const vCreateBlogDTO = joi.object<CreateBlogDTO>({
     title: blogValidateSchema.title,
     details: blogValidateSchema.details,
     briefInfo: blogValidateSchema.briefInfo,
-    categoryId: joi.string().required().failover(''),
+    category: joi.string().required().failover(''),
 });
