@@ -29,8 +29,8 @@ export class FilterSubjectsDTO {
 
 export const vFilterSubjectsDTO = joi.object<FilterSubjectsDTO>({
     name: subjectValidateSchema.name.failover(''),
-    isActive: joi.boolean().required().failover(true),
-    isFeature: joi.boolean().required().failover(true),
+    isActive: joi.boolean().required().failover(null),
+    isFeature: joi.boolean().required().failover(null),
     category: joi.string().required().failover(''),
     assignTo: joi.string().required().failover(''),
     createdAt: joi.string().required().failover('1/1/2022'),
