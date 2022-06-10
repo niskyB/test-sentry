@@ -50,7 +50,8 @@ export class SubjectService {
                     name: `%${name}%`,
                 })
                 .andWhere(`subject.createdAt >= (:createdAt)`, { createdAt: date })
-                .andWhere(`subject.isActive = (:isActive)`, { isActive: isActive })
+                .andWhere(`subject.isActive = (:isActive)`, { isActive })
+                .andWhere(`subject.isFeature = (:isFeature)`, { isFeature })
                 .leftJoinAndSelect('subject.assignTo', 'assignTo')
                 .leftJoinAndSelect('assignTo.user', 'user')
                 .andWhere(`user.id LIKE (:id)`, { id: `%${assignTo}%` })
