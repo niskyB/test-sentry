@@ -8,7 +8,13 @@ export class SubjectService {
     constructor(private readonly subjectRepository: SubjectRepository) {}
 
     async getSubjectByField(field: keyof Subject, value: any): Promise<Subject> {
-        return await this.subjectRepository.findOneByField(field, value);
+        return await this.subjectRepository
+            .createQueryBuilder('subject')
+            .where(`subject.${field} = :value`, { value })
+            .leftJoinAndSelect('subject.assignTo', 'assignTo')
+            .leftJoinAndSelect('assignTo.user', 'user')
+            .leftJoinAndSelect('subject.category', 'category')
+            .getOne();
     }
 
     async saveSubject(subject: Subject): Promise<Subject> {
