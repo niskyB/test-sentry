@@ -13,8 +13,11 @@ export class CreateSubjectDTO {
     @ApiProperty({ description: 'Description', example: 'Description 1' })
     description: string;
 
-    @ApiProperty({ description: 'IsFeature', example: 'true' })
+    @ApiProperty({ description: 'Is Feature', example: 'true' })
     isFeature: boolean;
+
+    @ApiProperty({ description: 'Is Active', example: 'true' })
+    isActive: boolean;
 
     @ApiProperty({ description: 'Category Id', example: 'aoss-sf-asfaass-sfasd' })
     category: string;
@@ -28,6 +31,7 @@ export const vCreateSubjectDTO = joi.object<CreateSubjectDTO>({
     tagLine: subjectValidateSchema.tagLine,
     description: subjectValidateSchema.description,
     isFeature: subjectValidateSchema.isFeature,
+    isActive: subjectValidateSchema.isActive,
     category: joi
         .string()
         .required()

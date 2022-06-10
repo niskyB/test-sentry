@@ -74,4 +74,8 @@ export const subjectValidateSchema = {
         .boolean()
         .required()
         .messages(JoiMessage.createBooleanMessages({ field: 'Is Feature' })),
+    isActive: joi
+        .boolean()
+        .required()
+        .messages(JoiMessage.createBooleanMessages({ field: 'Is Active' })),
 };
