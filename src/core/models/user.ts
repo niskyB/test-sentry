@@ -50,11 +50,11 @@ export class User {
     isActive: boolean;
 
     @ApiProperty({ description: 'Created at' })
-    @Column()
+    @Column({ default: new Date().toISOString() })
     createdAt: string;
 
     @ApiProperty({ description: 'Updated at' })
-    @Column()
+    @Column({ default: new Date().toISOString() })
     updatedAt: string;
 
     @ApiProperty({ description: 'Role' })
