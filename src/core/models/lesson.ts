@@ -24,12 +24,12 @@ export class Lesson {
     isActive: boolean;
 
     @ApiProperty({ description: 'Created at' })
-    @Column({ default: new Date().toISOString().slice(0, 19).replace('T', ' ') })
-    createdAt: Date;
+    @Column()
+    createdAt: string;
 
     @ApiProperty({ description: 'Updated at' })
-    @Column({ default: new Date().toISOString().slice(0, 19).replace('T', ' ') })
-    updatedAt: Date;
+    @Column()
+    updatedAt: string;
 
     @ApiProperty({ description: 'Lesson Type' })
     @ManyToOne(() => LessonType)
