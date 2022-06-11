@@ -65,7 +65,6 @@ export class PricePackageController {
         pricePackage.originalPrice = body.originalPrice >= 1 ? body.originalPrice : pricePackage.originalPrice;
         pricePackage.salePrice = body.salePrice >= 1 ? body.salePrice : pricePackage.salePrice;
         pricePackage.subject = subject || pricePackage.subject;
-        pricePackage.isActive = body.isActive === null || body.isActive === undefined ? pricePackage.isActive : body.isActive;
         pricePackage.updatedAt = new Date().toISOString();
 
         await this.pricePackageService.savePricePackage(pricePackage);
