@@ -50,8 +50,11 @@ export class LessonController {
         if (!subject) throw new HttpException({ errorMessage: ResponseMessage.INVALID_SUBJECT }, StatusCodes.BAD_REQUEST);
 
         const newLesson = new Lesson();
+        const date = new Date();
         newLesson.name = body.name;
         newLesson.order = body.order;
+        newLesson.createdAt = date.toISOString();
+        newLesson.updatedAt = date.toISOString();
 
         await this.lessonService.saveLesson(newLesson);
 
