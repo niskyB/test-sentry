@@ -32,11 +32,11 @@ export class Blog {
     isShow: boolean;
 
     @ApiProperty({ description: 'Created at' })
-    @Column({ default: new Date().toString() })
+    @Column()
     createdAt: string;
 
     @ApiProperty({ description: 'Updated at' })
-    @Column({ default: new Date().toString() })
+    @Column()
     updatedAt: string;
 
     @ApiProperty({ description: 'Marketing' })
