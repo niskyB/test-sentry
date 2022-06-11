@@ -74,6 +74,8 @@ export class AuthController {
 
         newCustomer = await this.customerService.getCustomerByUserId(newUser.id);
         newUser.typeId = newCustomer.id;
+        newUser.createdAt = new Date().toISOString();
+
         await this.userService.saveUser(newUser);
 
         const isSend = await this.authService.sendEmailToken(newUser, EmailAction.VERIFY_EMAIL);
@@ -145,6 +147,7 @@ export class AuthController {
 
         user.password = await this.authService.encryptPassword(body.password, constant.default.hashingSalt);
         user.token = null;
+        user.updatedAt = new Date().toISOString();
 
         await this.userService.saveUser(user);
 

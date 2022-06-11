@@ -78,6 +78,7 @@ export class BlogController {
         blog.briefInfo = body.briefInfo || blog.briefInfo;
         blog.details = body.details || blog.details;
         blog.isShow = body.isShow === null || body.isShow === undefined ? blog.isShow : body.isShow;
+        blog.updatedAt = new Date().toISOString();
 
         const blogCategory = await this.blogCategoryService.getBlogCategoryByField('id', body.category);
         if (!blogCategory) throw new HttpException({ category: ResponseMessage.INVALID_CATEGORY }, StatusCodes.BAD_REQUEST);

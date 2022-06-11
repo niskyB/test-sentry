@@ -34,12 +34,15 @@ export class PricePackageController {
         if (!subject) throw new HttpException({ errorMessage: ResponseMessage.INVALID_SUBJECT }, StatusCodes.BAD_REQUEST);
 
         const newPricePackage = new PricePackage();
+        const date = new Date();
         newPricePackage.name = body.name;
         newPricePackage.originalPrice = body.originalPrice;
         newPricePackage.salePrice = body.salePrice;
         newPricePackage.duration = body.duration;
         newPricePackage.description = body.description;
         newPricePackage.subject = subject;
+        newPricePackage.createdAt = date.toISOString();
+        newPricePackage.updatedAt = date.toISOString();
 
         await this.pricePackageService.savePricePackage(newPricePackage);
 
@@ -63,6 +66,7 @@ export class PricePackageController {
         pricePackage.salePrice = body.salePrice >= 1 ? body.salePrice : pricePackage.salePrice;
         pricePackage.subject = subject || pricePackage.subject;
         pricePackage.isActive = body.isActive === null || body.isActive === undefined ? pricePackage.isActive : body.isActive;
+        pricePackage.updatedAt = new Date().toISOString();
 
         await this.pricePackageService.savePricePackage(pricePackage);
 

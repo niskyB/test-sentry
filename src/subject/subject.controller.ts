@@ -47,6 +47,7 @@ export class SubjectController {
         const expert = await this.expertService.getExpertByUserId(body.assignTo);
 
         const newSubject = new Subject();
+        const date = new Date();
         newSubject.name = body.name;
         newSubject.tagLine = body.tagLine;
         newSubject.description = body.description;
@@ -54,6 +55,8 @@ export class SubjectController {
         newSubject.isFeature = body.isFeature;
         newSubject.isActive = body.isActive;
         newSubject.assignTo = expert;
+        newSubject.createdAt = date.toISOString();
+        newSubject.updatedAt = date.toISOString();
 
         const result = await this.s3Service.uploadFile(file);
         if (result) newSubject.thumbnailUrl = result.Location;
@@ -76,6 +79,7 @@ export class SubjectController {
         const expert = await this.expertService.getExpertByUserId(body.assignTo);
         subject.assignTo = expert || subject.assignTo;
         subject.isActive = body.isActive === null || body.isActive === undefined ? subject.isActive : body.isActive;
+        subject.updatedAt = new Date().toISOString();
 
         await this.subjectService.saveSubject(subject);
 
@@ -109,6 +113,8 @@ export class SubjectController {
             if (result) subject.thumbnailUrl = result.Location;
             else throw new HttpException({ errorMessage: ResponseMessage.SOMETHING_WRONG }, StatusCodes.INTERNAL_SERVER_ERROR);
         }
+
+        subject.updatedAt = new Date().toISOString();
 
         await this.subjectService.saveSubject(subject);
 

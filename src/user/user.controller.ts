@@ -49,6 +49,7 @@ export class UserController {
         if (body.currentPassword === body.newPassword) throw new HttpException({ errorMessage: ResponseMessage.DUPLICATED_PASSWORD }, StatusCodes.BAD_REQUEST);
         //change password to new password
         user.password = await this.authService.encryptPassword(body.newPassword, constant.default.hashingSalt);
+        user.updatedAt = new Date().toISOString();
         await this.userService.saveUser(user);
         return res.send();
     }
@@ -68,6 +69,7 @@ export class UserController {
             if (result) user.imageUrl = result.Location;
         }
         user.mobile = body.mobile || user.mobile;
+        user.updatedAt = new Date().toISOString();
 
         await this.userService.saveUser(user);
         return res.send(user);
