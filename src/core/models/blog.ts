@@ -31,6 +31,10 @@ export class Blog {
     @Column({ default: true })
     isShow: boolean;
 
+    @ApiProperty({ description: 'Is Feature' })
+    @Column({ default: true })
+    isFeature: boolean;
+
     @ApiProperty({ description: 'Created at' })
     @Column()
     createdAt: string;
@@ -70,4 +74,8 @@ export const blogValidateSchema = {
         .boolean()
         .required()
         .messages(JoiMessage.createBooleanMessages({ field: 'Is Show' })),
+    isFeature: joi
+        .boolean()
+        .required()
+        .messages(JoiMessage.createBooleanMessages({ field: 'Is Feature' })),
 };
