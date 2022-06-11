@@ -52,6 +52,9 @@ export class BlogController {
         newBlog.category = blogCategory;
 
         newBlog.marketing = customer;
+        const date = new Date();
+        newBlog.createdAt = date.toISOString();
+        newBlog.updatedAt = date.toISOString();
         const result = await this.s3Service.uploadFile(file);
         if (result) newBlog.thumbnailUrl = result.Location;
         else throw new HttpException({ errorMessage: ResponseMessage.SOMETHING_WRONG }, StatusCodes.INTERNAL_SERVER_ERROR);
