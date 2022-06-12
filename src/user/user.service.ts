@@ -14,7 +14,7 @@ export class UserService {
     async findUser(field: keyof User, value: any): Promise<User> {
         let user = null;
         try {
-            user = await this.userRepository.createQueryBuilder('user').where(`user.${field} = :value`, { value }).leftJoinAndSelect('user.role', 'role').getOne();
+            user = await this.userRepository.createQueryBuilder('user').where(`user.${field.toString()} = :value`, { value }).leftJoinAndSelect('user.role', 'role').getOne();
         } catch (err) {
             console.log(err);
         }
