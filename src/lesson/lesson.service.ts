@@ -17,4 +17,8 @@ export class LessonService {
     async getLessonsBySubjectId(id: string): Promise<Lesson[]> {
         return await this.lessonRepository.createQueryBuilder('Lesson').leftJoinAndSelect('Lesson.subject', 'subject').where('subject.id = (:id)', { id }).getMany();
     }
+
+    async deleteLesson(lesson: Lesson) {
+        return await this.lessonRepository.delete(lesson);
+    }
 }

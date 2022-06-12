@@ -1,4 +1,4 @@
-import { Entity, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { Entity, JoinColumn, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
 import { Lesson } from './lesson';
 
@@ -10,5 +10,6 @@ export class SubjectTopic {
 
     @ApiProperty({ description: 'Lesson' })
     @OneToOne(() => Lesson)
+    @JoinColumn()
     lesson: Lesson;
 }

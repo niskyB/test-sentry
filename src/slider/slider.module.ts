@@ -1,3 +1,4 @@
+import { Slider } from './../core/models';
 import { MarketingModule } from './../marketing/marketing.module';
 import { S3Module } from './../core/providers/s3/s3.module';
 import { UserModule } from '../user/user.module';
@@ -8,11 +9,12 @@ import { SliderController } from './slider.controller';
 import { SliderService } from './slider.service';
 import { SliderRepository } from '../core/repositories';
 import { SlidersController } from './sliders.controller';
+import { Connection } from 'typeorm';
 
 @Module({
-    imports: [TypeOrmModule.forFeature([SliderRepository]), forwardRef(() => AuthModule), forwardRef(() => UserModule), S3Module, forwardRef(() => MarketingModule)],
+    imports: [TypeOrmModule.forFeature([Slider]), forwardRef(() => AuthModule), forwardRef(() => UserModule), S3Module, forwardRef(() => MarketingModule)],
     controllers: [SliderController, SlidersController],
-    providers: [SliderService],
+    providers: [SliderService, { provide: SliderRepository, useFactory: (connection: Connection) => connection.getCustomRepository(SliderRepository), inject: [Connection] }],
     exports: [TypeOrmModule, SliderService],
 })
 export class SliderModule {}

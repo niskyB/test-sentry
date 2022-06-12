@@ -1,4 +1,4 @@
-import { Column, Entity, JoinTable, ManyToMany, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, JoinColumn, JoinTable, ManyToMany, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
 import * as joi from 'joi';
 import JoiMessage from 'joi-message';
@@ -17,6 +17,7 @@ export class LessonQuiz {
 
     @ApiProperty({ description: 'Lesson' })
     @OneToOne(() => Lesson)
+    @JoinColumn()
     lesson: Lesson;
 
     @ApiProperty({ description: 'Quiz' })

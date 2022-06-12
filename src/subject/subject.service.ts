@@ -10,7 +10,7 @@ export class SubjectService {
     async getSubjectByField(field: keyof Subject, value: any): Promise<Subject> {
         return await this.subjectRepository
             .createQueryBuilder('subject')
-            .where(`subject.${field} = :value`, { value })
+            .where(`subject.${field.toString()} = :value`, { value })
             .leftJoinAndSelect('subject.assignTo', 'assignTo')
             .leftJoinAndSelect('assignTo.user', 'user')
             .leftJoinAndSelect('subject.category', 'category')
@@ -53,7 +53,7 @@ export class SubjectService {
             const date = new Date(createdAt);
             const activeValue = this.getMinMaxValue(isActive);
             const featureValue = this.getMinMaxValue(isFeature);
-            const sliders = await this.subjectRepository
+            const subjects = await this.subjectRepository
                 .createQueryBuilder('subject')
                 .where(`subject.name LIKE (:name)`, {
                     name: `%${name}%`,
@@ -73,6 +73,7 @@ export class SubjectService {
                         }).orWhere('subject.isFeature = :featureMaxValue', { featureMaxValue: featureValue.maxValue });
                     }),
                 )
+                .leftJoinAndSelect('subject.lessons', 'lessons')
                 .leftJoinAndSelect('subject.assignTo', 'assignTo')
                 .leftJoinAndSelect('assignTo.user', 'user')
                 .andWhere(`user.id LIKE (:id)`, { id: `%${assignTo}%` })
@@ -110,7 +111,7 @@ export class SubjectService {
                 .andWhere(`category.id LIKE (:categoryId)`, { categoryId: `%${category}%` })
                 .getCount();
 
-            return { data: sliders, count };
+            return { data: subjects, count };
         } catch (err) {
             console.log(err);
             return { data: [], count: 0 };

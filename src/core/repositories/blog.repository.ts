@@ -6,7 +6,7 @@ import { Blog } from '../models';
 export class BlogRepository extends RepositoryService<Blog> {
     public async findOneByField(field: keyof Blog, value: any): Promise<Blog> {
         return await this.createQueryBuilder('Blog')
-            .where(`Blog.${field} = :value`, { value })
+            .where(`Blog.${field.toString()} = :value`, { value })
             .leftJoinAndSelect('Blog.category', 'category')
             .leftJoinAndSelect('Blog.marketing', 'marketing')
             .getOne();
