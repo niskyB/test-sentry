@@ -55,13 +55,19 @@ export class LessonController {
         newLesson.order = body.order;
         newLesson.createdAt = date.toISOString();
         newLesson.updatedAt = date.toISOString();
+        newLesson.subject = subject;
 
         await this.lessonService.saveLesson(newLesson);
 
         if (lessonType.name === 'Subject Topic') {
             const subjectTopic = new SubjectTopic();
             subjectTopic.lesson = newLesson;
-            await this.subjectTopicService.saveSubjectTopic(subjectTopic);
+            try {
+                await this.subjectTopicService.saveSubjectTopic(subjectTopic);
+            } catch (err) {
+                console.log(err);
+                await this.lessonService.deleteLesson(newLesson);
+            }
         }
 
         if (lessonType.name === 'Lesson Detail') {
@@ -71,7 +77,12 @@ export class LessonController {
             lessonDetail.description = body.description;
             lessonDetail.videoLink = body.videoLink;
             lessonDetail.lesson = newLesson;
-            await this.lessonDetailService.saveLessonDetail(lessonDetail);
+            try {
+                await this.lessonDetailService.saveLessonDetail(lessonDetail);
+            } catch (err) {
+                console.log(err);
+                await this.lessonService.deleteLesson(newLesson);
+            }
         }
 
         if (lessonType.name === 'Lesson Quiz') {
@@ -88,7 +99,13 @@ export class LessonController {
             }
             lessonQuiz.description = body.description;
             lessonQuiz.lesson = newLesson;
-            await this.lessonQuizService.saveLessonQuiz(lessonQuiz);
+
+            try {
+                await this.lessonQuizService.saveLessonQuiz(lessonQuiz);
+            } catch (err) {
+                console.log(err);
+                await this.lessonService.deleteLesson(newLesson);
+            }
         }
 
         return res.send(newLesson);

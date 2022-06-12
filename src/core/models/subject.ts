@@ -1,9 +1,10 @@
 import { SubjectCategory } from './subject-category';
 import { Expert } from './expert';
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
 import * as joi from 'joi';
 import { JoiMessage } from 'joi-message';
+import { Lesson } from './lesson';
 
 @Entity()
 export class Subject {
@@ -50,6 +51,10 @@ export class Subject {
     @ApiProperty({ description: 'Assign to' })
     @ManyToOne(() => Expert)
     assignTo: Expert;
+
+    @ApiProperty({ description: 'Lesson' })
+    @OneToMany(() => Lesson, (lesson) => lesson.subject)
+    lessons: Lesson[];
 }
 
 export const subjectValidateSchema = {

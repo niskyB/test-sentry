@@ -1,3 +1,4 @@
+import { BlogCategory } from './../core/models';
 import { AuthModule } from './../auth/auth.module';
 import { UserModule } from './../user/user.module';
 import { BlogCategoryRepository } from './../core/repositories';
@@ -6,11 +7,12 @@ import { Module } from '@nestjs/common';
 import { BlogCategoryController } from './blog-category.controller';
 import { BlogCategoryService } from './blog-category.service';
 import { BlogCategoriesController } from './blog-categories.controller';
+import { Connection } from 'typeorm';
 
 @Module({
-    imports: [TypeOrmModule.forFeature([BlogCategoryRepository]), AuthModule, UserModule],
+    imports: [TypeOrmModule.forFeature([BlogCategory]), AuthModule, UserModule],
     controllers: [BlogCategoryController, BlogCategoriesController],
-    providers: [BlogCategoryService],
+    providers: [BlogCategoryService, { provide: BlogCategoryRepository, useFactory: (connection: Connection) => connection.getCustomRepository(BlogCategoryRepository), inject: [Connection] }],
     exports: [BlogCategoryService],
 })
 export class BlogCategoryModule {}
