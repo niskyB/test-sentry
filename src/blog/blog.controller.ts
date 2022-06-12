@@ -16,7 +16,6 @@ import { MarketingService } from '../marketing/marketing.service';
 
 @ApiTags('blog')
 @ApiBearerAuth()
-@UseGuards(MarketingGuard)
 @Controller('blog')
 export class BlogController {
     constructor(
@@ -36,6 +35,7 @@ export class BlogController {
     }
 
     @Post('')
+    @UseGuards(MarketingGuard)
     @UseInterceptors(FileInterceptor('image'))
     @UsePipes(new JoiValidatorPipe(vCreateBlogDTO))
     async cCreateBlog(@Req() req: Request, @Res() res: Response, @Body() body: CreateBlogDTO, @UploadedFile() file: Express.Multer.File) {
@@ -65,6 +65,7 @@ export class BlogController {
     }
 
     @Put('/:id')
+    @UseGuards(MarketingGuard)
     @ApiParam({ name: 'id', example: 'TVgJIjsRFmIvyjUeBOLv4gOD3eQZY' })
     @UseInterceptors(FileInterceptor('image'))
     @UsePipes(new JoiValidatorPipe(vUpdateBlogDTO))
