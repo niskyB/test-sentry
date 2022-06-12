@@ -1,3 +1,4 @@
+import { Lesson } from './../core/models';
 import { QuizModule } from './../quiz/quiz.module';
 import { LessonQuizModule } from './../lesson-quiz/lesson-quiz.module';
 import { LessonDetailModule } from './../lesson-detail/lesson-detail.module';
@@ -12,11 +13,12 @@ import { Module } from '@nestjs/common';
 import { LessonController } from './lesson.controller';
 import { LessonService } from './lesson.service';
 import { LessonsController } from './lessons.controller';
+import { Connection } from 'typeorm';
 
 @Module({
-    imports: [TypeOrmModule.forFeature([LessonRepository]), AuthModule, UserModule, LessonTypeModule, SubjectModule, SubjectTopicModule, LessonDetailModule, LessonQuizModule, QuizModule],
+    imports: [TypeOrmModule.forFeature([Lesson]), AuthModule, UserModule, LessonTypeModule, SubjectModule, SubjectTopicModule, LessonDetailModule, LessonQuizModule, QuizModule],
     controllers: [LessonController, LessonsController],
-    providers: [LessonService],
+    providers: [LessonService, { provide: LessonRepository, useFactory: (connection: Connection) => connection.getCustomRepository(LessonRepository), inject: [Connection] }],
     exports: [LessonService],
 })
 export class LessonModule {}

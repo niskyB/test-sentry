@@ -1,5 +1,6 @@
+import { Blog } from './../core/models';
 import { BlogCategoryModule } from './../blog-category/blog-category.module';
-import { S3Module } from 'src/core/providers/s3/s3.module';
+import { S3Module } from '../core/providers/s3/s3.module';
 import { MarketingModule } from './../marketing/marketing.module';
 import { UserModule } from './../user/user.module';
 import { AuthModule } from './../auth/auth.module';
@@ -9,11 +10,12 @@ import { Module } from '@nestjs/common';
 import { BlogController } from './blog.controller';
 import { BlogService } from './blog.service';
 import { BlogsController } from './blogs.controller';
+import { Connection } from 'typeorm';
 
 @Module({
-    imports: [TypeOrmModule.forFeature([BlogRepository]), AuthModule, UserModule, MarketingModule, S3Module, BlogCategoryModule],
+    imports: [TypeOrmModule.forFeature([Blog]), AuthModule, UserModule, MarketingModule, S3Module, BlogCategoryModule],
     controllers: [BlogController, BlogsController],
-    providers: [BlogService],
+    providers: [BlogService, { provide: BlogRepository, useFactory: (connection: Connection) => connection.getCustomRepository(BlogRepository), inject: [Connection] }],
     exports: [BlogService],
 })
 export class BlogModule {}

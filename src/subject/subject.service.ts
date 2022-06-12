@@ -10,7 +10,7 @@ export class SubjectService {
     async getSubjectByField(field: keyof Subject, value: any): Promise<Subject> {
         return await this.subjectRepository
             .createQueryBuilder('subject')
-            .where(`subject.${field} = :value`, { value })
+            .where(`subject.${field.toString()} = :value`, { value })
             .leftJoinAndSelect('subject.assignTo', 'assignTo')
             .leftJoinAndSelect('assignTo.user', 'user')
             .leftJoinAndSelect('subject.category', 'category')

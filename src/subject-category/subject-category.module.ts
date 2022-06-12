@@ -1,3 +1,4 @@
+import { SubjectCategory } from './../core/models';
 import { UserModule } from './../user/user.module';
 import { AuthModule } from './../auth/auth.module';
 import { SubjectCategoryService } from './subject-category.service';
@@ -6,11 +7,15 @@ import { SubjectCategoryRepository } from './../core/repositories/subjectCategor
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Module } from '@nestjs/common';
 import { SubjectCategoriesController } from './subject-categories.controller';
+import { Connection } from 'typeorm';
 
 @Module({
-    imports: [TypeOrmModule.forFeature([SubjectCategoryRepository]), AuthModule, UserModule],
+    imports: [TypeOrmModule.forFeature([SubjectCategory]), AuthModule, UserModule],
     controllers: [SubjectCategoryController, SubjectCategoriesController],
-    providers: [SubjectCategoryService],
+    providers: [
+        SubjectCategoryService,
+        { provide: SubjectCategoryRepository, useFactory: (connection: Connection) => connection.getCustomRepository(SubjectCategoryRepository), inject: [Connection] },
+    ],
     exports: [SubjectCategoryService],
 })
 export class SubjectCategoryModule {}
