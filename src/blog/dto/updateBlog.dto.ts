@@ -11,8 +11,11 @@ export class UpdateBlogDTO {
     @ApiProperty({ description: 'Brief Info', example: 'brief information' })
     briefInfo: string;
 
-    @ApiProperty({ description: 'Is Show' })
+    @ApiProperty({ description: 'Is Show', example: 'true' })
     isShow: boolean;
+
+    @ApiProperty({ description: 'Is Show', example: 'true' })
+    isFeature: boolean;
 
     @ApiProperty({ description: 'Category', example: 'Category' })
     category: string;
@@ -22,6 +25,7 @@ export const vUpdateBlogDTO = joi.object<UpdateBlogDTO>({
     title: blogValidateSchema.title.failover(''),
     details: blogValidateSchema.details.failover(''),
     briefInfo: blogValidateSchema.briefInfo.failover(''),
+    isFeature: blogValidateSchema.isFeature.failover(null),
     isShow: blogValidateSchema.isShow.failover(null),
     category: joi.string().required().failover(''),
 });

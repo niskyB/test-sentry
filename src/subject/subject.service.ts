@@ -77,7 +77,7 @@ export class SubjectService {
                 .leftJoinAndSelect('assignTo.user', 'user')
                 .andWhere(`user.id LIKE (:id)`, { id: `%${assignTo}%` })
                 .leftJoinAndSelect(`subject.category`, 'category')
-                .andWhere(`category.id LIKE (:id)`, { id: `%${category}%` })
+                .andWhere(`category.id LIKE (:categoryId)`, { categoryId: `%${category}%` })
                 .orderBy(`subject.createdAt`, 'DESC')
                 .skip(currentPage * pageSize)
                 .take(pageSize)
@@ -107,7 +107,7 @@ export class SubjectService {
                 .leftJoinAndSelect('assignTo.user', 'user')
                 .andWhere(`user.id LIKE (:id)`, { id: `%${assignTo}%` })
                 .leftJoinAndSelect(`subject.category`, 'category')
-                .andWhere(`category.id LIKE (:id)`, { id: `%${category}%` })
+                .andWhere(`category.id LIKE (:categoryId)`, { categoryId: `%${category}%` })
                 .getCount();
 
             return { data: sliders, count };

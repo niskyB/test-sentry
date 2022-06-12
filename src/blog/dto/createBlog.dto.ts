@@ -13,11 +13,15 @@ export class CreateBlogDTO {
 
     @ApiProperty({ description: 'Category Id', example: '21312-aad-1231' })
     category: string;
+
+    @ApiProperty({ description: 'Is Feature', example: '21312-aad-1231' })
+    isFeature: boolean;
 }
 
 export const vCreateBlogDTO = joi.object<CreateBlogDTO>({
     title: blogValidateSchema.title,
     details: blogValidateSchema.details,
     briefInfo: blogValidateSchema.briefInfo,
+    isFeature: blogValidateSchema.isFeature,
     category: joi.string().required().failover(''),
 });

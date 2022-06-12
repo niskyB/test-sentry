@@ -52,6 +52,7 @@ export class BlogController {
         newBlog.category = blogCategory;
 
         newBlog.marketing = customer;
+        newBlog.isFeature = body.isFeature;
         const date = new Date();
         newBlog.createdAt = date.toISOString();
         newBlog.updatedAt = date.toISOString();
@@ -78,6 +79,7 @@ export class BlogController {
         blog.briefInfo = body.briefInfo || blog.briefInfo;
         blog.details = body.details || blog.details;
         blog.isShow = body.isShow === null || body.isShow === undefined ? blog.isShow : body.isShow;
+        blog.isFeature = body.isFeature === null || body.isFeature === undefined ? blog.isFeature : body.isFeature;
         blog.updatedAt = new Date().toISOString();
 
         const blogCategory = await this.blogCategoryService.getBlogCategoryByField('id', body.category);
