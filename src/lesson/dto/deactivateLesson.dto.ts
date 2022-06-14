@@ -2,12 +2,12 @@ import { ApiProperty } from '@nestjs/swagger';
 import * as joi from 'joi';
 import JoiMessage from 'joi-message';
 
-export class deactivateLessonDTO {
+export class DeactivateLessonDTO {
     @ApiProperty({ description: 'Is Active', example: 'true' })
     isActive: boolean;
 }
 
-export const vDeactivateLessonDTO = joi.object<deactivateLessonDTO>({
+export const vDeactivateLessonDTO = joi.object<DeactivateLessonDTO>({
     isActive: joi
         .boolean()
         .required()

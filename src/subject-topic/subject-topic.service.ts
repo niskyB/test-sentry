@@ -9,4 +9,8 @@ export class SubjectTopicService {
     async saveSubjectTopic(subjectTopic: SubjectTopic): Promise<SubjectTopic> {
         return await this.subjectTopicRepository.save(subjectTopic);
     }
+
+    async getSubjectTopicByLessonId(id: string): Promise<SubjectTopic> {
+        return await this.subjectTopicRepository.createQueryBuilder('subject_topic').leftJoinAndSelect('subject_topic.lesson', 'lesson').where('lesson.id = (:id)', { id }).getOne();
+    }
 }

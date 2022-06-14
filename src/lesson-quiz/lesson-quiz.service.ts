@@ -9,4 +9,8 @@ export class LessonQuizService {
     async saveLessonQuiz(lessonQuiz: LessonQuiz): Promise<LessonQuiz> {
         return await this.lessonQuizRepository.save(lessonQuiz);
     }
+
+    async getLessonQuizByLessonId(id: string): Promise<LessonQuiz> {
+        return await this.lessonQuizRepository.createQueryBuilder('lesson_quiz').leftJoinAndSelect('lesson_quiz.lesson', 'lesson').where('lesson.id = (:id)', { id }).getOne();
+    }
 }
