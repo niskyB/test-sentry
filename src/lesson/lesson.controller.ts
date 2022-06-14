@@ -53,9 +53,12 @@ export class LessonController {
         const date = new Date();
         newLesson.name = body.name;
         newLesson.order = body.order;
+        newLesson.topic = body.topic;
         newLesson.createdAt = date.toISOString();
         newLesson.updatedAt = date.toISOString();
         newLesson.subject = subject;
+        newLesson.isActive = body.isActive === null || body.isActive === undefined ? newLesson.isActive : body.isActive;
+        newLesson.type = lessonType;
 
         await this.lessonService.saveLesson(newLesson);
 
@@ -71,10 +74,10 @@ export class LessonController {
         }
 
         if (lessonType.name === 'Lesson Detail') {
-            if (!body.description) throw new HttpException({ description: ResponseMessage.INVALID_DESCRIPTION }, StatusCodes.BAD_REQUEST);
+            if (!body.htmlContent) throw new HttpException({ htmlContent: ResponseMessage.INVALID_HTML_CONTENT }, StatusCodes.BAD_REQUEST);
             if (!body.videoLink) throw new HttpException({ videoLink: ResponseMessage.INVALID_VIDEO_LINK }, StatusCodes.BAD_REQUEST);
             const lessonDetail = new LessonDetail();
-            lessonDetail.description = body.description;
+            lessonDetail.htmlContent = body.htmlContent;
             lessonDetail.videoLink = body.videoLink;
             lessonDetail.lesson = newLesson;
             try {
@@ -86,7 +89,7 @@ export class LessonController {
         }
 
         if (lessonType.name === 'Lesson Quiz') {
-            if (!body.description) throw new HttpException({ description: ResponseMessage.INVALID_DESCRIPTION }, StatusCodes.BAD_REQUEST);
+            if (!body.htmlContent) throw new HttpException({ htmlContent: ResponseMessage.INVALID_HTML_CONTENT }, StatusCodes.BAD_REQUEST);
             if (!body.quiz) throw new HttpException({ videoLink: ResponseMessage.INVALID_QUIZ }, StatusCodes.BAD_REQUEST);
 
             const quiz = body.quiz.split(',');
@@ -97,7 +100,7 @@ export class LessonController {
                 const res = await this.quizService.getQuizByField('id', item);
                 lessonQuiz.quizs.push(res);
             }
-            lessonQuiz.description = body.description;
+            lessonQuiz.htmlContent = body.htmlContent;
             lessonQuiz.lesson = newLesson;
 
             try {

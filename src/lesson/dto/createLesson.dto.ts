@@ -7,8 +7,14 @@ export class CreateLessonDTO {
     @ApiProperty({ description: 'Name', example: 'Javascript' })
     name: string;
 
-    @ApiProperty({ description: 'Description' })
-    description: string;
+    @ApiProperty({ description: 'Is Active', example: 'true' })
+    isActive: boolean;
+
+    @ApiProperty({ description: 'Html Content' })
+    htmlContent: string;
+
+    @ApiProperty({ description: 'Topic' })
+    topic: string;
 
     @ApiProperty({ description: 'Video link' })
     videoLink: string;
@@ -29,7 +35,8 @@ export class CreateLessonDTO {
 export const vCreateLessonDTO = joi.object<CreateLessonDTO>({
     name: lessonValidateSchema.name,
     order: lessonValidateSchema.order,
-    description: lessonDetailValidateSchema.description.failover(''),
+    htmlContent: lessonDetailValidateSchema.htmlContent.failover(''),
+    topic: lessonValidateSchema.topic,
     quiz: joi
         .string()
         .required()
@@ -44,4 +51,8 @@ export const vCreateLessonDTO = joi.object<CreateLessonDTO>({
         .string()
         .required()
         .messages(JoiMessage.createStringMessages({ field: 'Subject' })),
+    isActive: joi
+        .boolean()
+        .required()
+        .messages(JoiMessage.createBooleanMessages({ field: 'Is Active' })),
 });

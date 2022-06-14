@@ -11,9 +11,9 @@ export class LessonQuiz {
     @PrimaryGeneratedColumn('uuid')
     id: string;
 
-    @ApiProperty({ description: 'Description' })
+    @ApiProperty({ description: 'Html Content' })
     @Column('longtext', { default: null })
-    description: string;
+    htmlContent: string;
 
     @ApiProperty({ description: 'Lesson' })
     @OneToOne(() => Lesson)
@@ -27,7 +27,7 @@ export class LessonQuiz {
 }
 
 export const lessonQuizValidateSchema = {
-    description: joi
+    htmlContent: joi
         .string()
         .min(3)
         .trim()
