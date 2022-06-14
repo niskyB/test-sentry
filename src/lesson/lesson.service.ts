@@ -11,7 +11,13 @@ export class LessonService {
     }
 
     async getLessonByField(field: keyof Lesson, value: any): Promise<Lesson> {
-        return await this.lessonRepository.findOneByField(field, value);
+        return await this.lessonRepository
+            .createQueryBuilder('lesson')
+            .where(`lesson.${field.toString()} = :value`, { value })
+            .leftJoinAndSelect('lesson.subject', 'subject')
+            .leftJoinAndSelect('subject.assignTo', 'assignTo')
+            .leftJoinAndSelect('assignTo.user', 'user')
+            .getOne();
     }
 
     async getLessonsBySubjectId(id: string): Promise<Lesson[]> {
