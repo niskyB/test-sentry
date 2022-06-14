@@ -44,12 +44,15 @@ export class LessonController {
     @Post('')
     @UseGuards(ExpertGuard)
     @UsePipes(new JoiValidatorPipe(vCreateLessonDTO))
-    async cCreateLesson(@Res() res: Response, @Body() body: CreateLessonDTO) {
+    async cCreateLesson(@Req() req: Request, @Res() res: Response, @Body() body: CreateLessonDTO) {
         const lessonType = await this.lessonTypeService.getLessonTypeByField('id', body.type);
         if (!lessonType) throw new HttpException({ errorMessage: ResponseMessage.INVALID_TYPE }, StatusCodes.BAD_REQUEST);
 
         const subject = await this.subjectService.getSubjectByField('id', body.subject);
         if (!subject) throw new HttpException({ errorMessage: ResponseMessage.INVALID_SUBJECT }, StatusCodes.BAD_REQUEST);
+
+        const user = await this.userService.findUser('id', req.user.id);
+        if (user.role.name !== UserRole.ADMIN && subject.assignTo.id !== user.typeId) throw new HttpException({ errorMessage: ResponseMessage.FORBIDDEN }, StatusCodes.FORBIDDEN);
 
         const newLesson = new Lesson();
         const date = new Date();
@@ -128,6 +131,7 @@ export class LessonController {
         if (user.role.name !== UserRole.ADMIN && lesson.subject.assignTo.id !== user.typeId) throw new HttpException({ errorMessage: ResponseMessage.FORBIDDEN }, StatusCodes.FORBIDDEN);
 
         lesson.isActive = body.isActive === null || body.isActive === undefined ? lesson.isActive : body.isActive;
+        lesson.updatedAt = new Date().toISOString();
 
         await this.lessonService.saveLesson(lesson);
 
