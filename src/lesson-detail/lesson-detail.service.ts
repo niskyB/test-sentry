@@ -9,4 +9,8 @@ export class LessonDetailService {
     async saveLessonDetail(lessonDetail: LessonDetail): Promise<LessonDetail> {
         return await this.lessonDetailRepository.save(lessonDetail);
     }
+
+    async getLessonDetailByLessonId(id: string): Promise<LessonDetail> {
+        return await this.lessonDetailRepository.createQueryBuilder('lesson_detail').leftJoinAndSelect('lesson_detail.lesson', 'lesson').where('lesson.id = (:id)', { id }).getOne();
+    }
 }
