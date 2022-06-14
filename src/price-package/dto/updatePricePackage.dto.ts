@@ -21,9 +21,6 @@ export class UpdatePricePackageDTO {
 
     @ApiProperty({ description: 'Subject Id', example: '123-123-123' })
     subjectId: string;
-
-    @ApiProperty({ description: 'Is active', example: 'true' })
-    isActive: boolean;
 }
 
 export const vUpdatePricePackageDTO = joi.object<UpdatePricePackageDTO>({
@@ -36,5 +33,4 @@ export const vUpdatePricePackageDTO = joi.object<UpdatePricePackageDTO>({
         .string()
         .required()
         .messages(JoiMessage.createStringMessages({ field: 'Subject' })),
-    isActive: joi.boolean().failover(null),
 });
