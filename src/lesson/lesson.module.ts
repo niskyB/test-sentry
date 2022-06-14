@@ -16,7 +16,7 @@ import { LessonsController } from './lessons.controller';
 import { Connection } from 'typeorm';
 
 @Module({
-    imports: [TypeOrmModule.forFeature([Lesson]), AuthModule, UserModule, LessonTypeModule, SubjectModule, SubjectTopicModule, LessonDetailModule, LessonQuizModule, QuizModule],
+    imports: [TypeOrmModule.forFeature([Lesson]), AuthModule, UserModule, LessonTypeModule, SubjectModule, SubjectTopicModule, LessonDetailModule, LessonQuizModule, QuizModule, UserModule],
     controllers: [LessonController, LessonsController],
     providers: [LessonService, { provide: LessonRepository, useFactory: (connection: Connection) => connection.getCustomRepository(LessonRepository), inject: [Connection] }],
     exports: [LessonService],
