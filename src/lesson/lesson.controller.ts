@@ -1,19 +1,20 @@
+import { UserService } from './../user/user.service';
 import { QuizService } from './../quiz/quiz.service';
 import { LessonQuizService } from './../lesson-quiz/lesson-quiz.service';
 import { LessonDetailService } from './../lesson-detail/lesson-detail.service';
 import { SubjectTopicService } from './../subject-topic/subject-topic.service';
-import { Lesson, LessonDetail, LessonQuiz, SubjectTopic } from './../core/models';
+import { Lesson, LessonDetail, LessonQuiz, SubjectTopic, UserRole } from './../core/models';
 import { SubjectService } from './../subject/subject.service';
 import { LessonTypeService } from './../lesson-type/lesson-type.service';
 import { ExpertGuard } from './../auth/guard';
 import { JoiValidatorPipe } from './../core/pipe';
 import { ResponseMessage } from './../core/interface';
-import { Body, Controller, Get, HttpException, Param, Post, Res, UseGuards, UsePipes } from '@nestjs/common';
+import { Body, Controller, Get, HttpException, Param, Post, Put, Req, Res, UseGuards, UsePipes } from '@nestjs/common';
 import { ApiBearerAuth, ApiParam, ApiTags } from '@nestjs/swagger';
 import { LessonService } from './lesson.service';
-import { Response } from 'express';
+import { Response, Request } from 'express';
 import { StatusCodes } from 'http-status-codes';
-import { CreateLessonDTO, vCreateLessonDTO } from './dto';
+import { CreateLessonDTO, deactivateLessonDTO, vCreateLessonDTO, vDeactivateLessonDTO } from './dto';
 
 @ApiTags('lesson')
 @ApiBearerAuth()
@@ -27,6 +28,7 @@ export class LessonController {
         private readonly lessonDetailService: LessonDetailService,
         private readonly lessonQuizService: LessonQuizService,
         private readonly quizService: QuizService,
+        private readonly userService: UserService,
     ) {}
 
     @Get('/:id')
@@ -112,5 +114,23 @@ export class LessonController {
         }
 
         return res.send(newLesson);
+    }
+
+    @Put('/:id')
+    @ApiParam({ name: 'id', example: 'TVgJIjsRFmIvyjUeBOLv4gOD3eQZY', description: 'lesson id' })
+    @UseGuards(ExpertGuard)
+    @UsePipes(new JoiValidatorPipe(vDeactivateLessonDTO))
+    async cDeactivateLesson(@Param('id') id: string, @Req() req: Request, @Res() res: Response, @Body() body: deactivateLessonDTO) {
+        const user = await this.userService.findUser('id', req.user.id);
+        const lesson = await this.lessonService.getLessonByField('id', id);
+
+        if (!lesson) throw new HttpException({ errorMessage: ResponseMessage.NOT_FOUND }, StatusCodes.NOT_FOUND);
+        if (user.role.name !== UserRole.ADMIN && lesson.subject.assignTo.id !== user.typeId) throw new HttpException({ errorMessage: ResponseMessage.FORBIDDEN }, StatusCodes.FORBIDDEN);
+
+        lesson.isActive = body.isActive === null || body.isActive === undefined ? lesson.isActive : body.isActive;
+
+        await this.lessonService.saveLesson(lesson);
+
+        return res.send(lesson);
     }
 }
