@@ -17,11 +17,19 @@ export class LessonService {
             .leftJoinAndSelect('lesson.subject', 'subject')
             .leftJoinAndSelect('subject.assignTo', 'assignTo')
             .leftJoinAndSelect('assignTo.user', 'user')
+            .leftJoinAndSelect('lesson.type', 'type')
             .getOne();
     }
 
     async getLessonsBySubjectId(id: string): Promise<Lesson[]> {
-        return await this.lessonRepository.createQueryBuilder('Lesson').leftJoinAndSelect('Lesson.subject', 'subject').where('subject.id = (:id)', { id }).getMany();
+        return await this.lessonRepository
+            .createQueryBuilder('Lesson')
+            .leftJoinAndSelect('Lesson.subject', 'subject')
+            .where('subject.id = (:id)', { id })
+            .leftJoinAndSelect('subject.assignTo', 'assignTo')
+            .leftJoinAndSelect('assignTo.user', 'user')
+            .leftJoinAndSelect('Lesson.type', 'type')
+            .getMany();
     }
 
     async deleteLesson(lesson: Lesson) {
