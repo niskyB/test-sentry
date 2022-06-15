@@ -3,12 +3,9 @@ import { ApiProperty } from '@nestjs/swagger';
 import * as joi from 'joi';
 import JoiMessage from 'joi-message';
 
-export class CreateLessonDTO {
+export class UpdateLessonDTO {
     @ApiProperty({ description: 'Name', example: 'Javascript' })
     name: string;
-
-    @ApiProperty({ description: 'Is Active', example: 'true' })
-    isActive: boolean;
 
     @ApiProperty({ description: 'Html Content' })
     htmlContent: string;
@@ -16,43 +13,32 @@ export class CreateLessonDTO {
     @ApiProperty({ description: 'Topic' })
     topic: string;
 
+    @ApiProperty({ description: 'Type of current lesson', nullable: false })
+    type: string;
+
     @ApiProperty({ description: 'Video link' })
     videoLink: string;
 
     @ApiProperty({ description: 'Order', example: '1' })
     order: number;
 
-    @ApiProperty({ description: 'Type id', example: '12a-123asdf-a23ad-32a' })
-    type: string;
-
-    @ApiProperty({ description: 'Subject id', example: '12a-123asdf-a23ad-32a' })
-    subject: string;
-
     @ApiProperty({ description: 'Array of quiz id', example: '12a-123asdf-a23ad-32a,129-a2sf-123a-23aa' })
     quiz: string;
 }
 
-export const vCreateLessonDTO = joi.object<CreateLessonDTO>({
-    name: lessonValidateSchema.name,
-    order: lessonValidateSchema.order,
+export const vUpdateLessonDTO = joi.object<UpdateLessonDTO>({
+    name: lessonValidateSchema.name.failover(''),
+    order: lessonValidateSchema.order.failover(''),
     htmlContent: lessonDetailValidateSchema.htmlContent.failover(''),
-    topic: lessonValidateSchema.topic,
+    topic: lessonValidateSchema.topic.failover(''),
     quiz: joi
         .string()
         .required()
         .failover('')
         .messages(JoiMessage.createStringMessages({ field: 'Quiz' })),
-    videoLink: lessonDetailValidateSchema.videoLink.failover(''),
     type: joi
         .string()
         .required()
         .messages(JoiMessage.createStringMessages({ field: 'Type' })),
-    subject: joi
-        .string()
-        .required()
-        .messages(JoiMessage.createStringMessages({ field: 'Subject' })),
-    isActive: joi
-        .boolean()
-        .required()
-        .messages(JoiMessage.createBooleanMessages({ field: 'Is Active' })),
+    videoLink: lessonDetailValidateSchema.videoLink.failover(''),
 });

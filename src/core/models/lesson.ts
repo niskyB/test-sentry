@@ -15,6 +15,10 @@ export class Lesson {
     @Column({ default: null })
     name: string;
 
+    @ApiProperty({ description: 'Topic' })
+    @Column({ default: null })
+    topic: string;
+
     @ApiProperty({ description: 'Order' })
     @Column({ default: null })
     order: number;
@@ -53,4 +57,10 @@ export const lessonValidateSchema = {
         .min(1)
         .required()
         .messages(JoiMessage.createNumberMessages({ field: 'Order' })),
+    topic: joi
+        .string()
+        .required()
+        .max(255)
+        .trim()
+        .messages(JoiMessage.createStringMessages({ field: 'Topic' })),
 };

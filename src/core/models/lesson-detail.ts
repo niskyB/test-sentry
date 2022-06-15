@@ -10,9 +10,9 @@ export class LessonDetail {
     @PrimaryGeneratedColumn('uuid')
     id: string;
 
-    @ApiProperty({ description: 'Description' })
+    @ApiProperty({ description: 'Html Content' })
     @Column('longtext', { default: null })
-    description: string;
+    htmlContent: string;
 
     @ApiProperty({ description: 'Video link' })
     @Column('longtext', { default: null })
@@ -25,7 +25,7 @@ export class LessonDetail {
 }
 
 export const lessonDetailValidateSchema = {
-    description: joi
+    htmlContent: joi
         .string()
         .min(3)
         .trim()
