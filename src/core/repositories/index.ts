@@ -21,3 +21,4 @@ export * from './lessonQuiz.repository';
 export * from './quiz.repository';
 export * from './answer.repository';
 export * from './question.repository';
+export * from './registration.repository';
