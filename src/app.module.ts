@@ -25,6 +25,10 @@ import { SubjectTopicModule } from './subject-topic/subject-topic.module';
 import { QuizModule } from './quiz/quiz.module';
 import { QuestionModule } from './question/question.module';
 import { AnswerModule } from './answer/answer.module';
+import { RegistrationModule } from './registration/registration.module';
+import { QuizResultModule } from './quiz-result/quiz-result.module';
+import { QuestionAnswerModule } from './question-answer/question-answer.module';
+import { UserAnswerModule } from './user-answer/user-answer.module';
 @Module({
     imports: [
         DbModule,
@@ -55,6 +59,10 @@ import { AnswerModule } from './answer/answer.module';
         QuizModule,
         QuestionModule,
         AnswerModule,
+        RegistrationModule,
+        QuizResultModule,
+        QuestionAnswerModule,
+        UserAnswerModule,
     ],
 })
 export class AppModule {}
