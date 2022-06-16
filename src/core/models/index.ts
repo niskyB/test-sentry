@@ -23,3 +23,6 @@ export * from './lesson-detail';
 export * from './subject-topic';
 export * from './question';
 export * from './answer';
+export * from './registration';
+export * from './quiz-result';
+export * from './question-answer';
