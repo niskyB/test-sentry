@@ -33,7 +33,7 @@ export class CreateQuestionDTO {
     questionLevel: string;
 
     @ApiProperty({ description: 'Answer', example: '123-asd21-asd2' })
-    answers: Answer[];
+    answers: string;
 }
 
 export const vCreateQuestionDTO = joi.object<CreateQuestionDTO>({
@@ -51,19 +51,20 @@ export const vCreateQuestionDTO = joi.object<CreateQuestionDTO>({
         .required()
         .messages(JoiMessage.createStringMessages({ field: 'Lesson' })),
     answers: joi
-        .array()
-        .items(
-            joi.object().keys({
-                detail: joi
-                    .string()
-                    .required()
-                    .messages(JoiMessage.createStringMessages({ field: 'Detail' })),
-                isCorrect: joi
-                    .boolean()
-                    .required()
-                    .messages(JoiMessage.createBooleanMessages({ field: 'Is Correct' })),
-            }),
-        )
+        // .array()
+        // .items(
+        //     joi.object().keys({
+        //         detail: joi
+        //             .string()
+        //             .required()
+        //             .messages(JoiMessage.createStringMessages({ field: 'Detail' })),
+        //         isCorrect: joi
+        //             .boolean()
+        //             .required()
+        //             .messages(JoiMessage.createBooleanMessages({ field: 'Is Correct' })),
+        //     }),
+        // )
+        .string()
         .required()
         .messages(JoiMessage.createArrayMessages({ field: 'Answers' })),
     questionLevel: joi
