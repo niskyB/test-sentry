@@ -29,6 +29,7 @@ import { RegistrationModule } from './registration/registration.module';
 import { QuizResultModule } from './quiz-result/quiz-result.module';
 import { QuestionAnswerModule } from './question-answer/question-answer.module';
 import { UserAnswerModule } from './user-answer/user-answer.module';
+import { QuestionInQuizModule } from './question-in-quiz/question-in-quiz.module';
 @Module({
     imports: [
         DbModule,
@@ -63,6 +64,7 @@ import { UserAnswerModule } from './user-answer/user-answer.module';
         QuizResultModule,
         QuestionAnswerModule,
         UserAnswerModule,
+        QuestionInQuizModule,
     ],
 })
 export class AppModule {}

@@ -34,8 +34,10 @@ export class BlogController {
 
         if (!blog) throw new HttpException({ errorMessage: ResponseMessage.NOT_FOUND }, StatusCodes.NOT_FOUND);
 
-        blog.marketing.user.password = '';
-        blog.marketing.user.token = '';
+        if (blog.marketing) {
+            blog.marketing.user.password = '';
+            blog.marketing.user.token = '';
+        }
         return res.send(blog);
     }
 
@@ -65,8 +67,10 @@ export class BlogController {
         else throw new HttpException({ errorMessage: ResponseMessage.SOMETHING_WRONG }, StatusCodes.INTERNAL_SERVER_ERROR);
         await this.blogService.saveBlog(newBlog);
 
-        newBlog.marketing.user.password = '';
-        newBlog.marketing.user.token = '';
+        if (newBlog.marketing) {
+            newBlog.marketing.user.password = '';
+            newBlog.marketing.user.token = '';
+        }
 
         return res.send(newBlog);
     }
@@ -101,8 +105,10 @@ export class BlogController {
 
         await this.blogService.saveBlog(blog);
 
-        blog.marketing.user.password = '';
-        blog.marketing.user.token = '';
+        if (blog.marketing) {
+            blog.marketing.user.password = '';
+            blog.marketing.user.token = '';
+        }
 
         return res.send(blog);
     }
