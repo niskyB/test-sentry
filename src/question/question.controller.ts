@@ -61,6 +61,7 @@ export class QuestionController {
         newQuestion.videoLink = body.videoLink;
         newQuestion.isMultipleChoice = body.isMultipleChoice;
         newQuestion.isActive = body.isActive;
+        newQuestion.explanation = body.explanation;
         newQuestion.questionLevel = questionLevel;
         newQuestion.dimensions = [];
 

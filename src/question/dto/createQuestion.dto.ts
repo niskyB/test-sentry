@@ -14,6 +14,9 @@ export class CreateQuestionDTO {
     @ApiProperty({ description: 'Audio Link', example: 'asdssdsssdsd' })
     audioLink: string;
 
+    @ApiProperty({ description: 'Explanation', example: 'asdssdsssdsd' })
+    explanation: string;
+
     @ApiProperty({ description: 'Is Multiple Choice', example: 'false' })
     isMultipleChoice: boolean;
 
@@ -38,6 +41,7 @@ export const vCreateQuestionDTO = joi.object<CreateQuestionDTO>({
     videoLink: questionValidateSchema.videoLink.failover(''),
     audioLink: questionValidateSchema.audioLink.failover(''),
     isMultipleChoice: questionValidateSchema.isMultipleChoice,
+    explanation: questionValidateSchema.explanation,
     dimensions: joi
         .string()
         .required()
