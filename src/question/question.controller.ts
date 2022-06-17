@@ -1,3 +1,4 @@
+import { QuestionLevelService } from './../question-level/question-level.service';
 import { AnswerService } from './../answer/answer.service';
 import { LessonService } from './../lesson/lesson.service';
 import { ExpertGuard } from './../auth/guard';
@@ -24,6 +25,7 @@ export class QuestionController {
         private readonly dimensionService: DimensionService,
         private readonly lessonService: LessonService,
         private readonly answerService: AnswerService,
+        private readonly questionLevelService: QuestionLevelService,
     ) {}
 
     @Get('/:id')
@@ -42,20 +44,24 @@ export class QuestionController {
     @UsePipes(new JoiValidatorPipe(vCreateQuestionDTO))
     async cCreateQuestion(@Res() res: Response, @Body() body: CreateQuestionDTO, @UploadedFile() file: Express.Multer.File) {
         const answers = JSON.parse(body.answers) as Answer[];
-        console.log(body.dimensions);
 
         const countCorrect = answers.reduce((total, item) => {
             if (item.isCorrect) return total + 1;
             return total;
         }, 0);
+
         if (countCorrect <= 0) throw new HttpException({ errorMessage: ResponseMessage.QUESTION_ANSWER_CORRECT_ERROR }, StatusCodes.BAD_REQUEST);
         if (countCorrect > 1 && !body.isMultipleChoice) throw new HttpException({ errorMessage: ResponseMessage.SINGLE_CHOICE_ERROR }, StatusCodes.BAD_REQUEST);
         if (countCorrect <= 1 && body.isMultipleChoice) throw new HttpException({ errorMessage: ResponseMessage.MULTIPLE_CHOICE_ERROR }, StatusCodes.BAD_REQUEST);
+
+        const questionLevel = await this.questionLevelService.getOneByField('id', body.questionLevel);
+
         const newQuestion = new Question();
         newQuestion.content = body.content;
         newQuestion.audioLink = body.audioLink;
         newQuestion.videoLink = body.videoLink;
         newQuestion.isMultipleChoice = body.isMultipleChoice;
+        newQuestion.questionLevel = questionLevel;
         newQuestion.dimensions = [];
         if (file) {
             const result = await this.s3Service.uploadFile(file);

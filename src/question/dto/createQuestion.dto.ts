@@ -1,4 +1,3 @@
-import { Answer } from './../../core/models';
 import { JoiMessage } from 'joi-message';
 import { questionValidateSchema } from './../../core/models';
 import { ApiProperty } from '@nestjs/swagger';
@@ -51,19 +50,6 @@ export const vCreateQuestionDTO = joi.object<CreateQuestionDTO>({
         .required()
         .messages(JoiMessage.createStringMessages({ field: 'Lesson' })),
     answers: joi
-        // .array()
-        // .items(
-        //     joi.object().keys({
-        //         detail: joi
-        //             .string()
-        //             .required()
-        //             .messages(JoiMessage.createStringMessages({ field: 'Detail' })),
-        //         isCorrect: joi
-        //             .boolean()
-        //             .required()
-        //             .messages(JoiMessage.createBooleanMessages({ field: 'Is Correct' })),
-        //     }),
-        // )
         .string()
         .required()
         .messages(JoiMessage.createArrayMessages({ field: 'Answers' })),
