@@ -29,7 +29,7 @@ export class LessonService {
             .leftJoinAndSelect('subject.assignTo', 'assignTo')
             .leftJoinAndSelect('assignTo.user', 'user')
             .leftJoinAndSelect('lesson.type', 'type')
-            .leftJoinAndSelect('lesson.lesson_detail', 'lesson_detail')
+            .leftJoinAndSelect('lesson.lessonDetail', 'lessonDetail')
             .getOne();
     }
 
@@ -41,8 +41,8 @@ export class LessonService {
             .leftJoinAndSelect('subject.assignTo', 'assignTo')
             .leftJoinAndSelect('assignTo.user', 'user')
             .leftJoinAndSelect('lesson.type', 'type')
-            .leftJoinAndSelect('lesson.lesson_quiz', 'lesson_quiz')
-            .leftJoinAndSelect('lesson_quiz.quizs', 'quizs')
+            .leftJoinAndSelect('lesson.lessonQuiz', 'lessonQuiz')
+            .leftJoinAndSelect('lessonQuiz.quizs', 'quizs')
             .getOne();
     }
 
