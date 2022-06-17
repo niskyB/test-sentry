@@ -4,6 +4,7 @@ import { Column, Entity, JoinTable, ManyToMany, PrimaryGeneratedColumn, ManyToOn
 import { ApiProperty } from '@nestjs/swagger';
 import * as joi from 'joi';
 import JoiMessage from 'joi-message';
+import { QuestionLevel } from './question-level';
 
 @Entity()
 export class Question {
@@ -43,6 +44,10 @@ export class Question {
     @ApiProperty({ description: 'Lesson' })
     @ManyToOne(() => Lesson)
     lesson: Lesson;
+
+    @ApiProperty({ description: 'Question Level' })
+    @ManyToOne(() => QuestionLevel)
+    questionLevel: QuestionLevel;
 }
 
 export const questionValidateSchema = {
