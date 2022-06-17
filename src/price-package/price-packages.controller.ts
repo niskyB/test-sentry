@@ -18,8 +18,10 @@ export class PricePackagesController {
         if (!pricePackages) throw new HttpException({ errorMessage: ResponseMessage.NOT_FOUND }, StatusCodes.NOT_FOUND);
 
         pricePackages = pricePackages.map((item) => {
-            item.subject.assignTo.user.password = '';
-            item.subject.assignTo.user.token = '';
+            if (item.subject.assignTo) {
+                item.subject.assignTo.user.password = '';
+                item.subject.assignTo.user.token = '';
+            }
             return item;
         }, []);
         return res.send(pricePackages);
