@@ -3,22 +3,22 @@ import { ApiProperty } from '@nestjs/swagger';
 import * as joi from 'joi';
 
 export class FilterQuestionDTO {
-    @ApiProperty({ description: 'Subject Id', example: 'asdf-aasdf-sadf' })
+    @ApiProperty({ description: 'Subject Id', example: 'asdf-aasdf-sadf', nullable: true })
     subject: string;
 
-    @ApiProperty({ description: 'Lesson Id', example: 'asd-sdasdf-aasdf-aas' })
+    @ApiProperty({ description: 'Lesson Id', example: 'asd-sdasdf-aasdf-aas', nullable: true })
     lesson: string;
 
-    @ApiProperty({ description: 'Dimension Id', example: 'asasdf-asdf-sdf' })
+    @ApiProperty({ description: 'Dimension Id', example: 'asasdf-asdf-sdf', nullable: true })
     dimension: string;
 
-    @ApiProperty({ description: 'Content', example: 'content 123' })
+    @ApiProperty({ description: 'Content', example: 'content 123', nullable: true })
     content: string;
 
-    @ApiProperty({ description: 'Level Id', example: 'easy' })
+    @ApiProperty({ description: 'Level Id', example: 'easy', nullable: true })
     level: string;
 
-    @ApiProperty({ description: 'Is Active', example: 'true' })
+    @ApiProperty({ description: 'Is Active', example: 'true', nullable: true })
     isActive: boolean;
 
     @ApiProperty({ description: 'Current Page', example: '0', nullable: true })
