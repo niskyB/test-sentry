@@ -31,7 +31,11 @@ export class BlogController {
     @ApiParam({ name: 'id', example: 'TVgJIjsRFmIvyjUeBOLv4gOD3eQZY' })
     async cGetBlog(@Param('id') id: string, @Res() res: Response) {
         const blog = await this.blogService.getBlogByField('id', id);
+
         if (!blog) throw new HttpException({ errorMessage: ResponseMessage.NOT_FOUND }, StatusCodes.NOT_FOUND);
+
+        blog.marketing.user.password = '';
+        blog.marketing.user.token = '';
         return res.send(blog);
     }
 
@@ -60,6 +64,9 @@ export class BlogController {
         if (result) newBlog.thumbnailUrl = result.Location;
         else throw new HttpException({ errorMessage: ResponseMessage.SOMETHING_WRONG }, StatusCodes.INTERNAL_SERVER_ERROR);
         await this.blogService.saveBlog(newBlog);
+
+        newBlog.marketing.user.password = '';
+        newBlog.marketing.user.token = '';
 
         return res.send(newBlog);
     }
@@ -93,6 +100,9 @@ export class BlogController {
         }
 
         await this.blogService.saveBlog(blog);
+
+        blog.marketing.user.password = '';
+        blog.marketing.user.token = '';
 
         return res.send(blog);
     }
