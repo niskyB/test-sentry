@@ -53,7 +53,7 @@ export class QuestionController {
         const newQuestion = new Question();
         newQuestion.content = body.content;
         newQuestion.audioLink = body.audioLink;
-        newQuestion.link = body.link;
+        newQuestion.videoLink = body.videoLink;
         newQuestion.isMultipleChoice = body.isMultipleChoice;
         newQuestion.dimensions = [];
 

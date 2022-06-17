@@ -9,7 +9,7 @@ export class CreateQuestionDTO {
     content: string;
 
     @ApiProperty({ description: 'Link', example: 'asdssdsssdsd' })
-    link: string;
+    videoLink: string;
 
     @ApiProperty({ description: 'Audio Link', example: 'asdssdsssdsd' })
     audioLink: string;
@@ -29,7 +29,7 @@ export class CreateQuestionDTO {
 
 export const vCreateQuestionDTO = joi.object<CreateQuestionDTO>({
     content: questionValidateSchema.content,
-    link: questionValidateSchema.link.failover(''),
+    videoLink: questionValidateSchema.videoLink.failover(''),
     audioLink: questionValidateSchema.audioLink.failover(''),
     isMultipleChoice: questionValidateSchema.isMultipleChoice,
     dimensions: joi
