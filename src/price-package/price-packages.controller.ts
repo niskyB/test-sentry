@@ -14,8 +14,14 @@ export class PricePackagesController {
     @Get('/:id')
     @ApiParam({ name: 'id', example: 'TVgJIjsRFmIvyjUeBOLv4gOD3eQZY', description: 'subject id' })
     async cGetPricePackagesBySubjectId(@Param('id') id: string, @Res() res: Response) {
-        const pricePackages = await this.pricePackageService.getPricePackagesBySubjectId(id);
+        let pricePackages = await this.pricePackageService.getPricePackagesBySubjectId(id);
         if (!pricePackages) throw new HttpException({ errorMessage: ResponseMessage.NOT_FOUND }, StatusCodes.NOT_FOUND);
+
+        pricePackages = pricePackages.map((item) => {
+            item.subject.assignTo.user.password = '';
+            item.subject.assignTo.user.token = '';
+            return item;
+        }, []);
         return res.send(pricePackages);
     }
 }

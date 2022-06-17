@@ -1,9 +1,12 @@
 import { Subject } from './subject';
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, JoinColumn, ManyToOne, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
 import * as joi from 'joi';
 import JoiMessage from 'joi-message';
 import { LessonType } from './lesson-type';
+import { SubjectTopic } from './subject-topic';
+import { LessonQuiz } from './lesson-quiz';
+import { LessonDetail } from './lesson-detail';
 
 @Entity()
 export class Lesson {
@@ -42,6 +45,21 @@ export class Lesson {
     @ApiProperty({ description: 'Subject' })
     @ManyToOne(() => Subject)
     subject: Subject;
+
+    @ApiProperty({ description: 'Subject Topic' })
+    @OneToOne(() => SubjectTopic, { cascade: true })
+    @JoinColumn()
+    subjectTopic: SubjectTopic;
+
+    @ApiProperty({ description: 'Lesson Quiz' })
+    @OneToOne(() => LessonQuiz, { cascade: true })
+    @JoinColumn()
+    lessonQuiz: LessonQuiz;
+
+    @ApiProperty({ description: 'Lesson Detail' })
+    @OneToOne(() => LessonDetail, { cascade: true })
+    @JoinColumn()
+    lessonDetail: LessonDetail;
 }
 
 export const lessonValidateSchema = {

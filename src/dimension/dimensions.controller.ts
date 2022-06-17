@@ -17,6 +17,12 @@ export class DimensionsController {
     @UsePipes(new QueryJoiValidatorPipe(vGetDimensionsDTO))
     async cGetDimensionBySubjectId(@Res() res: Response, @Query() queries: GetDimensionsDTO) {
         const dimensions = await this.dimensionService.getDimensionsBySubjectId(queries.id, queries.currentPage, queries.pageSize);
+
+        dimensions.data = dimensions.data.map((item) => {
+            item.subject.assignTo.user.password = '';
+            item.subject.assignTo.user.token = '';
+            return item;
+        }, []);
         return res.send(dimensions);
     }
 }

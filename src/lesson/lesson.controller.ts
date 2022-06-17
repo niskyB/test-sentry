@@ -1,8 +1,5 @@
 import { UserService } from './../user/user.service';
 import { QuizService } from './../quiz/quiz.service';
-import { LessonQuizService } from './../lesson-quiz/lesson-quiz.service';
-import { LessonDetailService } from './../lesson-detail/lesson-detail.service';
-import { SubjectTopicService } from './../subject-topic/subject-topic.service';
 import { Lesson, LessonDetail, LessonQuiz, SubjectTopic, UserRole } from './../core/models';
 import { SubjectService } from './../subject/subject.service';
 import { LessonTypeService } from './../lesson-type/lesson-type.service';
@@ -24,9 +21,6 @@ export class LessonController {
         private readonly lessonService: LessonService,
         private readonly lessonTypeService: LessonTypeService,
         private readonly subjectService: SubjectService,
-        private readonly subjectTopicService: SubjectTopicService,
-        private readonly lessonDetailService: LessonDetailService,
-        private readonly lessonQuizService: LessonQuizService,
         private readonly quizService: QuizService,
         private readonly userService: UserService,
     ) {}
@@ -34,9 +28,15 @@ export class LessonController {
     @Get('/:id')
     @ApiParam({ name: 'id', example: 'TVgJIjsRFmIvyjUeBOLv4gOD3eQZY', description: 'lesson id' })
     async cGetLessonById(@Param('id') id: string, @Res() res: Response) {
-        const lesson = await this.lessonService.getLessonByField('id', id);
+        let lesson = await this.lessonService.getLessonByField('id', id);
 
         if (!lesson) throw new HttpException({ errorMessage: ResponseMessage.NOT_FOUND }, StatusCodes.NOT_FOUND);
+
+        if (lesson.type.name == 'Lesson Detail') lesson = await this.lessonService.getLessonDetailById(lesson.id);
+        if (lesson.type.name == 'Lesson Quiz') lesson = await this.lessonService.getLessonQuizById(lesson.id);
+
+        lesson.subject.assignTo.user.password = '';
+        lesson.subject.assignTo.user.token = '';
 
         return res.send(lesson);
     }
@@ -65,17 +65,9 @@ export class LessonController {
         newLesson.isActive = body.isActive === null || body.isActive === undefined ? newLesson.isActive : body.isActive;
         newLesson.type = lessonType;
 
-        await this.lessonService.saveLesson(newLesson);
-
         if (lessonType.name === 'Subject Topic') {
             const subjectTopic = new SubjectTopic();
-            subjectTopic.lesson = newLesson;
-            try {
-                await this.subjectTopicService.saveSubjectTopic(subjectTopic);
-            } catch (err) {
-                console.log(err);
-                await this.lessonService.deleteLesson(newLesson);
-            }
+            newLesson.subjectTopic = subjectTopic;
         }
 
         if (lessonType.name === 'Lesson Detail') {
@@ -84,13 +76,8 @@ export class LessonController {
             const lessonDetail = new LessonDetail();
             lessonDetail.htmlContent = body.htmlContent;
             lessonDetail.videoLink = body.videoLink;
-            lessonDetail.lesson = newLesson;
-            try {
-                await this.lessonDetailService.saveLessonDetail(lessonDetail);
-            } catch (err) {
-                console.log(err);
-                await this.lessonService.deleteLesson(newLesson);
-            }
+
+            newLesson.lessonDetail = lessonDetail;
         }
 
         if (lessonType.name === 'Lesson Quiz') {
@@ -98,7 +85,6 @@ export class LessonController {
             if (!body.quiz) throw new HttpException({ videoLink: ResponseMessage.INVALID_QUIZ }, StatusCodes.BAD_REQUEST);
 
             const quizs = body.quiz.split(',');
-
             const lessonQuiz = new LessonQuiz();
             lessonQuiz.quizs = [];
             for (const item of quizs) {
@@ -106,15 +92,18 @@ export class LessonController {
                 if (res) lessonQuiz.quizs.push(res);
             }
             lessonQuiz.htmlContent = body.htmlContent;
-            lessonQuiz.lesson = newLesson;
 
-            try {
-                await this.lessonQuizService.saveLessonQuiz(lessonQuiz);
-            } catch (err) {
-                console.log(err);
-                await this.lessonService.deleteLesson(newLesson);
-            }
+            newLesson.lessonQuiz = lessonQuiz;
         }
+
+        try {
+            await this.lessonService.saveLesson(newLesson);
+        } catch (err) {
+            console.log(err);
+        }
+
+        newLesson.subject.assignTo.user.password = '';
+        newLesson.subject.assignTo.user.token = '';
 
         return res.send(newLesson);
     }
@@ -134,6 +123,9 @@ export class LessonController {
         lesson.updatedAt = new Date().toISOString();
 
         await this.lessonService.saveLesson(lesson);
+
+        lesson.subject.assignTo.user.password = '';
+        lesson.subject.assignTo.user.token = '';
 
         return res.send(lesson);
     }
@@ -157,29 +149,26 @@ export class LessonController {
         lesson.topic = body.topic || lesson.topic;
 
         if (type.name === 'Lesson Detail') {
-            const lessonDetail = await this.lessonDetailService.getLessonDetailByLessonId(lesson.id);
-            lessonDetail.htmlContent = body.htmlContent || lessonDetail.htmlContent;
-            lessonDetail.videoLink = body.videoLink || lessonDetail.videoLink;
-            await this.lessonDetailService.saveLessonDetail(lessonDetail);
+            lesson.lessonDetail.htmlContent = body.htmlContent || lesson.lessonDetail.htmlContent;
+            lesson.lessonDetail.videoLink = body.videoLink || lesson.lessonDetail.videoLink;
         }
 
         if (type.name === 'Lesson Quiz') {
-            const lessonQuiz = await this.lessonQuizService.getLessonQuizByLessonId(lesson.id);
-            lessonQuiz.htmlContent = body.htmlContent || lessonQuiz.htmlContent;
-            if (body.quiz) lessonQuiz.quizs = [];
+            lesson.lessonQuiz.htmlContent = body.htmlContent || lesson.lessonQuiz.htmlContent;
+            if (body.quiz) lesson.lessonQuiz.quizs = [];
 
             const quiz = body.quiz.split(',');
             for (const item of quiz) {
                 const res = await this.quizService.getQuizByField('id', item);
-                if (res) lessonQuiz.quizs.push(res);
+                if (res) lesson.lessonQuiz.quizs.push(res);
             }
-
-            await this.lessonQuizService.saveLessonQuiz(lessonQuiz);
         }
 
         lesson.updatedAt = new Date().toISOString();
-
         await this.lessonService.saveLesson(lesson);
+
+        lesson.subject.assignTo.user.password = '';
+        lesson.subject.assignTo.user.token = '';
 
         return res.send(lesson);
     }

@@ -21,6 +21,31 @@ export class LessonService {
             .getOne();
     }
 
+    async getLessonDetailById(id: string): Promise<Lesson> {
+        return await this.lessonRepository
+            .createQueryBuilder('lesson')
+            .where('lesson.id = (:id)', { id })
+            .leftJoinAndSelect('lesson.subject', 'subject')
+            .leftJoinAndSelect('subject.assignTo', 'assignTo')
+            .leftJoinAndSelect('assignTo.user', 'user')
+            .leftJoinAndSelect('lesson.type', 'type')
+            .leftJoinAndSelect('lesson.lessonDetail', 'lessonDetail')
+            .getOne();
+    }
+
+    async getLessonQuizById(id: string): Promise<Lesson> {
+        return await this.lessonRepository
+            .createQueryBuilder('lesson')
+            .where('lesson.id = (:id)', { id })
+            .leftJoinAndSelect('lesson.subject', 'subject')
+            .leftJoinAndSelect('subject.assignTo', 'assignTo')
+            .leftJoinAndSelect('assignTo.user', 'user')
+            .leftJoinAndSelect('lesson.type', 'type')
+            .leftJoinAndSelect('lesson.lessonQuiz', 'lessonQuiz')
+            .leftJoinAndSelect('lessonQuiz.quizs', 'quizs')
+            .getOne();
+    }
+
     async getLessonsBySubjectId(id: string): Promise<Lesson[]> {
         return await this.lessonRepository
             .createQueryBuilder('Lesson')

@@ -1,8 +1,10 @@
+import { ExpertGuard } from './../auth/guard';
+import { UserRole } from './../core/models';
 import { QueryJoiValidatorPipe } from './../core/pipe';
 import { FilterSubjectsDTO, vFilterSubjectsDTO } from './dto';
-import { Controller, Res, UsePipes, Get, Query } from '@nestjs/common';
+import { Controller, Res, UsePipes, Get, Query, Req, UseGuards } from '@nestjs/common';
 import { ApiTags, ApiBearerAuth } from '@nestjs/swagger';
-import { Response } from 'express';
+import { Response, Request } from 'express';
 import { SubjectService } from './subject.service';
 
 @ApiTags('subjects')
@@ -11,12 +13,37 @@ import { SubjectService } from './subject.service';
 export class SubjectsController {
     constructor(private readonly subjectService: SubjectService) {}
 
+    @Get('/role')
+    @UseGuards(ExpertGuard)
+    @UsePipes()
+    async cGetSubjectsByRole(@Req() req: Request, @Res() res: Response) {
+        let result;
+        if (req.user.role.name === UserRole.ADMIN) {
+            result = await this.subjectService.getAllSubjects();
+        } else {
+            result = await this.subjectService.getSubjectByUserId(req.user.id);
+        }
+
+        result = result.map((item) => {
+            item.assignTo.user.password = '';
+            item.assignTo.user.token = '';
+            return item;
+        }, []);
+        return res.send(result);
+    }
+
     @Get('')
     @UsePipes(new QueryJoiValidatorPipe(vFilterSubjectsDTO))
     async cFilterSubjects(@Res() res: Response, @Query() queries: FilterSubjectsDTO) {
         const { name, isActive, isFeature, category, currentPage, createdAt, pageSize, assignTo } = queries;
 
         const result = await this.subjectService.filterSubjects(name, createdAt, currentPage, pageSize, isActive, isFeature, category, assignTo);
+
+        result.data = result.data.map((item) => {
+            item.assignTo.user.password = '';
+            item.assignTo.user.token = '';
+            return item;
+        }, []);
         return res.send(result);
     }
 }
