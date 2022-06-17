@@ -1,6 +1,7 @@
-import { Column, Entity, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
-import { Lesson } from './lesson';
+import { Question } from './question';
+import { Quiz } from './quiz';
 
 @Entity()
 export class QuestionInQuiz {
@@ -8,15 +9,11 @@ export class QuestionInQuiz {
     @PrimaryGeneratedColumn('uuid')
     id: string;
 
-    @ApiProperty({ description: 'Html Content' })
-    @Column('longtext', { default: null })
-    htmlContent: string;
+    @ApiProperty({ description: 'Question' })
+    @ManyToOne(() => Question)
+    question: Question;
 
-    @ApiProperty({ description: 'Video link' })
-    @Column('longtext', { default: null })
-    videoLink: string;
-
-    @ApiProperty({ description: 'Lesson' })
-    @OneToOne(() => Lesson)
-    lesson: Lesson;
+    @ApiProperty({ description: 'Quiz' })
+    @ManyToOne(() => Quiz)
+    quiz: Quiz;
 }
