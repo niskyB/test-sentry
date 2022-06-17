@@ -19,8 +19,10 @@ export class BlogsController {
         const result = await this.blogService.filterBlogs(title, userId, createdAt, currentPage, pageSize, isShow, category, order);
 
         result.data = result.data.map((item) => {
-            item.marketing.user.password = '';
-            item.marketing.user.token = '';
+            if (item.marketing) {
+                item.marketing.user.password = '';
+                item.marketing.user.token = '';
+            }
             return item;
         }, []);
         return res.send(result);

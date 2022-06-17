@@ -19,8 +19,10 @@ export class SlidersController {
         const result = await this.sliderService.filterSliders(title, userId, createdAt, currentPage, pageSize, isShow);
 
         result.data = result.data.map((item) => {
-            item.marketing.user.password = '';
-            item.marketing.user.token = '';
+            if (item.marketing) {
+                item.marketing.user.password = '';
+                item.marketing.user.token = '';
+            }
             return item;
         }, []);
         return res.send(result);
