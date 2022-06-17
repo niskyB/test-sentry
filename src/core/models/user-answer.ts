@@ -1,4 +1,6 @@
-import { Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { AttendedQuestion } from './attended-question';
+import { Answer } from './answer';
+import { Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
 
 @Entity()
@@ -6,4 +8,12 @@ export class UserAnswer {
     @ApiProperty({ description: 'Id' })
     @PrimaryGeneratedColumn('uuid')
     id: string;
+
+    @ApiProperty({ description: 'Answer' })
+    @ManyToOne(() => Answer)
+    answer: Answer;
+
+    @ApiProperty({ description: 'Attended Question' })
+    @ManyToOne(() => AttendedQuestion)
+    attendedQuestion: AttendedQuestion;
 }
