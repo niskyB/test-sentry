@@ -16,7 +16,7 @@ export class DimensionsController {
     @Get('')
     @UsePipes(new QueryJoiValidatorPipe(vGetDimensionsDTO))
     async cGetDimensionBySubjectId(@Res() res: Response, @Query() queries: GetDimensionsDTO) {
-        const dimensions = await this.dimensionService.getDimensionsBySubjectId(queries.id, queries.currentPage, queries.pageSize);
+        const dimensions = await this.dimensionService.getDimensionsBySubjectId(queries.id);
 
         dimensions.data = dimensions.data.map((item) => {
             if (item.subject.assignTo) {
