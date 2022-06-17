@@ -18,5 +18,5 @@ export const vGetDimensionsDTO = joi.object<GetDimensionsDTO>({
         .required()
         .messages(JoiMessage.createStringMessages({ field: 'Subject' })),
     currentPage: joi.number().min(0).required().failover(0),
-    pageSize: joi.number().min(1).required().failover(4),
+    pageSize: joi.number().min(1).max(200).required().failover(200),
 });
