@@ -11,7 +11,14 @@ export class DimensionService {
     }
 
     async getDimensionByField(field: keyof Dimension, value: any): Promise<Dimension> {
-        return await this.dimensionRepository.createQueryBuilder('Dimension').where(`Dimension.${field.toString()} = :value`, { value }).leftJoinAndSelect('Dimension.type', 'type').getOne();
+        return await this.dimensionRepository
+            .createQueryBuilder('Dimension')
+            .where(`Dimension.${field.toString()} = :value`, { value })
+            .leftJoinAndSelect('Dimension.type', 'type')
+            .leftJoinAndSelect('Dimension.subject', 'subject')
+            .leftJoinAndSelect('subject.assignTo', 'assignTo')
+            .leftJoinAndSelect('assignTo.user', 'user')
+            .getOne();
     }
 
     async getDimensionsBySubjectId(id: string, currentPage: number, pageSize: number): Promise<{ data: Dimension[]; count: number }> {
