@@ -101,6 +101,7 @@ export class SubjectService {
                 .leftJoinAndSelect('subject.lessons', 'lessons')
                 .leftJoinAndSelect('subject.assignTo', 'assignTo')
                 .leftJoinAndSelect('assignTo.user', 'user')
+                .leftJoinAndSelect('subject.pricePackages', 'pricePackages')
                 .andWhere(`user.id LIKE (:id)`, { id: `%${assignTo}%` })
                 .leftJoinAndSelect(`subject.category`, 'category')
                 .andWhere(`category.id LIKE (:categoryId)`, { categoryId: `%${category}%` })
