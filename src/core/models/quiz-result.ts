@@ -3,6 +3,7 @@ import { ApiProperty } from '@nestjs/swagger';
 import * as joi from 'joi';
 import JoiMessage from 'joi-message';
 import { Quiz } from './quiz';
+import { Customer } from './customer';
 
 @Entity()
 export class QuizResult {
@@ -21,6 +22,10 @@ export class QuizResult {
     @ApiProperty({ description: 'Created At' })
     @Column()
     createdAt: string;
+
+    @ApiProperty({ description: 'Customer' })
+    @ManyToOne(() => Customer, { cascade: true })
+    customer: Customer;
 }
 
 export const quizResultValidateSchema = {
