@@ -1,3 +1,4 @@
+import { SortOrder } from './../core/interface';
 import { Subject } from './../core/models';
 import { SubjectRepository } from './../core/repositories';
 import { Injectable } from '@nestjs/common';
@@ -73,6 +74,7 @@ export class SubjectService {
         isFeature: boolean,
         category: string,
         assignTo: string,
+        order: SortOrder,
     ): Promise<{ data: Subject[]; count: number }> {
         try {
             const date = new Date(createdAt);
@@ -108,6 +110,7 @@ export class SubjectService {
                 .orderBy(`subject.createdAt`, 'DESC')
                 .skip(currentPage * pageSize)
                 .take(pageSize)
+                .orderBy('subject.updatedAt', order)
                 .getMany();
 
             const count = await this.subjectRepository

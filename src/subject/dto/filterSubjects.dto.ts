@@ -1,3 +1,4 @@
+import { SortOrder } from './../../core/interface';
 import { subjectValidateSchema } from './../../core/models';
 import { ApiProperty } from '@nestjs/swagger';
 import * as joi from 'joi';
@@ -25,6 +26,9 @@ export class FilterSubjectsDTO {
 
     @ApiProperty({ description: 'Created At', example: '18/5/2022', nullable: true })
     createdAt: string;
+
+    @ApiProperty({ description: 'Created At', example: '18/5/2022', nullable: true })
+    order: SortOrder;
 }
 
 export const vFilterSubjectsDTO = joi.object<FilterSubjectsDTO>({
@@ -36,4 +40,5 @@ export const vFilterSubjectsDTO = joi.object<FilterSubjectsDTO>({
     createdAt: joi.string().required().failover('1/1/2022'),
     currentPage: joi.number().min(0).required().failover(0),
     pageSize: joi.number().min(1).required().failover(4),
+    order: joi.string().required().valid(SortOrder.ASC, SortOrder.DESC).failover(SortOrder.DESC),
 });
