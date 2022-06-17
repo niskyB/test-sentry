@@ -52,7 +52,7 @@ export class LessonController {
         if (!subject) throw new HttpException({ errorMessage: ResponseMessage.INVALID_SUBJECT }, StatusCodes.BAD_REQUEST);
 
         const user = await this.userService.findUser('id', req.user.id);
-        if (user.role.name !== UserRole.ADMIN && subject.assignTo.id !== user.typeId) throw new HttpException({ errorMessage: ResponseMessage.FORBIDDEN }, StatusCodes.FORBIDDEN);
+        if (user.role.description !== UserRole.ADMIN && subject.assignTo.id !== user.typeId) throw new HttpException({ errorMessage: ResponseMessage.FORBIDDEN }, StatusCodes.FORBIDDEN);
 
         const newLesson = new Lesson();
         const date = new Date();
@@ -117,7 +117,7 @@ export class LessonController {
         const lesson = await this.lessonService.getLessonByField('id', id);
 
         if (!lesson) throw new HttpException({ errorMessage: ResponseMessage.NOT_FOUND }, StatusCodes.NOT_FOUND);
-        if (user.role.name !== UserRole.ADMIN && lesson.subject.assignTo.id !== user.typeId) throw new HttpException({ errorMessage: ResponseMessage.FORBIDDEN }, StatusCodes.FORBIDDEN);
+        if (user.role.description !== UserRole.ADMIN && lesson.subject.assignTo.id !== user.typeId) throw new HttpException({ errorMessage: ResponseMessage.FORBIDDEN }, StatusCodes.FORBIDDEN);
 
         lesson.isActive = body.isActive === null || body.isActive === undefined ? lesson.isActive : body.isActive;
         lesson.updatedAt = new Date().toISOString();
@@ -142,7 +142,7 @@ export class LessonController {
         if (!type) throw new HttpException({ type: ResponseMessage.INVALID_TYPE }, StatusCodes.BAD_REQUEST);
 
         if (!lesson) throw new HttpException({ errorMessage: ResponseMessage.NOT_FOUND }, StatusCodes.NOT_FOUND);
-        if (user.role.name !== UserRole.ADMIN && lesson.subject.assignTo.id !== user.typeId) throw new HttpException({ errorMessage: ResponseMessage.FORBIDDEN }, StatusCodes.FORBIDDEN);
+        if (user.role.description !== UserRole.ADMIN && lesson.subject.assignTo.id !== user.typeId) throw new HttpException({ errorMessage: ResponseMessage.FORBIDDEN }, StatusCodes.FORBIDDEN);
 
         lesson.name = body.name || lesson.name;
         lesson.order = body.order > 0 ? body.order : lesson.order;

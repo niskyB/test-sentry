@@ -84,7 +84,7 @@ export class BlogController {
         const blog = await this.blogService.getBlogByField('id', id);
 
         if (!blog) throw new HttpException({ errorMessage: ResponseMessage.NOT_FOUND }, StatusCodes.NOT_FOUND);
-        if (user.role.name !== UserRole.ADMIN && blog.marketing.id !== user.typeId) throw new HttpException({ errorMessage: ResponseMessage.FORBIDDEN }, StatusCodes.FORBIDDEN);
+        if (user.role.description !== UserRole.ADMIN && blog.marketing.id !== user.typeId) throw new HttpException({ errorMessage: ResponseMessage.FORBIDDEN }, StatusCodes.FORBIDDEN);
 
         blog.title = body.title || blog.title;
         blog.briefInfo = body.briefInfo || blog.briefInfo;

@@ -18,7 +18,7 @@ export class SubjectsController {
     @UsePipes()
     async cGetSubjectsByRole(@Req() req: Request, @Res() res: Response) {
         let result;
-        if (req.user.role.name === UserRole.ADMIN) {
+        if (req.user.role.description === UserRole.ADMIN) {
             result = await this.subjectService.getAllSubjects();
         } else {
             result = await this.subjectService.getSubjectByUserId(req.user.id);
@@ -38,7 +38,7 @@ export class SubjectsController {
         const { name, isActive, isFeature, category, currentPage, createdAt, pageSize, order } = queries;
 
         let result;
-        if (req.user && req.user.role.name === UserRole.ADMIN) result = await this.subjectService.filterSubjectsForAdmin(name, createdAt, currentPage, pageSize, isActive, isFeature, category);
+        if (req.user && req.user.role.description === UserRole.ADMIN) result = await this.subjectService.filterSubjectsForAdmin(name, createdAt, currentPage, pageSize, isActive, isFeature, category);
         else result = await this.subjectService.filterSubjects(name, createdAt, currentPage, pageSize, isActive, isFeature, category, req.user ? req.user.id : '', order);
 
         if (result) {

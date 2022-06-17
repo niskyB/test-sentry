@@ -46,7 +46,7 @@ export class DimensionController {
 
         const subject = await this.subjectService.getSubjectByField('id', body.subject);
         if (!subject) throw new HttpException({ category: ResponseMessage.INVALID_SUBJECT }, StatusCodes.BAD_REQUEST);
-        if (user.role.name !== UserRole.ADMIN && subject.assignTo.id !== user.typeId) throw new HttpException({ errorMessage: ResponseMessage.FORBIDDEN }, StatusCodes.FORBIDDEN);
+        if (user.role.description !== UserRole.ADMIN && subject.assignTo.id !== user.typeId) throw new HttpException({ errorMessage: ResponseMessage.FORBIDDEN }, StatusCodes.FORBIDDEN);
 
         const dimension = new Dimension();
         dimension.name = body.name;
@@ -70,7 +70,7 @@ export class DimensionController {
         const dimension = await this.dimensionService.getDimensionByField('id', id);
 
         if (!dimension) throw new HttpException({ errorMessage: ResponseMessage.NOT_FOUND }, StatusCodes.NOT_FOUND);
-        if (user.role.name !== UserRole.ADMIN && dimension.subject.assignTo.id !== user.typeId) throw new HttpException({ errorMessage: ResponseMessage.FORBIDDEN }, StatusCodes.FORBIDDEN);
+        if (user.role.description !== UserRole.ADMIN && dimension.subject.assignTo.id !== user.typeId) throw new HttpException({ errorMessage: ResponseMessage.FORBIDDEN }, StatusCodes.FORBIDDEN);
         const type = await this.dimensionTypeService.getDimensionTypeByField('id', body.type);
 
         dimension.name = body.name || dimension.name;

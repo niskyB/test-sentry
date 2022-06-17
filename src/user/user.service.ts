@@ -47,7 +47,7 @@ export class UserService {
                 .andWhere(`user.email Like (:email)`, { email: `%${email}%` })
                 .andWhere(`user.mobile Like (:mobile)`, { mobile: `%${mobile}%` })
                 .leftJoinAndSelect(`user.role`, 'role')
-                .andWhere(`role.name Like (:role)`, { role: `%${role}%` })
+                .andWhere(`role.description Like (:role)`, { role: `%${role}%` })
                 .orderBy(`user.${orderBy}`, order)
                 .skip(currentPage * pageSize)
                 .take(pageSize)
@@ -61,7 +61,7 @@ export class UserService {
                 .andWhere(`user.email Like (:email)`, { email: `%${email}%` })
                 .andWhere(`user.mobile Like (:mobile)`, { mobile: `%${mobile}%` })
                 .leftJoinAndSelect(`user.role`, 'role')
-                .andWhere(`role.name Like (:role)`, { role: `%${role}%` })
+                .andWhere(`role.description Like (:role)`, { role: `%${role}%` })
                 .getCount();
 
             return { data: users, count };

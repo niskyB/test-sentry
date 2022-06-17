@@ -69,7 +69,7 @@ export class SliderController {
         const slider = await this.sliderService.getSliderByField('id', id);
 
         if (!slider) throw new HttpException({ errorMessage: ResponseMessage.NOT_FOUND }, StatusCodes.NOT_FOUND);
-        if (user.role.name !== UserRole.ADMIN && slider.marketing.id !== user.typeId) throw new HttpException({ errorMessage: ResponseMessage.FORBIDDEN }, StatusCodes.FORBIDDEN);
+        if (user.role.description !== UserRole.ADMIN && slider.marketing.id !== user.typeId) throw new HttpException({ errorMessage: ResponseMessage.FORBIDDEN }, StatusCodes.FORBIDDEN);
 
         slider.title = body.title || slider.title;
         slider.backLink = body.backLink || slider.backLink;

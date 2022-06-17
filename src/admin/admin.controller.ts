@@ -74,7 +74,7 @@ export class AdminController {
         newUser.mobile = body.mobile;
         newUser.isActive = body.isActive;
         newEmployee.user = newUser;
-        newUser.role = await this.userService.findRole('name', body.role);
+        newUser.role = await this.userService.findRole('description', body.role);
 
         await this.userService.saveUser(newUser);
         if (body.role === UserRole.MARKETING) {

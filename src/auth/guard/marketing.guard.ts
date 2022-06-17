@@ -31,7 +31,7 @@ export class MarketingGuard implements CanActivate {
             throw new HttpException({}, StatusCodes.UNAUTHORIZED);
         }
 
-        if (roles.length && !roles.includes(user.role) && user.role.name !== UserRole.ADMIN && user.role.name !== UserRole.MARKETING) {
+        if (roles.length && !roles.includes(user.role) && user.role.description !== UserRole.ADMIN && user.role.description !== UserRole.MARKETING) {
             throw new HttpException({}, StatusCodes.UNAUTHORIZED);
         }
 
