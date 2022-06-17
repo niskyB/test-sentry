@@ -1,4 +1,5 @@
-import { Column, Entity, JoinColumn, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { QuizResult } from './quiz-result';
+import { Column, Entity, JoinColumn, OneToMany, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
 import { User } from './user';
 
@@ -16,4 +17,8 @@ export class Customer {
     @OneToOne(() => User)
     @JoinColumn()
     user: User;
+
+    @ApiProperty({ description: 'Quiz Result' })
+    @OneToMany(() => QuizResult, (quizResults) => quizResults.customer)
+    quizResults: QuizResult[];
 }

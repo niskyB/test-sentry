@@ -30,6 +30,8 @@ import {
     QuizResult,
     QuestionAnswer,
     QuestionInQuiz,
+    AttendedQuestion,
+    UserAnswer,
 } from './core/models';
 
 export const DbModule = TypeOrmModule.forRoot({
@@ -73,6 +75,8 @@ export const DbModule = TypeOrmModule.forRoot({
         QuizResult,
         QuestionAnswer,
         QuestionInQuiz,
+        AttendedQuestion,
+        UserAnswer,
     ],
     extra: { connectionLimit: 1 },
 });

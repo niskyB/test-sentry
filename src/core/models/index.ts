@@ -27,3 +27,5 @@ export * from './registration';
 export * from './quiz-result';
 export * from './question-answer';
 export * from './question-in-quiz';
+export * from './attended-question';
+export * from './user-answer';
