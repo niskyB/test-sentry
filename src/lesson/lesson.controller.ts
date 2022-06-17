@@ -1,7 +1,5 @@
 import { UserService } from './../user/user.service';
 import { QuizService } from './../quiz/quiz.service';
-import { LessonQuizService } from './../lesson-quiz/lesson-quiz.service';
-import { LessonDetailService } from './../lesson-detail/lesson-detail.service';
 import { Lesson, LessonDetail, LessonQuiz, SubjectTopic, UserRole } from './../core/models';
 import { SubjectService } from './../subject/subject.service';
 import { LessonTypeService } from './../lesson-type/lesson-type.service';
@@ -23,8 +21,6 @@ export class LessonController {
         private readonly lessonService: LessonService,
         private readonly lessonTypeService: LessonTypeService,
         private readonly subjectService: SubjectService,
-        private readonly lessonDetailService: LessonDetailService,
-        private readonly lessonQuizService: LessonQuizService,
         private readonly quizService: QuizService,
         private readonly userService: UserService,
     ) {}
@@ -38,6 +34,9 @@ export class LessonController {
 
         if (lesson.type.name == 'Lesson Detail') lesson = await this.lessonService.getLessonDetailById(lesson.id);
         if (lesson.type.name == 'Lesson Quiz') lesson = await this.lessonService.getLessonQuizById(lesson.id);
+
+        lesson.subject.assignTo.user.password = '';
+        lesson.subject.assignTo.user.token = '';
 
         return res.send(lesson);
     }
@@ -103,6 +102,9 @@ export class LessonController {
             console.log(err);
         }
 
+        newLesson.subject.assignTo.user.password = '';
+        newLesson.subject.assignTo.user.token = '';
+
         return res.send(newLesson);
     }
 
@@ -121,6 +123,9 @@ export class LessonController {
         lesson.updatedAt = new Date().toISOString();
 
         await this.lessonService.saveLesson(lesson);
+
+        lesson.subject.assignTo.user.password = '';
+        lesson.subject.assignTo.user.token = '';
 
         return res.send(lesson);
     }
@@ -144,29 +149,26 @@ export class LessonController {
         lesson.topic = body.topic || lesson.topic;
 
         if (type.name === 'Lesson Detail') {
-            const lessonDetail = await this.lessonDetailService.getLessonDetailByLessonId(lesson.id);
-            lessonDetail.htmlContent = body.htmlContent || lessonDetail.htmlContent;
-            lessonDetail.videoLink = body.videoLink || lessonDetail.videoLink;
-            await this.lessonDetailService.saveLessonDetail(lessonDetail);
+            lesson.lessonDetail.htmlContent = body.htmlContent || lesson.lessonDetail.htmlContent;
+            lesson.lessonDetail.videoLink = body.videoLink || lesson.lessonDetail.videoLink;
         }
 
         if (type.name === 'Lesson Quiz') {
-            const lessonQuiz = await this.lessonQuizService.getLessonQuizByLessonId(lesson.id);
-            lessonQuiz.htmlContent = body.htmlContent || lessonQuiz.htmlContent;
-            if (body.quiz) lessonQuiz.quizs = [];
+            lesson.lessonQuiz.htmlContent = body.htmlContent || lesson.lessonQuiz.htmlContent;
+            if (body.quiz) lesson.lessonQuiz.quizs = [];
 
             const quiz = body.quiz.split(',');
             for (const item of quiz) {
                 const res = await this.quizService.getQuizByField('id', item);
-                if (res) lessonQuiz.quizs.push(res);
+                if (res) lesson.lessonQuiz.quizs.push(res);
             }
-
-            await this.lessonQuizService.saveLessonQuiz(lessonQuiz);
         }
 
         lesson.updatedAt = new Date().toISOString();
-
         await this.lessonService.saveLesson(lesson);
+
+        lesson.subject.assignTo.user.password = '';
+        lesson.subject.assignTo.user.token = '';
 
         return res.send(lesson);
     }

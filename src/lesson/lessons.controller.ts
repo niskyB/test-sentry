@@ -14,9 +14,15 @@ export class LessonsController {
     @Get('/:id')
     @ApiParam({ name: 'id', example: 'TVgJIjsRFmIvyjUeBOLv4gOD3eQZY', description: 'subject id' })
     async cGetLessonsBySubjectId(@Param('id') id: string, @Res() res: Response) {
-        const lessons = await this.lessonService.getLessonsBySubjectId(id);
+        let lessons = await this.lessonService.getLessonsBySubjectId(id);
 
         if (!lessons) throw new HttpException({ errorMessage: ResponseMessage.NOT_FOUND }, StatusCodes.NOT_FOUND);
+
+        lessons = lessons.map((item) => {
+            item.subject.assignTo.user.password = '';
+            item.subject.assignTo.user.token = '';
+            return item;
+        }, []);
 
         return res.send(lessons);
     }

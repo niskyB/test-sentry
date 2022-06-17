@@ -30,7 +30,11 @@ export class SubjectController {
     @ApiParam({ name: 'id', example: 'TVgJIjsRFmIvyjUeBOLv4gOD3eQZY' })
     async cGetSubject(@Param('id') id: string, @Res() res: Response) {
         const subject = await this.subjectService.getSubjectByField('id', id);
+
         if (!subject) throw new HttpException({ errorMessage: ResponseMessage.NOT_FOUND }, StatusCodes.NOT_FOUND);
+
+        subject.assignTo.user.password = '';
+        subject.assignTo.user.token = '';
         return res.send(subject);
     }
 
@@ -64,6 +68,8 @@ export class SubjectController {
 
         await this.subjectService.saveSubject(newSubject);
 
+        newSubject.assignTo.user.password = '';
+        newSubject.assignTo.user.token = '';
         return res.send(newSubject);
     }
 
@@ -82,6 +88,9 @@ export class SubjectController {
         subject.updatedAt = new Date().toISOString();
 
         await this.subjectService.saveSubject(subject);
+
+        subject.assignTo.user.password = '';
+        subject.assignTo.user.token = '';
 
         return res.send(subject);
     }
@@ -117,6 +126,8 @@ export class SubjectController {
         subject.updatedAt = new Date().toISOString();
 
         await this.subjectService.saveSubject(subject);
+        subject.assignTo.user.password = '';
+        subject.assignTo.user.token = '';
 
         return res.send(subject);
     }

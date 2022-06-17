@@ -17,6 +17,14 @@ export class SlidersController {
         const { title, userId, createdAt, currentPage, pageSize, isShow } = queries;
 
         const result = await this.sliderService.filterSliders(title, userId, createdAt, currentPage, pageSize, isShow);
+
+        result.data = result.data.map((item) => {
+            if (item.marketing) {
+                item.marketing.user.password = '';
+                item.marketing.user.token = '';
+            }
+            return item;
+        }, []);
         return res.send(result);
     }
 }

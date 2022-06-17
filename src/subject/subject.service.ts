@@ -39,6 +39,31 @@ export class SubjectService {
             };
     }
 
+    async getAllSubjects(): Promise<Subject[]> {
+        const subjects = await this.subjectRepository
+            .createQueryBuilder('subject')
+            .leftJoinAndSelect('subject.lessons', 'lessons')
+            .leftJoinAndSelect('subject.assignTo', 'assignTo')
+            .leftJoinAndSelect('assignTo.user', 'user')
+            .leftJoinAndSelect(`subject.category`, 'category')
+            .getMany();
+
+        return subjects;
+    }
+
+    async getSubjectByUserId(id: string): Promise<Subject[]> {
+        const subjects = await this.subjectRepository
+            .createQueryBuilder('subject')
+            .leftJoinAndSelect('subject.lessons', 'lessons')
+            .leftJoinAndSelect('subject.assignTo', 'assignTo')
+            .leftJoinAndSelect('assignTo.user', 'user')
+            .where('user.id = (:id)', { id })
+            .leftJoinAndSelect(`subject.category`, 'category')
+            .getMany();
+
+        return subjects;
+    }
+
     async filterSubjects(
         name: string,
         createdAt: string,
