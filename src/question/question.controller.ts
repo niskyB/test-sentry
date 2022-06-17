@@ -64,8 +64,10 @@ export class QuestionController {
         }
         const dimensions = body.dimensions.split(',');
         for (const item of dimensions) {
-            const dimension = await this.dimensionService.getDimensionByField('id', item);
-            newQuestion.dimensions.push(dimension);
+            if (item) {
+                const dimension = await this.dimensionService.getDimensionByField('id', item);
+                newQuestion.dimensions.push(dimension);
+            }
         }
         if (newQuestion.dimensions.length === 0) throw new HttpException({ dimensions: ResponseMessage.INVALID_DIMENSION }, StatusCodes.BAD_REQUEST);
         const lesson = await this.lessonService.getLessonByField('id', body.lesson);
