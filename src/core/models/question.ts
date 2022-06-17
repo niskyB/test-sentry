@@ -4,6 +4,7 @@ import { Column, Entity, JoinTable, ManyToMany, PrimaryGeneratedColumn, ManyToOn
 import { ApiProperty } from '@nestjs/swagger';
 import * as joi from 'joi';
 import JoiMessage from 'joi-message';
+import { QuestionLevel } from './question-level';
 
 @Entity()
 export class Question {
@@ -27,6 +28,10 @@ export class Question {
     @Column({ default: null })
     imageUrl: string;
 
+    @ApiProperty({ description: 'Explanation' })
+    @Column('longtext', { default: null })
+    explanation: string;
+
     @ApiProperty({ description: 'Is Multiple Choice' })
     @Column({ default: false })
     isMultipleChoice: boolean;
@@ -43,6 +48,10 @@ export class Question {
     @ApiProperty({ description: 'Lesson' })
     @ManyToOne(() => Lesson)
     lesson: Lesson;
+
+    @ApiProperty({ description: 'Question Level' })
+    @ManyToOne(() => QuestionLevel)
+    questionLevel: QuestionLevel;
 }
 
 export const questionValidateSchema = {
@@ -61,5 +70,9 @@ export const questionValidateSchema = {
         .string()
         .trim()
         .messages(JoiMessage.createStringMessages({ field: 'Audio Link' })),
+    explanation: joi
+        .string()
+        .required()
+        .messages(JoiMessage.createStringMessages({ field: 'Explanation' })),
     isMultipleChoice: joi.boolean().messages(JoiMessage.createBooleanMessages({ field: 'Is Multiple Choice' })),
 };

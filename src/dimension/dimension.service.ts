@@ -21,17 +21,17 @@ export class DimensionService {
             .getOne();
     }
 
-    async getDimensionsBySubjectId(id: string, currentPage: number, pageSize: number): Promise<{ data: Dimension[]; count: number }> {
+    async getDimensionsBySubjectId(id: string): Promise<{ data: Dimension[]; count: number }> {
         try {
             const dimensions = await this.dimensionRepository
                 .createQueryBuilder('dimension')
                 .leftJoinAndSelect('dimension.type', 'type')
                 .leftJoinAndSelect('dimension.subject', 'subject')
+                .where('subject.id = (:id)', { id })
                 .leftJoinAndSelect('subject.assignTo', 'assignTo')
                 .leftJoinAndSelect('assignTo.user', 'user')
-                .andWhere('subject.id = (:id)', { id })
-                .skip(currentPage * pageSize)
-                .take(pageSize)
+                .skip(0)
+                .take(200)
                 .getMany();
             const count = await this.dimensionRepository.createQueryBuilder('dimension').leftJoinAndSelect('dimension.subject', 'subject').andWhere('subject.id = (:id)', { id }).getCount();
             return { data: dimensions, count };
