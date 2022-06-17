@@ -22,4 +22,30 @@ export class QuestionService {
             .andWhere('subject.id LIKE (:id)', { id: `%${id}%` })
             .getMany();
     }
+
+    async getAllQuestions(): Promise<{ data: Question[]; count: number }> {
+        const questions = await this.questionRepository.createQueryBuilder('question').getMany();
+        const count = await this.questionRepository.createQueryBuilder('question').getCount();
+        return { data: questions, count };
+    }
+
+    async getQuestionsByUserId(id: string): Promise<{ data: Question[]; count: number }> {
+        const questions = await this.questionRepository
+            .createQueryBuilder('question')
+            .leftJoinAndSelect('question.lesson', 'lesson')
+            .leftJoinAndSelect('lesson.subject', 'subject')
+            .leftJoinAndSelect('subject.assignTo', 'assignTo')
+            .leftJoinAndSelect('assignTo.user', 'user')
+            .where('user.id = (:id)', { id })
+            .getMany();
+        const count = await this.questionRepository
+            .createQueryBuilder('question')
+            .leftJoinAndSelect('question.lesson', 'lesson')
+            .leftJoinAndSelect('lesson.subject', 'subject')
+            .leftJoinAndSelect('subject.assignTo', 'assignTo')
+            .leftJoinAndSelect('assignTo.user', 'user')
+            .where('user.id = (:id)', { id })
+            .getCount();
+        return { data: questions, count };
+    }
 }
