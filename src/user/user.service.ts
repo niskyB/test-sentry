@@ -41,7 +41,7 @@ export class UserService {
         try {
             const users = await this.userRepository
                 .createQueryBuilder('user')
-                .where(`user.gender LIKE (:gender)`, { gender: `%${gender}%` })
+                .where(`user.gender Like (:gender)`, { gender: `${gender}%` })
                 .andWhere(`user.isActive = (:isActive)`, { isActive })
                 .andWhere(`user.fullName Like (:fullName)`, { fullName: `%${fullName}%` })
                 .andWhere(`user.email Like (:email)`, { email: `%${email}%` })
@@ -55,7 +55,7 @@ export class UserService {
 
             const count = await this.userRepository
                 .createQueryBuilder('user')
-                .where(`user.gender LIKE (:gender)`, { gender: `%${gender}%` })
+                .where(`user.gender LIKE (:gender)`, { gender: `${gender}%` })
                 .andWhere(`user.isActive = (:isActive)`, { isActive })
                 .andWhere(`user.fullName Like (:fullName)`, { fullName: `%${fullName}%` })
                 .andWhere(`user.email Like (:email)`, { email: `%${email}%` })
