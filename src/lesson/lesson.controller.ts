@@ -34,9 +34,12 @@ export class LessonController {
     @Get('/:id')
     @ApiParam({ name: 'id', example: 'TVgJIjsRFmIvyjUeBOLv4gOD3eQZY', description: 'lesson id' })
     async cGetLessonById(@Param('id') id: string, @Res() res: Response) {
-        const lesson = await this.lessonService.getLessonByField('id', id);
+        let lesson = await this.lessonService.getLessonByField('id', id);
 
         if (!lesson) throw new HttpException({ errorMessage: ResponseMessage.NOT_FOUND }, StatusCodes.NOT_FOUND);
+
+        if (lesson.type.name == 'Lesson Detail') lesson = await this.lessonService.getLessonDetailById(lesson.id);
+        if (lesson.type.name == 'Lesson Quiz') lesson = await this.lessonService.getLessonQuizById(lesson.id);
 
         return res.send(lesson);
     }
