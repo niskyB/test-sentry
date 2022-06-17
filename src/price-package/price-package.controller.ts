@@ -22,8 +22,10 @@ export class PricePackageController {
     async cGetPricePackage(@Param('id') id: string, @Res() res: Response) {
         const pricePackage = await this.pricePackageService.getPricePackageByField('id', id);
         if (!pricePackage) throw new HttpException({ errorMessage: ResponseMessage.NOT_FOUND }, StatusCodes.NOT_FOUND);
-        pricePackage.subject.assignTo.user.password = '';
-        pricePackage.subject.assignTo.user.token = '';
+        if (pricePackage.subject.assignTo) {
+            pricePackage.subject.assignTo.user.password = '';
+            pricePackage.subject.assignTo.user.token = '';
+        }
         return res.send(pricePackage);
     }
 
@@ -48,8 +50,10 @@ export class PricePackageController {
 
         await this.pricePackageService.savePricePackage(newPricePackage);
 
-        newPricePackage.subject.assignTo.user.password = '';
-        newPricePackage.subject.assignTo.user.token = '';
+        if (newPricePackage.subject.assignTo) {
+            newPricePackage.subject.assignTo.user.password = '';
+            newPricePackage.subject.assignTo.user.token = '';
+        }
 
         return res.send(newPricePackage);
     }
@@ -74,8 +78,10 @@ export class PricePackageController {
 
         await this.pricePackageService.savePricePackage(pricePackage);
 
-        pricePackage.subject.assignTo.user.password = '';
-        pricePackage.subject.assignTo.user.token = '';
+        if (pricePackage.subject.assignTo) {
+            pricePackage.subject.assignTo.user.password = '';
+            pricePackage.subject.assignTo.user.token = '';
+        }
 
         return res.send(pricePackage);
     }
