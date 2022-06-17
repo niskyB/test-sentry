@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { Registration } from 'src/core/models';
-import { RegistrationRepository } from 'src/core/repositories';
+import { RegistrationRepository } from '../core/repositories';
 
 @Injectable()
 export class RegistrationService {

@@ -20,7 +20,7 @@ export class BlogCategoryController {
     @UsePipes(new JoiValidatorPipe(vBlogCategoryDTO))
     async cCreateBlogCategory(@Res() res: Response, @Body() body: BlogCategoryDTO) {
         const blogCategory = new BlogCategory();
-        blogCategory.name = body.name;
+        blogCategory.description = body.name;
 
         try {
             await this.blogCategoryService.saveBlogCategory(blogCategory);
@@ -37,7 +37,7 @@ export class BlogCategoryController {
     @UsePipes(new JoiValidatorPipe(vBlogCategoryDTO))
     async cUpdateBlogCategory(@Res() res: Response, @Body() body: BlogCategoryDTO, @Param('id') id: string) {
         const blogCategory = await this.blogCategoryService.getBlogCategoryByField('id', id);
-        blogCategory.name = body.name;
+        blogCategory.description = body.name;
 
         try {
             await this.blogCategoryService.saveBlogCategory(blogCategory);

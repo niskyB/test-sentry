@@ -32,7 +32,7 @@ export class SaleGuard implements CanActivate {
             throw new HttpException({}, StatusCodes.UNAUTHORIZED);
         }
 
-        if (roles.length && !roles.includes(user.role) && user.role.name !== UserRole.ADMIN && user.role.name !== UserRole.SALE) {
+        if (roles.length && !roles.includes(user.role) && user.role.description !== UserRole.ADMIN && user.role.description !== UserRole.SALE) {
             throw new HttpException({}, StatusCodes.UNAUTHORIZED);
         }
         user.password = '';

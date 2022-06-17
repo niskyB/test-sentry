@@ -30,7 +30,7 @@ export class SubjectCategoryController {
     @UsePipes(new JoiValidatorPipe(vSubjectCategoryDTO))
     async cCreateSubjectCategory(@Res() res: Response, @Body() body: SubjectCategoryDTO) {
         const subjectCategory = new SubjectCategory();
-        subjectCategory.name = body.name;
+        subjectCategory.description = body.name;
 
         try {
             await this.subjectCategoryService.saveSubjectCategory(subjectCategory);
@@ -47,7 +47,7 @@ export class SubjectCategoryController {
     @UsePipes(new JoiValidatorPipe(vSubjectCategoryDTO))
     async cUpdateSubjectCategory(@Res() res: Response, @Body() body: SubjectCategoryDTO, @Param('id') id: string) {
         const subjectCategory = await this.subjectCategoryService.getSubjectCategoryByField('id', id);
-        subjectCategory.name = body.name;
+        subjectCategory.description = body.name;
 
         try {
             await this.subjectCategoryService.saveSubjectCategory(subjectCategory);
