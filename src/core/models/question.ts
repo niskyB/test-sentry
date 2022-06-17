@@ -28,6 +28,10 @@ export class Question {
     @Column({ default: null })
     imageUrl: string;
 
+    @ApiProperty({ description: 'Explanation' })
+    @Column('longtext', { default: null })
+    explanation: string;
+
     @ApiProperty({ description: 'Is Multiple Choice' })
     @Column({ default: false })
     isMultipleChoice: boolean;
@@ -66,5 +70,9 @@ export const questionValidateSchema = {
         .string()
         .trim()
         .messages(JoiMessage.createStringMessages({ field: 'Audio Link' })),
+    explanation: joi
+        .string()
+        .required()
+        .messages(JoiMessage.createStringMessages({ field: 'Explanation' })),
     isMultipleChoice: joi.boolean().messages(JoiMessage.createBooleanMessages({ field: 'Is Multiple Choice' })),
 };
