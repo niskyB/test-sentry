@@ -18,6 +18,8 @@ export class LessonService {
             .leftJoinAndSelect('subject.assignTo', 'assignTo')
             .leftJoinAndSelect('assignTo.user', 'user')
             .leftJoinAndSelect('lesson.type', 'type')
+            .leftJoinAndSelect('lesson.lessonDetail', 'lessonDetail')
+            .leftJoinAndSelect('lesson.lessonQuiz', 'lessonQuiz')
             .getOne();
     }
 
