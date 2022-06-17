@@ -52,4 +52,16 @@ export const registrationValidateSchema = {
         .required()
         .valid(RegistrationStatus.INACTIVE, RegistrationStatus.PAID, RegistrationStatus.SUBMITTED)
         .messages(JoiMessage.createStringMessages({ field: 'Status' })),
+    registrationTime: joi
+        .string()
+        .required()
+        .messages(JoiMessage.createStringMessages({ field: 'Registration time' })),
+    validFrom: joi
+        .string()
+        .required()
+        .messages(JoiMessage.createStringMessages({ field: 'Valid from' })),
+    validTo: joi
+        .string()
+        .required()
+        .messages(JoiMessage.createStringMessages({ field: 'Valid to' })),
 };
