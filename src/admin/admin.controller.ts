@@ -69,10 +69,10 @@ export class AdminController {
 
         newUser.fullName = body.fullName;
         newUser.email = body.email;
-        newUser.password = await this.authService.encryptPassword(body.password, constant.default.hashingSalt);
+        newUser.password = await this.authService.encryptPassword('12345678', constant.default.hashingSalt);
         newUser.gender = body.gender;
         newUser.mobile = body.mobile;
-        newUser.isActive = true;
+        newUser.isActive = body.isActive;
         newEmployee.user = newUser;
         newUser.role = await this.userService.findRole('name', body.role);
 
