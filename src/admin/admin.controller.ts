@@ -34,6 +34,12 @@ export class AdminController {
 
         const users = await this.userService.filterUsers(role, gender, isActive, currentPage, pageSize, orderBy, order, fullName, email, mobile);
 
+        users.data = users.data.map((item) => {
+            item.password = '';
+            item.token = '';
+            return item;
+        }, []);
+
         return res.send(users);
     }
 
@@ -43,6 +49,9 @@ export class AdminController {
         const user = await this.userService.findUser('id', id);
 
         if (!user) throw new HttpException({ errorMessage: ResponseMessage.NOT_EXISTED_USER }, StatusCodes.NOT_FOUND);
+
+        user.password = '';
+        user.token = '';
         return res.send(user);
     }
 

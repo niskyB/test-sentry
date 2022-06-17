@@ -35,6 +35,9 @@ export class LessonController {
         if (lesson.type.name == 'Lesson Detail') lesson = await this.lessonService.getLessonDetailById(lesson.id);
         if (lesson.type.name == 'Lesson Quiz') lesson = await this.lessonService.getLessonQuizById(lesson.id);
 
+        lesson.subject.assignTo.user.password = '';
+        lesson.subject.assignTo.user.token = '';
+
         return res.send(lesson);
     }
 
@@ -99,6 +102,9 @@ export class LessonController {
             console.log(err);
         }
 
+        newLesson.subject.assignTo.user.password = '';
+        newLesson.subject.assignTo.user.token = '';
+
         return res.send(newLesson);
     }
 
@@ -117,6 +123,9 @@ export class LessonController {
         lesson.updatedAt = new Date().toISOString();
 
         await this.lessonService.saveLesson(lesson);
+
+        lesson.subject.assignTo.user.password = '';
+        lesson.subject.assignTo.user.token = '';
 
         return res.send(lesson);
     }
@@ -157,6 +166,9 @@ export class LessonController {
 
         lesson.updatedAt = new Date().toISOString();
         await this.lessonService.saveLesson(lesson);
+
+        lesson.subject.assignTo.user.password = '';
+        lesson.subject.assignTo.user.token = '';
 
         return res.send(lesson);
     }

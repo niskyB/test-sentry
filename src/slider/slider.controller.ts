@@ -25,6 +25,8 @@ export class SliderController {
     async cGetSlider(@Param('id') id: string, @Res() res: Response) {
         const slider = await this.sliderService.getSliderByField('id', id);
         if (!slider) throw new HttpException({ errorMessage: ResponseMessage.NOT_FOUND }, StatusCodes.NOT_FOUND);
+        slider.marketing.user.password = '';
+        slider.marketing.user.token = '';
         return res.send(slider);
     }
 
@@ -47,6 +49,8 @@ export class SliderController {
 
         newSlider.createdAt = new Date().toISOString();
         await this.sliderService.saveSlider(newSlider);
+        newSlider.marketing.user.password = '';
+        newSlider.marketing.user.token = '';
 
         return res.send(newSlider);
     }
@@ -73,6 +77,9 @@ export class SliderController {
         }
 
         await this.sliderService.saveSlider(slider);
+
+        slider.marketing.user.password = '';
+        slider.marketing.user.token = '';
 
         return res.send(slider);
     }

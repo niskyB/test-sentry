@@ -23,6 +23,7 @@ export class UserController {
     async cGetMe(@Req() req: Request, @Res() res: Response) {
         const user = req.user;
         user.token = '';
+        user.password = '';
         return res.send(user);
     }
 
@@ -33,6 +34,8 @@ export class UserController {
 
         if (!user) throw new HttpException({ errorMessage: ResponseMessage.NOT_EXISTED_USER }, StatusCodes.NOT_FOUND);
         if (user.id !== req.user.id) throw new HttpException({ errorMessage: ResponseMessage.FORBIDDEN }, StatusCodes.FORBIDDEN);
+        user.password = '';
+        user.token = '';
         return res.send(user);
     }
 
@@ -72,6 +75,8 @@ export class UserController {
         user.updatedAt = new Date().toISOString();
 
         await this.userService.saveUser(user);
+        user.password = '';
+        user.token = '';
         return res.send(user);
     }
 }

@@ -17,6 +17,12 @@ export class SubjectsController {
         const { name, isActive, isFeature, category, currentPage, createdAt, pageSize, assignTo } = queries;
 
         const result = await this.subjectService.filterSubjects(name, createdAt, currentPage, pageSize, isActive, isFeature, category, assignTo);
+
+        result.data = result.data.map((item) => {
+            item.assignTo.user.password = '';
+            item.assignTo.user.token = '';
+            return item;
+        }, []);
         return res.send(result);
     }
 }
