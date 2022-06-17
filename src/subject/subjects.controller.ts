@@ -38,8 +38,8 @@ export class SubjectsController {
         const { name, isActive, isFeature, category, currentPage, createdAt, pageSize } = queries;
 
         let result;
-        if (req.user.role.name === UserRole.ADMIN) result = await this.subjectService.filterSubjectsForAdmin(name, createdAt, currentPage, pageSize, isActive, isFeature, category);
-        else result = await this.subjectService.filterSubjects(name, createdAt, currentPage, pageSize, isActive, isFeature, category, req.user.id);
+        if (req.user && req.user.role.name === UserRole.ADMIN) result = await this.subjectService.filterSubjectsForAdmin(name, createdAt, currentPage, pageSize, isActive, isFeature, category);
+        else result = await this.subjectService.filterSubjects(name, createdAt, currentPage, pageSize, isActive, isFeature, category, req.user ? req.user.id : '');
 
         if (result) {
             result.data = result.data.map((item) => {
