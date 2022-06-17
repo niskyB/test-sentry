@@ -1,8 +1,9 @@
+import { AnswerService } from './../answer/answer.service';
 import { LessonService } from './../lesson/lesson.service';
 import { ExpertGuard } from './../auth/guard';
 import { DimensionService } from './../dimension/dimension.service';
 import { S3Service } from '../core/providers/s3/s3.service';
-import { Question } from './../core/models';
+import { Answer, Question } from './../core/models';
 import { JoiValidatorPipe } from './../core/pipe';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { QuestionService } from './question.service';
@@ -22,6 +23,7 @@ export class QuestionController {
         private readonly s3Service: S3Service,
         private readonly dimensionService: DimensionService,
         private readonly lessonService: LessonService,
+        private readonly answerService: AnswerService,
     ) {}
 
     @Get('/:id')
@@ -39,10 +41,19 @@ export class QuestionController {
     @UseInterceptors(FileInterceptor('image'))
     @UsePipes(new JoiValidatorPipe(vCreateQuestionDTO))
     async cCreateQuestion(@Res() res: Response, @Body() body: CreateQuestionDTO, @UploadedFile() file: Express.Multer.File) {
+        const countCorrect = body.answers.reduce((total, item) => {
+            if (item.isCorrect) return total + 1;
+            return total;
+        }, 0);
+
+        if (countCorrect <= 0) throw new HttpException({ errorMessage: ResponseMessage.QUESTION_ANSWER_CORRECT_ERROR }, StatusCodes.BAD_REQUEST);
+        if (countCorrect > 1 && !body.isMultipleChoice) throw new HttpException({ errorMessage: ResponseMessage.SINGLE_CHOICE_ERROR }, StatusCodes.BAD_REQUEST);
+        if (countCorrect <= 1 && body.isMultipleChoice) throw new HttpException({ errorMessage: ResponseMessage.MULTIPLE_CHOICE_ERROR }, StatusCodes.BAD_REQUEST);
+
         const newQuestion = new Question();
         newQuestion.content = body.content;
         newQuestion.audioLink = body.audioLink;
-        newQuestion.link = body.link;
+        newQuestion.videoLink = body.videoLink;
         newQuestion.isMultipleChoice = body.isMultipleChoice;
         newQuestion.dimensions = [];
 
@@ -65,6 +76,15 @@ export class QuestionController {
         newQuestion.lesson = lesson;
 
         await this.questionService.saveQuestion(newQuestion);
+
+        for (const item of body.answers) {
+            const answer = new Answer();
+            answer.detail = item.detail;
+            answer.isCorrect = item.isCorrect;
+            answer.question = newQuestion;
+
+            await this.answerService.saveAnswer(answer);
+        }
 
         return res.send(newQuestion);
     }

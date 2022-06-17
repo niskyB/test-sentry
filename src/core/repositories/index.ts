@@ -25,3 +25,4 @@ export * from './registration.repository';
 export * from './quizResult.repository';
 export * from './questionInQuiz.repository';
 export * from './attendedQuestion.repository';
+export * from './questionLevel.repository';

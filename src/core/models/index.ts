@@ -29,3 +29,4 @@ export * from './question-answer';
 export * from './question-in-quiz';
 export * from './attended-question';
 export * from './user-answer';
+export * from './question-level';
