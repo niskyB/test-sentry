@@ -9,7 +9,7 @@ import { Role, UserRole } from '../../core/models';
 import { constant } from '../../core';
 
 @Injectable()
-export class AdminGuard implements CanActivate {
+export class SaleGuard implements CanActivate {
     constructor(private readonly authService: AuthService, private readonly userService: UserService, private readonly reflector: Reflector) {}
 
     async canActivate(context: ExecutionContext): Promise<boolean> {
@@ -21,7 +21,7 @@ export class AdminGuard implements CanActivate {
         // const token = req.cookies[constant.authController.tokenName] || '';
 
         const { data, error } = await this.authService.verifyToken<JwtToken>(token);
-
+        console.log(error);
         if (error) {
             throw new HttpException({}, StatusCodes.UNAUTHORIZED);
         }
@@ -32,10 +32,9 @@ export class AdminGuard implements CanActivate {
             throw new HttpException({}, StatusCodes.UNAUTHORIZED);
         }
 
-        if (roles.length && !roles.includes(user.role) && user.role.name !== UserRole.ADMIN) {
+        if (roles.length && !roles.includes(user.role) && user.role.name !== UserRole.ADMIN && user.role.name !== UserRole.SALE) {
             throw new HttpException({}, StatusCodes.UNAUTHORIZED);
         }
-
         user.password = '';
         req.user = user;
 
