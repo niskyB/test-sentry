@@ -23,6 +23,9 @@ export class CreateQuestionDTO {
     @ApiProperty({ description: 'Lesson id', example: '123-asd21-asd2' })
     lesson: string;
 
+    @ApiProperty({ description: 'Question Level Id', example: '123-asd21-asd2' })
+    questionLevel: string;
+
     @ApiProperty({ description: 'Answer', example: '123-asd21-asd2' })
     answers: Answer[];
 }
@@ -56,4 +59,8 @@ export const vCreateQuestionDTO = joi.object<CreateQuestionDTO>({
         )
         .required()
         .messages(JoiMessage.createArrayMessages({ field: 'Answers' })),
+    questionLevel: joi
+        .string()
+        .required()
+        .messages(JoiMessage.createStringMessages({ field: 'Question level' })),
 });

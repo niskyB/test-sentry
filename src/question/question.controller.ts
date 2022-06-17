@@ -1,3 +1,4 @@
+import { QuestionLevelService } from './../question-level/question-level.service';
 import { AnswerService } from './../answer/answer.service';
 import { LessonService } from './../lesson/lesson.service';
 import { ExpertGuard } from './../auth/guard';
@@ -24,6 +25,7 @@ export class QuestionController {
         private readonly dimensionService: DimensionService,
         private readonly lessonService: LessonService,
         private readonly answerService: AnswerService,
+        private readonly questionLevelService: QuestionLevelService,
     ) {}
 
     @Get('/:id')
@@ -50,11 +52,15 @@ export class QuestionController {
         if (countCorrect > 1 && !body.isMultipleChoice) throw new HttpException({ errorMessage: ResponseMessage.SINGLE_CHOICE_ERROR }, StatusCodes.BAD_REQUEST);
         if (countCorrect <= 1 && body.isMultipleChoice) throw new HttpException({ errorMessage: ResponseMessage.MULTIPLE_CHOICE_ERROR }, StatusCodes.BAD_REQUEST);
 
+        const questionLevel = await this.questionLevelService.getOneByField('id', body.questionLevel);
+        if (!questionLevel) throw new HttpException({ questionLevel: ResponseMessage.QUESTION_LEVEL_ERROR }, StatusCodes.BAD_REQUEST);
+
         const newQuestion = new Question();
         newQuestion.content = body.content;
         newQuestion.audioLink = body.audioLink;
         newQuestion.videoLink = body.videoLink;
         newQuestion.isMultipleChoice = body.isMultipleChoice;
+        newQuestion.questionLevel = questionLevel;
         newQuestion.dimensions = [];
 
         if (file) {
