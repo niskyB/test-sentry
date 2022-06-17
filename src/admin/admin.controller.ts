@@ -31,7 +31,7 @@ export class AdminController {
     @UsePipes(new QueryJoiValidatorPipe(vFilterUsersDTO))
     async cFilterUsers(@Res() res: Response, @Query() queries: FilterUsersDTO) {
         const { role, gender, isActive, currentPage, orderBy, order, pageSize, fullName, email, mobile } = queries;
-
+        console.log(gender);
         const users = await this.userService.filterUsers(role, gender, isActive, currentPage, pageSize, orderBy, order, fullName, email, mobile);
 
         users.data = users.data.map((item) => {
