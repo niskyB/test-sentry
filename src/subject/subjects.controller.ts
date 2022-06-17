@@ -35,11 +35,11 @@ export class SubjectsController {
     @Get('')
     @UsePipes(new QueryJoiValidatorPipe(vFilterSubjectsDTO))
     async cFilterSubjects(@Req() req: Request, @Res() res: Response, @Query() queries: FilterSubjectsDTO) {
-        const { name, isActive, isFeature, category, currentPage, createdAt, pageSize } = queries;
+        const { name, isActive, isFeature, category, currentPage, createdAt, pageSize, order } = queries;
 
         let result;
         if (req.user && req.user.role.name === UserRole.ADMIN) result = await this.subjectService.filterSubjectsForAdmin(name, createdAt, currentPage, pageSize, isActive, isFeature, category);
-        else result = await this.subjectService.filterSubjects(name, createdAt, currentPage, pageSize, isActive, isFeature, category, req.user ? req.user.id : '');
+        else result = await this.subjectService.filterSubjects(name, createdAt, currentPage, pageSize, isActive, isFeature, category, req.user ? req.user.id : '', order);
 
         if (result) {
             result.data = result.data.map((item) => {
