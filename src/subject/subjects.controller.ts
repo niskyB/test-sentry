@@ -34,16 +34,20 @@ export class SubjectsController {
 
     @Get('')
     @UsePipes(new QueryJoiValidatorPipe(vFilterSubjectsDTO))
-    async cFilterSubjects(@Res() res: Response, @Query() queries: FilterSubjectsDTO) {
-        const { name, isActive, isFeature, category, currentPage, createdAt, pageSize, assignTo } = queries;
+    async cFilterSubjects(@Req() req: Request, @Res() res: Response, @Query() queries: FilterSubjectsDTO) {
+        const { name, isActive, isFeature, category, currentPage, createdAt, pageSize } = queries;
 
-        const result = await this.subjectService.filterSubjects(name, createdAt, currentPage, pageSize, isActive, isFeature, category, assignTo);
+        let result;
+        if (req.user.role.name === UserRole.ADMIN) result = await this.subjectService.filterSubjectsForAdmin(name, createdAt, currentPage, pageSize, isActive, isFeature, category);
+        else result = await this.subjectService.filterSubjects(name, createdAt, currentPage, pageSize, isActive, isFeature, category, req.user.id);
 
-        result.data = result.data.map((item) => {
-            item.assignTo.user.password = '';
-            item.assignTo.user.token = '';
-            return item;
-        }, []);
+        if (result) {
+            result.data = result.data.map((item) => {
+                item.assignTo.user.password = '';
+                item.assignTo.user.token = '';
+                return item;
+            }, []);
+        }
         return res.send(result);
     }
 }
