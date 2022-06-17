@@ -1,3 +1,4 @@
+import { Answer } from './../../core/models';
 import { JoiMessage } from 'joi-message';
 import { questionValidateSchema } from './../../core/models';
 import { ApiProperty } from '@nestjs/swagger';
@@ -21,6 +22,9 @@ export class CreateQuestionDTO {
 
     @ApiProperty({ description: 'Lesson id', example: '123-asd21-asd2' })
     lesson: string;
+
+    @ApiProperty({ description: 'Answer', example: '123-asd21-asd2' })
+    answers: Answer[];
 }
 
 export const vCreateQuestionDTO = joi.object<CreateQuestionDTO>({
@@ -36,4 +40,20 @@ export const vCreateQuestionDTO = joi.object<CreateQuestionDTO>({
         .string()
         .required()
         .messages(JoiMessage.createStringMessages({ field: 'Lesson' })),
+    answers: joi
+        .array()
+        .items(
+            joi.object().keys({
+                detail: joi
+                    .string()
+                    .required()
+                    .messages(JoiMessage.createStringMessages({ field: 'Detail' })),
+                isCorrect: joi
+                    .boolean()
+                    .required()
+                    .messages(JoiMessage.createBooleanMessages({ field: 'Is Correct' })),
+            }),
+        )
+        .required()
+        .messages(JoiMessage.createArrayMessages({ field: 'Answers' })),
 });

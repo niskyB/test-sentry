@@ -22,4 +22,7 @@ export enum ResponseMessage {
     INVALID_DIMENSION = 'Invalid dimension',
     INVALID_LESSON = 'Invalid lesson',
     DUPLICATED_CATEGORY = 'This category has already existed',
+    QUESTION_ANSWER_CORRECT_ERROR = 'Question should have one correct answer',
+    SINGLE_CHOICE_ERROR = 'Single choice question should have only one correct answer',
+    MULTIPLE_CHOICE_ERROR = 'Multiple choice question should have at least two correct answer',
 }
