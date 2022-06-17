@@ -23,3 +23,5 @@ export * from './answer.repository';
 export * from './question.repository';
 export * from './registration.repository';
 export * from './quizResult.repository';
+export * from './questionInQuiz.repository';
+export * from './attendedQuestion.repository';

@@ -1,3 +1,4 @@
+import { PricePackage } from './price-package';
 import { SubjectCategory } from './subject-category';
 import { Expert } from './expert';
 import { Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
@@ -55,6 +56,10 @@ export class Subject {
     @ApiProperty({ description: 'Lesson' })
     @OneToMany(() => Lesson, (lesson) => lesson.subject)
     lessons: Lesson[];
+
+    @ApiProperty({ description: 'Lesson' })
+    @OneToMany(() => PricePackage, (pricePackage) => pricePackage.subject)
+    pricePackages: PricePackage[];
 }
 
 export const subjectValidateSchema = {

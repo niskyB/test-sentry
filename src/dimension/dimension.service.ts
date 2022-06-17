@@ -20,6 +20,8 @@ export class DimensionService {
                 .createQueryBuilder('dimension')
                 .leftJoinAndSelect('dimension.type', 'type')
                 .leftJoinAndSelect('dimension.subject', 'subject')
+                .leftJoinAndSelect('subject.assignTo', 'assignTo')
+                .leftJoinAndSelect('assignTo.user', 'user')
                 .andWhere('subject.id = (:id)', { id })
                 .skip(currentPage * pageSize)
                 .take(pageSize)

@@ -30,8 +30,10 @@ export class DimensionController {
         const dimension = await this.dimensionService.getDimensionByField('id', id);
         if (!dimension) throw new HttpException({ errorMessage: ResponseMessage.NOT_FOUND }, StatusCodes.NOT_FOUND);
 
-        dimension.subject.assignTo.user.password = '';
-        dimension.subject.assignTo.user.token = '';
+        if (dimension.subject.assignTo) {
+            dimension.subject.assignTo.user.password = '';
+            dimension.subject.assignTo.user.token = '';
+        }
         return res.send(dimension);
     }
 
@@ -53,8 +55,10 @@ export class DimensionController {
         dimension.subject = subject;
 
         await this.dimensionService.saveDimension(dimension);
-        dimension.subject.assignTo.user.password = '';
-        dimension.subject.assignTo.user.token = '';
+        if (dimension.subject.assignTo) {
+            dimension.subject.assignTo.user.password = '';
+            dimension.subject.assignTo.user.token = '';
+        }
         return res.send(dimension);
     }
 
@@ -75,8 +79,10 @@ export class DimensionController {
 
         await this.dimensionService.saveDimension(dimension);
 
-        dimension.subject.assignTo.user.password = '';
-        dimension.subject.assignTo.user.token = '';
+        if (dimension.subject.assignTo) {
+            dimension.subject.assignTo.user.password = '';
+            dimension.subject.assignTo.user.token = '';
+        }
 
         return res.send(dimension);
     }
