@@ -17,7 +17,7 @@ export class Question {
 
     @ApiProperty({ description: 'Link' })
     @Column({ default: null })
-    link: string;
+    videoLink: string;
 
     @ApiProperty({ description: 'Audio Link' })
     @Column({ default: null })
@@ -53,7 +53,7 @@ export const questionValidateSchema = {
         .trim()
         .required()
         .messages(JoiMessage.createStringMessages({ field: 'Content', min: 3, max: 1000 })),
-    link: joi
+    videoLink: joi
         .string()
         .trim()
         .messages(JoiMessage.createStringMessages({ field: 'Link' })),
