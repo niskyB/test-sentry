@@ -17,6 +17,9 @@ export class CreateQuestionDTO {
     @ApiProperty({ description: 'Is Multiple Choice', example: 'false' })
     isMultipleChoice: boolean;
 
+    @ApiProperty({ description: 'Is Active', example: 'true' })
+    isActive: boolean;
+
     @ApiProperty({ description: 'Dimension ids', example: '123-asd21-asd2,12aaa-2aca-aq2,12asd-2asc-123zs' })
     dimensions: string;
 
@@ -63,4 +66,8 @@ export const vCreateQuestionDTO = joi.object<CreateQuestionDTO>({
         .string()
         .required()
         .messages(JoiMessage.createStringMessages({ field: 'Question level' })),
+    isActive: joi
+        .boolean()
+        .required()
+        .messages(JoiMessage.createBooleanMessages({ field: 'Is Active' })),
 });
