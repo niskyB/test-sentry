@@ -2,7 +2,7 @@ import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
 
 @Entity()
-export class SubjectCategory {
+export class SystemMenu {
     @ApiProperty({ description: 'Id' })
     @PrimaryGeneratedColumn('uuid')
     id: string;

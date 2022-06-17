@@ -11,7 +11,12 @@ export class SliderService {
     }
 
     async getSliderByField(field: keyof Slider, value: any): Promise<Slider> {
-        return await this.sliderRepository.findOneByField(field, value);
+        return await this.sliderRepository
+            .createQueryBuilder('slider')
+            .where(`slider.${field} = (:value)`, { value })
+            .leftJoinAndSelect('slider.marketing', 'marketing')
+            .leftJoinAndSelect('marketing.user', 'user')
+            .getOne();
     }
 
     async filterSliders(title: string, userId: string, createdAt: string, currentPage: number, pageSize: number, isShow: boolean): Promise<{ data: Slider[]; count: number }> {

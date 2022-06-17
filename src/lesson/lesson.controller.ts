@@ -1,6 +1,6 @@
 import { UserService } from './../user/user.service';
 import { QuizService } from './../quiz/quiz.service';
-import { Lesson, LessonDetail, LessonQuiz, SubjectTopic, UserRole } from './../core/models';
+import { Lesson, LessonDetail, LessonQuiz, LessonTypes, SubjectTopic, UserRole } from './../core/models';
 import { SubjectService } from './../subject/subject.service';
 import { LessonTypeService } from './../lesson-type/lesson-type.service';
 import { ExpertGuard } from './../auth/guard';
@@ -32,8 +32,8 @@ export class LessonController {
 
         if (!lesson) throw new HttpException({ errorMessage: ResponseMessage.NOT_FOUND }, StatusCodes.NOT_FOUND);
 
-        if (lesson.type.name == 'Lesson Detail') lesson = await this.lessonService.getLessonDetailById(lesson.id);
-        if (lesson.type.name == 'Lesson Quiz') lesson = await this.lessonService.getLessonQuizById(lesson.id);
+        if (lesson.type.description == 'Lesson Detail') lesson = await this.lessonService.getLessonDetailById(lesson.id);
+        if (lesson.type.description == 'Lesson Quiz') lesson = await this.lessonService.getLessonQuizById(lesson.id);
 
         lesson.subject.assignTo.user.password = '';
         lesson.subject.assignTo.user.token = '';
@@ -52,7 +52,7 @@ export class LessonController {
         if (!subject) throw new HttpException({ errorMessage: ResponseMessage.INVALID_SUBJECT }, StatusCodes.BAD_REQUEST);
 
         const user = await this.userService.findUser('id', req.user.id);
-        if (user.role.name !== UserRole.ADMIN && subject.assignTo.id !== user.typeId) throw new HttpException({ errorMessage: ResponseMessage.FORBIDDEN }, StatusCodes.FORBIDDEN);
+        if (user.role.description !== UserRole.ADMIN && subject.assignTo.id !== user.typeId) throw new HttpException({ errorMessage: ResponseMessage.FORBIDDEN }, StatusCodes.FORBIDDEN);
 
         const newLesson = new Lesson();
         const date = new Date();
@@ -65,12 +65,12 @@ export class LessonController {
         newLesson.isActive = body.isActive === null || body.isActive === undefined ? newLesson.isActive : body.isActive;
         newLesson.type = lessonType;
 
-        if (lessonType.name === 'Subject Topic') {
+        if (lessonType.description === LessonTypes.TOPIC) {
             const subjectTopic = new SubjectTopic();
             newLesson.subjectTopic = subjectTopic;
         }
 
-        if (lessonType.name === 'Lesson Detail') {
+        if (lessonType.description === LessonTypes.LESSON) {
             if (!body.htmlContent) throw new HttpException({ htmlContent: ResponseMessage.INVALID_HTML_CONTENT }, StatusCodes.BAD_REQUEST);
             if (!body.videoLink) throw new HttpException({ videoLink: ResponseMessage.INVALID_VIDEO_LINK }, StatusCodes.BAD_REQUEST);
             const lessonDetail = new LessonDetail();
@@ -80,7 +80,7 @@ export class LessonController {
             newLesson.lessonDetail = lessonDetail;
         }
 
-        if (lessonType.name === 'Lesson Quiz') {
+        if (lessonType.description === LessonTypes.QUIZ) {
             if (!body.htmlContent) throw new HttpException({ htmlContent: ResponseMessage.INVALID_HTML_CONTENT }, StatusCodes.BAD_REQUEST);
             if (!body.quiz) throw new HttpException({ videoLink: ResponseMessage.INVALID_QUIZ }, StatusCodes.BAD_REQUEST);
 
@@ -117,7 +117,7 @@ export class LessonController {
         const lesson = await this.lessonService.getLessonByField('id', id);
 
         if (!lesson) throw new HttpException({ errorMessage: ResponseMessage.NOT_FOUND }, StatusCodes.NOT_FOUND);
-        if (user.role.name !== UserRole.ADMIN && lesson.subject.assignTo.id !== user.typeId) throw new HttpException({ errorMessage: ResponseMessage.FORBIDDEN }, StatusCodes.FORBIDDEN);
+        if (user.role.description !== UserRole.ADMIN && lesson.subject.assignTo.id !== user.typeId) throw new HttpException({ errorMessage: ResponseMessage.FORBIDDEN }, StatusCodes.FORBIDDEN);
 
         lesson.isActive = body.isActive === null || body.isActive === undefined ? lesson.isActive : body.isActive;
         lesson.updatedAt = new Date().toISOString();
@@ -142,18 +142,18 @@ export class LessonController {
         if (!type) throw new HttpException({ type: ResponseMessage.INVALID_TYPE }, StatusCodes.BAD_REQUEST);
 
         if (!lesson) throw new HttpException({ errorMessage: ResponseMessage.NOT_FOUND }, StatusCodes.NOT_FOUND);
-        if (user.role.name !== UserRole.ADMIN && lesson.subject.assignTo.id !== user.typeId) throw new HttpException({ errorMessage: ResponseMessage.FORBIDDEN }, StatusCodes.FORBIDDEN);
+        if (user.role.description !== UserRole.ADMIN && lesson.subject.assignTo.id !== user.typeId) throw new HttpException({ errorMessage: ResponseMessage.FORBIDDEN }, StatusCodes.FORBIDDEN);
 
         lesson.name = body.name || lesson.name;
         lesson.order = body.order > 0 ? body.order : lesson.order;
         lesson.topic = body.topic || lesson.topic;
 
-        if (type.name === 'Lesson Detail') {
+        if (type.description === LessonTypes.LESSON) {
             lesson.lessonDetail.htmlContent = body.htmlContent || lesson.lessonDetail.htmlContent;
             lesson.lessonDetail.videoLink = body.videoLink || lesson.lessonDetail.videoLink;
         }
 
-        if (type.name === 'Lesson Quiz') {
+        if (type.description === LessonTypes.QUIZ) {
             lesson.lessonQuiz.htmlContent = body.htmlContent || lesson.lessonQuiz.htmlContent;
             if (body.quiz) lesson.lessonQuiz.quizs = [];
 

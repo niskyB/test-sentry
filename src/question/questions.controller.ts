@@ -19,7 +19,7 @@ export class QuestionsController {
     async cGetQuestionBySubjectId(@Query() queries: FilterQuestionDTO, @Res() res: Response, @Req() req: Request) {
         const { content, subject, lesson, level, currentPage, pageSize, dimension, isActive } = queries;
         let result;
-        if (req.user && req.user.role.name === UserRole.ADMIN) {
+        if (req.user && req.user.role.description === UserRole.ADMIN) {
             result = await this.questionService.getQuestionsForAdmin(subject, lesson, dimension, level, content, isActive, currentPage, pageSize);
         } else result = await this.questionService.getQuestionsByUserId(req.user.id, subject, lesson, dimension, level, content, isActive, currentPage, pageSize);
 

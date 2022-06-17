@@ -67,7 +67,7 @@ export class AuthController {
         newUser.gender = body.gender;
         newUser.mobile = body.mobile;
         newCustomer.user = newUser;
-        newUser.role = await this.userService.findRole('name', UserRole.CUSTOMER);
+        newUser.role = await this.userService.findRole('description', UserRole.CUSTOMER);
         newUser.createdAt = new Date().toISOString();
         newUser.updatedAt = new Date().toISOString();
         await this.userService.saveUser(newUser);
