@@ -5,7 +5,7 @@ import { QuestionLevelService } from './question-level.service';
 
 @ApiTags('question levels')
 @ApiBearerAuth()
-@Controller('question levels')
+@Controller('question-levels')
 export class QuestionLevelsController {
     constructor(private readonly questionLevelService: QuestionLevelService) {}
 

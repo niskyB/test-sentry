@@ -1,3 +1,4 @@
+import { QuestionLevelModule } from './../question-level/question-level.module';
 import { AnswerModule } from './../answer/answer.module';
 import { Question } from './../core/models';
 import { QuestionsController } from './questions.controller';
@@ -14,7 +15,7 @@ import { QuestionService } from './question.service';
 import { Connection } from 'typeorm';
 
 @Module({
-    imports: [TypeOrmModule.forFeature([Question]), S3Module, DimensionModule, AuthModule, UserModule, LessonModule, AnswerModule],
+    imports: [TypeOrmModule.forFeature([Question]), S3Module, DimensionModule, AuthModule, UserModule, LessonModule, AnswerModule, QuestionLevelModule],
     controllers: [QuestionController, QuestionsController],
     providers: [QuestionService, { provide: QuestionRepository, useFactory: (connection: Connection) => connection.getCustomRepository(QuestionRepository), inject: [Connection] }],
     exports: [QuestionService],
