@@ -1,5 +1,5 @@
 import { Subject } from './subject';
-import { Column, Entity, JoinColumn, ManyToOne, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, ManyToOne, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
 import * as joi from 'joi';
 import JoiMessage from 'joi-message';
@@ -39,26 +39,23 @@ export class Lesson {
     updatedAt: string;
 
     @ApiProperty({ description: 'Lesson Type' })
-    @ManyToOne(() => LessonType)
+    @ManyToOne(() => LessonType, { nullable: false })
     type: LessonType;
 
     @ApiProperty({ description: 'Subject' })
-    @ManyToOne(() => Subject)
+    @ManyToOne(() => Subject, { nullable: false })
     subject: Subject;
 
     @ApiProperty({ description: 'Subject Topic' })
     @OneToOne(() => SubjectTopic, { cascade: true })
-    @JoinColumn()
     subjectTopic: SubjectTopic;
 
     @ApiProperty({ description: 'Lesson Quiz' })
     @OneToOne(() => LessonQuiz, { cascade: true })
-    @JoinColumn()
     lessonQuiz: LessonQuiz;
 
     @ApiProperty({ description: 'Lesson Detail' })
     @OneToOne(() => LessonDetail, { cascade: true })
-    @JoinColumn()
     lessonDetail: LessonDetail;
 }
 

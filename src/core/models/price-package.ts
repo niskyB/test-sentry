@@ -43,7 +43,7 @@ export class PricePackage {
     updatedAt: string;
 
     @ApiProperty({ description: 'Marketing' })
-    @ManyToOne(() => Subject)
+    @ManyToOne(() => Subject, { nullable: false })
     subject: Subject;
 }
 

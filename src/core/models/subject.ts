@@ -46,7 +46,7 @@ export class Subject {
     updatedAt: string;
 
     @ApiProperty({ description: 'Subject Category' })
-    @ManyToOne(() => SubjectCategory)
+    @ManyToOne(() => SubjectCategory, { nullable: false })
     category: SubjectCategory;
 
     @ApiProperty({ description: 'Assign to' })

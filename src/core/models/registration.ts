@@ -3,6 +3,8 @@ import { ApiProperty } from '@nestjs/swagger';
 import * as joi from 'joi';
 import JoiMessage from 'joi-message';
 import { Customer } from './customer';
+import { Sale } from './sale';
+import { PricePackage } from './price-package';
 
 export enum RegistrationStatus {
     SUBMITTED = 'submitted',
@@ -39,6 +41,14 @@ export class Registration {
     @ApiProperty({ description: 'Status' })
     @Column()
     status: RegistrationStatus;
+
+    @ApiProperty({ description: 'Sale' })
+    @ManyToOne(() => Sale)
+    sale: Sale;
+
+    @ApiProperty({ description: 'Price Package' })
+    @ManyToOne(() => PricePackage, { nullable: false })
+    pricePackage: PricePackage;
 }
 
 export const registrationValidateSchema = {

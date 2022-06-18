@@ -1,3 +1,4 @@
+import { Subject } from './subject';
 import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
 import * as joi from 'joi';
@@ -28,12 +29,16 @@ export class Quiz {
     numberOfQuestion: number;
 
     @ApiProperty({ description: 'Quiz Type' })
-    @ManyToOne(() => QuizType)
+    @ManyToOne(() => QuizType, { nullable: false })
     type: QuizType;
 
     @ApiProperty({ description: 'Exam level' })
-    @ManyToOne(() => ExamLevel)
+    @ManyToOne(() => ExamLevel, { nullable: false })
     level: ExamLevel;
+
+    @ApiProperty({ description: 'Subject' })
+    @ManyToOne(() => Subject, { nullable: false })
+    subject: Subject;
 }
 
 export const quizValidateSchema = {

@@ -58,7 +58,7 @@ export class User {
     updatedAt: string;
 
     @ApiProperty({ description: 'Role' })
-    @ManyToOne(() => Role)
+    @ManyToOne(() => Role, { nullable: false })
     role: Role;
 
     @ApiProperty({ description: 'Type Id' })

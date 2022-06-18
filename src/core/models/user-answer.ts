@@ -10,10 +10,10 @@ export class UserAnswer {
     id: string;
 
     @ApiProperty({ description: 'Answer' })
-    @ManyToOne(() => Answer)
+    @ManyToOne(() => Answer, { nullable: false })
     answer: Answer;
 
     @ApiProperty({ description: 'Attended Question' })
-    @ManyToOne(() => AttendedQuestion)
+    @ManyToOne(() => AttendedQuestion, { nullable: false })
     attendedQuestion: AttendedQuestion;
 }

@@ -14,7 +14,7 @@ export class Customer {
     balance: number;
 
     @ApiProperty({ description: 'User' })
-    @OneToOne(() => User)
+    @OneToOne(() => User, { nullable: false })
     @JoinColumn()
     user: User;
 

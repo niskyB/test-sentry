@@ -27,7 +27,6 @@ import { QuestionModule } from './question/question.module';
 import { AnswerModule } from './answer/answer.module';
 import { RegistrationModule } from './registration/registration.module';
 import { QuizResultModule } from './quiz-result/quiz-result.module';
-import { QuestionAnswerModule } from './question-answer/question-answer.module';
 import { UserAnswerModule } from './user-answer/user-answer.module';
 import { QuestionInQuizModule } from './question-in-quiz/question-in-quiz.module';
 import { AttendedQuestionModule } from './attended-question/attended-question.module';
@@ -64,7 +63,6 @@ import { QuestionLevelModule } from './question-level/question-level.module';
         AnswerModule,
         RegistrationModule,
         QuizResultModule,
-        QuestionAnswerModule,
         UserAnswerModule,
         QuestionInQuizModule,
         AttendedQuestionModule,
