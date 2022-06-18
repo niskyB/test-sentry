@@ -51,7 +51,7 @@ export class Question {
     dimensions: Dimension[];
 
     @ApiProperty({ description: 'Lesson' })
-    @ManyToOne(() => Lesson)
+    @ManyToOne(() => Lesson, { nullable: false })
     lesson: Lesson;
 
     @ApiProperty({ description: 'Dimensions' })

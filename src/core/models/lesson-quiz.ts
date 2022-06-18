@@ -22,7 +22,7 @@ export class LessonQuiz {
 
     @ApiProperty({ description: 'Quiz' })
     @ManyToMany(() => Quiz)
-    @JoinTable()
+    @JoinTable({ name: 'lesson_quiz_details' })
     quizs: Quiz[];
 }
 

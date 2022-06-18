@@ -1,5 +1,5 @@
 import { QuizResult } from './quiz-result';
-import { QuestionInQuiz } from './question-in-quiz';
+import { QuizDetail } from './question-in-quiz';
 import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
 
@@ -14,10 +14,10 @@ export class AttendedQuestion {
     isMarked: boolean;
 
     @ApiProperty({ description: 'Question in Quiz' })
-    @ManyToOne(() => QuestionInQuiz)
-    questionInQuiz: QuestionInQuiz;
+    @ManyToOne(() => QuizDetail, { nullable: false })
+    questionInQuiz: QuizDetail;
 
     @ApiProperty({ description: 'Quiz Result' })
-    @ManyToOne(() => QuizResult)
+    @ManyToOne(() => QuizResult, { nullable: false })
     quizResult: QuizResult;
 }

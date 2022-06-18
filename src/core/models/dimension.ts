@@ -24,7 +24,7 @@ export class Dimension {
     type: DimensionType;
 
     @ApiProperty({ description: 'Subject' })
-    @ManyToOne(() => Subject)
+    @ManyToOne(() => Subject, { nullable: false })
     subject: Subject;
 }
 

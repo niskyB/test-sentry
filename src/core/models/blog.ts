@@ -48,7 +48,7 @@ export class Blog {
     marketing: Marketing;
 
     @ApiProperty({ description: 'Blog Category' })
-    @ManyToOne(() => BlogCategory)
+    @ManyToOne(() => BlogCategory, { nullable: false })
     category: BlogCategory;
 }
 

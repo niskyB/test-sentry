@@ -39,7 +39,7 @@ export class Lesson {
     updatedAt: string;
 
     @ApiProperty({ description: 'Lesson Type' })
-    @ManyToOne(() => LessonType)
+    @ManyToOne(() => LessonType, { nullable: false })
     type: LessonType;
 
     @ApiProperty({ description: 'Subject' })
