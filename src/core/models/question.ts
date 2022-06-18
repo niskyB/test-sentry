@@ -1,6 +1,7 @@
+import { Answer } from './answer';
 import { Lesson } from './lesson';
 import { Dimension } from './dimension';
-import { Column, Entity, JoinTable, ManyToMany, PrimaryGeneratedColumn, ManyToOne } from 'typeorm';
+import { Column, Entity, JoinTable, ManyToMany, PrimaryGeneratedColumn, ManyToOne, OneToMany } from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
 import * as joi from 'joi';
 import JoiMessage from 'joi-message';
@@ -40,6 +41,10 @@ export class Question {
     @Column({ default: true })
     isActive: boolean;
 
+    @ApiProperty({ description: 'Is Old' })
+    @Column({ default: false })
+    isOld: boolean;
+
     @ApiProperty({ description: 'Dimensions' })
     @ManyToMany(() => Dimension, { cascade: true })
     @JoinTable()
@@ -49,8 +54,12 @@ export class Question {
     @ManyToOne(() => Lesson)
     lesson: Lesson;
 
+    @ApiProperty({ description: 'Dimensions' })
+    @OneToMany(() => Answer, (answer) => answer.question)
+    answers: Answer[];
+
     @ApiProperty({ description: 'Question Level' })
-    @ManyToOne(() => QuestionLevel)
+    @ManyToOne(() => QuestionLevel, { nullable: false })
     questionLevel: QuestionLevel;
 }
 

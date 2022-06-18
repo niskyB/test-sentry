@@ -2,7 +2,6 @@ import { Column, Entity, PrimaryGeneratedColumn, ManyToOne } from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
 import * as joi from 'joi';
 import JoiMessage from 'joi-message';
-import { Quiz } from './quiz';
 import { Customer } from './customer';
 
 @Entity()
@@ -10,10 +9,6 @@ export class QuizResult {
     @ApiProperty({ description: 'Id' })
     @PrimaryGeneratedColumn('uuid')
     id: string;
-
-    @ApiProperty({ description: 'Quiz' })
-    @ManyToOne(() => Quiz)
-    quiz: Quiz;
 
     @ApiProperty({ description: 'Rate' })
     @Column({ default: null })

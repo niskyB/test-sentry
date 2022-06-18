@@ -19,7 +19,7 @@ export class Answer {
     isCorrect: boolean;
 
     @ApiProperty({ description: 'Question' })
-    @ManyToOne(() => Question)
+    @ManyToOne(() => Question, { nullable: false })
     question: Question;
 }
 

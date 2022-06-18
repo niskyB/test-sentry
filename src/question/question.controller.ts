@@ -8,12 +8,12 @@ import { Answer, Question } from './../core/models';
 import { JoiValidatorPipe } from './../core/pipe';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { QuestionService } from './question.service';
-import { Body, Controller, Get, HttpException, Param, Post, Res, UploadedFile, UseGuards, UseInterceptors, UsePipes } from '@nestjs/common';
+import { Body, Controller, Get, HttpException, Param, Post, Put, Res, UploadedFile, UseGuards, UseInterceptors, UsePipes } from '@nestjs/common';
 import { ApiBearerAuth, ApiParam, ApiTags } from '@nestjs/swagger';
 import { Response } from 'express';
 import { ResponseMessage } from '../core/interface';
 import { StatusCodes } from 'http-status-codes';
-import { CreateQuestionDTO, vCreateQuestionDTO } from './dto';
+import { CreateQuestionDTO, UpdateQuestionDTO, vCreateQuestionDTO, vUpdateQuestionDTO } from './dto';
 
 @ApiTags('question')
 @ApiBearerAuth()
@@ -87,6 +87,54 @@ export class QuestionController {
             answer.question = newQuestion;
             await this.answerService.saveAnswer(answer);
         }
+        return res.send(newQuestion);
+    }
+
+    @Put('/:id')
+    @UseGuards(ExpertGuard)
+    @ApiParam({ name: 'id', example: 'TVgJIjsRFmIvyjUeBOLv4gOD3eQZY' })
+    @UseInterceptors(FileInterceptor('image'))
+    @UsePipes(new JoiValidatorPipe(vUpdateQuestionDTO))
+    async cUpdateQuestion(@Param('id') id: string, @Res() res: Response, @Body() body: UpdateQuestionDTO, @UploadedFile() file: Express.Multer.File) {
+        const question = await this.questionService.getQuestionByField('id', id);
+        const answers = body.answers ? (JSON.parse(body.answers) as Answer[]) : question.answers;
+        body.isMultipleChoice = body.isMultipleChoice || question.isMultipleChoice;
+
+        const countCorrect = answers.reduce((total, item) => {
+            if (item.isCorrect) return total + 1;
+            return total;
+        }, 0);
+
+        if (countCorrect <= 0) throw new HttpException({ errorMessage: ResponseMessage.QUESTION_ANSWER_CORRECT_ERROR }, StatusCodes.BAD_REQUEST);
+        if (countCorrect > 1 && !body.isMultipleChoice) throw new HttpException({ errorMessage: ResponseMessage.SINGLE_CHOICE_ERROR }, StatusCodes.BAD_REQUEST);
+        if (countCorrect <= 1 && body.isMultipleChoice) throw new HttpException({ errorMessage: ResponseMessage.MULTIPLE_CHOICE_ERROR }, StatusCodes.BAD_REQUEST);
+
+        const newQuestion = new Question();
+        const questionLevel = await this.questionLevelService.getOneByField('id', body.questionLevel);
+
+        newQuestion.questionLevel = questionLevel || question.questionLevel;
+        newQuestion.content = body.content || question.content;
+        newQuestion.audioLink = body.audioLink || question.audioLink;
+        newQuestion.videoLink = body.videoLink || question.videoLink;
+        newQuestion.isMultipleChoice = body.isMultipleChoice;
+        if (file) {
+            const result = await this.s3Service.uploadFile(file);
+            if (result) newQuestion.imageUrl = result.Location;
+            else throw new HttpException({ errorMessage: ResponseMessage.SOMETHING_WRONG }, StatusCodes.INTERNAL_SERVER_ERROR);
+        } else newQuestion.imageUrl = question.imageUrl;
+
+        await this.questionService.saveQuestion(newQuestion);
+        for (const item of answers) {
+            const answer = new Answer();
+            answer.detail = item.detail;
+            answer.isCorrect = item.isCorrect;
+            answer.question = newQuestion;
+            await this.answerService.saveAnswer(answer);
+        }
+
+        question.isOld = true;
+        await this.questionService.saveQuestion(question);
+
         return res.send(newQuestion);
     }
 }

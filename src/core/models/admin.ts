@@ -9,7 +9,7 @@ export class Admin {
     id: string;
 
     @ApiProperty({ description: 'User' })
-    @OneToOne(() => User)
+    @OneToOne(() => User, { nullable: false })
     @JoinColumn()
     user: User;
 }
