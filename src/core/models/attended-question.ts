@@ -1,5 +1,5 @@
 import { QuizResult } from './quiz-result';
-import { QuizDetail } from './question-in-quiz';
+import { QuizDetail } from './quiz-detail';
 import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
 
