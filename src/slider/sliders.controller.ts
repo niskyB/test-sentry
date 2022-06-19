@@ -17,6 +17,7 @@ export class SlidersController {
         const { title, backLink, userId, createdAt, currentPage, pageSize, isShow } = queries;
 
         const result = await this.sliderService.filterSliders(title, backLink, userId, createdAt, currentPage, pageSize, isShow);
+        console.log(result);
 
         result.data = result.data.map((item) => {
             if (item.marketing) {

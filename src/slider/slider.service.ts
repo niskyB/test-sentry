@@ -82,6 +82,8 @@ export class SliderService {
                             }).orWhere('slider.isShow = :isShowMaxValue', { isShowMaxValue: isShowValue.maxValue });
                         }),
                     )
+                    .leftJoinAndSelect('slider.marketing', 'marketing')
+                    .leftJoinAndSelect('marketing.user', 'user')
                     .orderBy(`slider.createdAt`, 'DESC')
                     .skip(currentPage * pageSize)
                     .take(pageSize)
@@ -101,6 +103,8 @@ export class SliderService {
                             }).orWhere('slider.isShow = :isShowMaxValue', { isShowMaxValue: isShowValue.maxValue });
                         }),
                     )
+                    .leftJoinAndSelect('slider.marketing', 'marketing')
+                    .leftJoinAndSelect('marketing.user', 'user')
                     .getCount();
             }
 
