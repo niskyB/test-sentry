@@ -15,6 +15,8 @@ export class SubjectService {
             .leftJoinAndSelect('subject.assignTo', 'assignTo')
             .leftJoinAndSelect('assignTo.user', 'user')
             .leftJoinAndSelect('subject.category', 'category')
+            .leftJoinAndSelect('subject.lessons', 'lessons')
+            .leftJoinAndSelect('subject.pricePackages', 'pricePackages')
             .getOne();
     }
 

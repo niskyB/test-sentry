@@ -19,7 +19,7 @@ export class SliderService {
             .getOne();
     }
 
-    async filterSliders(title: string, userId: string, createdAt: string, currentPage: number, pageSize: number, isShow: boolean): Promise<{ data: Slider[]; count: number }> {
+    async filterSliders(title: string, backLink: string, userId: string, createdAt: string, currentPage: number, pageSize: number, isShow: boolean): Promise<{ data: Slider[]; count: number }> {
         try {
             const date = new Date(createdAt);
             let sliders, count;
@@ -29,6 +29,7 @@ export class SliderService {
                     .where(`slider.title LIKE (:title)`, {
                         title: `%${title}%`,
                     })
+                    .andWhere(`slider.backLink LIKE (:backLink)`, { backLink: `%${backLink}%` })
                     .andWhere(`slider.createdAt >= (:createdAt)`, { createdAt: date })
                     .andWhere(`slider.isShow = (:isShow)`, { isShow: isShow })
                     .leftJoinAndSelect('slider.marketing', 'marketing')
@@ -44,6 +45,7 @@ export class SliderService {
                     .where(`slider.title LIKE (:title)`, {
                         title: `%${title}%`,
                     })
+                    .andWhere(`slider.backLink LIKE (:backLink)`, { backLink: `%${backLink}%` })
                     .andWhere(`slider.createdAt >= (:createdAt)`, { createdAt: date })
                     .andWhere(`slider.isShow = (:isShow)`, { isShow: isShow })
                     .leftJoinAndSelect('slider.marketing', 'marketing')
@@ -56,6 +58,7 @@ export class SliderService {
                     .where(`slider.title LIKE (:title)`, {
                         title: `%${title}%`,
                     })
+                    .andWhere(`slider.backLink LIKE (:backLink)`, { backLink: `%${backLink}%` })
                     .andWhere(`slider.createdAt >= (:createdAt)`, { createdAt: date })
                     .andWhere(`slider.isShow = (:isShow)`, { isShow: isShow })
                     .orderBy(`slider.createdAt`, 'DESC')
@@ -68,6 +71,7 @@ export class SliderService {
                     .where(`slider.title LIKE (:title)`, {
                         title: `%${title}%`,
                     })
+                    .andWhere(`slider.backLink LIKE (:backLink)`, { backLink: `%${backLink}%` })
                     .andWhere(`slider.createdAt >= (:createdAt)`, { createdAt: date })
                     .andWhere(`slider.isShow = (:isShow)`, { isShow: isShow })
                     .getCount();

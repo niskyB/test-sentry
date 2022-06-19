@@ -9,6 +9,7 @@ export class BlogRepository extends RepositoryService<Blog> {
             .where(`Blog.${field.toString()} = :value`, { value })
             .leftJoinAndSelect('Blog.category', 'category')
             .leftJoinAndSelect('Blog.marketing', 'marketing')
+            .leftJoinAndSelect('marketing.user', 'user')
             .getOne();
     }
 }

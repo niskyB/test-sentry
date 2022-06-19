@@ -2,6 +2,7 @@ import { SortOrder } from './../core/interface';
 import { Blog } from './../core/models';
 import { BlogRepository } from './../core/repositories';
 import { Injectable } from '@nestjs/common';
+import { Brackets } from 'typeorm';
 
 @Injectable()
 export class BlogService {
@@ -15,6 +16,24 @@ export class BlogService {
         return await this.blogRepository.findOneByField(field, value);
     }
 
+    getMinMaxValue(value: boolean) {
+        if (value === false)
+            return {
+                minValue: 0,
+                maxValue: 0,
+            };
+        if (value === true)
+            return {
+                minValue: 1,
+                maxValue: 1,
+            };
+        if (value === null)
+            return {
+                minValue: 0,
+                maxValue: 1,
+            };
+    }
+
     async filterBlogs(
         title: string,
         userId: string,
@@ -26,6 +45,7 @@ export class BlogService {
         order: SortOrder,
     ): Promise<{ data: Blog[]; count: number }> {
         try {
+            const activeValue = this.getMinMaxValue(isShow);
             const date = new Date(createdAt);
             let blogs, count;
             if (!userId) {
@@ -35,7 +55,13 @@ export class BlogService {
                         title: `%${title}%`,
                     })
                     .andWhere(`blog.createdAt >= (:createdAt)`, { createdAt: date })
-                    .andWhere(`blog.isShow = (:isShow)`, { isShow: isShow })
+                    .andWhere(
+                        new Brackets((qb) => {
+                            qb.where('blog.isShow = :activeMinValue', {
+                                activeMinValue: activeValue.minValue,
+                            }).orWhere('blog.isShow = :activeMaxValue', { activeMaxValue: activeValue.maxValue });
+                        }),
+                    )
                     .leftJoinAndSelect('blog.category', 'category')
                     .andWhere(`category.id LIKE (:id)`, { id: `%${categoryId}%` })
                     .leftJoinAndSelect('blog.marketing', 'marketing')
@@ -50,7 +76,13 @@ export class BlogService {
                         title: `%${title}%`,
                     })
                     .andWhere(`blog.createdAt >= (:createdAt)`, { createdAt: date })
-                    .andWhere(`blog.isShow = (:isShow)`, { isShow: isShow })
+                    .andWhere(
+                        new Brackets((qb) => {
+                            qb.where('blog.isShow = :activeMinValue', {
+                                activeMinValue: activeValue.minValue,
+                            }).orWhere('blog.isShow = :activeMaxValue', { activeMaxValue: activeValue.maxValue });
+                        }),
+                    )
                     .leftJoinAndSelect('blog.category', 'category')
                     .andWhere(`category.id LIKE (:id)`, { id: `%${categoryId}%` })
                     .leftJoinAndSelect('blog.marketing', 'marketing')

@@ -8,6 +8,9 @@ export class UpdateSliderDTO {
     @ApiProperty({ description: 'Back Link', example: 'asdssdsssdsd' })
     backLink: string;
 
+    @ApiProperty({ description: 'Notes', example: 'asdssdsssdsd' })
+    notes: string;
+
     @ApiProperty({ description: 'Is Show', example: 'false' })
     isShow: boolean;
 }
@@ -16,4 +19,5 @@ export const vUpdateSliderDTO = joi.object<UpdateSliderDTO>({
     title: sliderValidateSchema.title.failover(''),
     backLink: sliderValidateSchema.backLink.failover(''),
     isShow: sliderValidateSchema.isShow.failover(null),
+    notes: sliderValidateSchema.notes.failover(''),
 });

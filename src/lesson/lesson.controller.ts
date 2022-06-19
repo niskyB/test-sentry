@@ -112,7 +112,7 @@ export class LessonController {
     @ApiParam({ name: 'id', example: 'TVgJIjsRFmIvyjUeBOLv4gOD3eQZY', description: 'lesson id' })
     @UseGuards(ExpertGuard)
     @UsePipes(new JoiValidatorPipe(vDeactivateLessonDTO))
-    async cDeactivateLesson(@Param('id') id: string, @Req() req: Request, @Res() res: Response, @Body() body: DeactivateLessonDTO) {
+    async cUpdateLessonStatus(@Param('id') id: string, @Req() req: Request, @Res() res: Response, @Body() body: DeactivateLessonDTO) {
         const user = await this.userService.findUser('id', req.user.id);
         const lesson = await this.lessonService.getLessonByField('id', id);
 

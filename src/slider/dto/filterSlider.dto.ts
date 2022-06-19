@@ -1,9 +1,11 @@
-import { sliderValidateSchema } from './../../core/models';
 import { ApiProperty } from '@nestjs/swagger';
 import * as joi from 'joi';
 export class FilterSlidersDTO {
     @ApiProperty({ description: 'Title', example: 'Slider 1', nullable: true })
     title: string;
+
+    @ApiProperty({ description: 'Back Link', example: 'backLink123', nullable: true })
+    backLink: string;
 
     @ApiProperty({ description: 'User Id', example: '123456789', nullable: true })
     userId: string;
@@ -22,7 +24,8 @@ export class FilterSlidersDTO {
 }
 
 export const vFilterSlidersDTO = joi.object<FilterSlidersDTO>({
-    title: sliderValidateSchema.title.failover(''),
+    title: joi.string().required().failover(''),
+    backLink: joi.string().required().failover(''),
     userId: joi.string().required().failover(''),
     isShow: joi.boolean().required().failover(null),
     createdAt: joi.string().required().failover('1/1/2022'),
