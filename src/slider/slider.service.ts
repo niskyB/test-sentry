@@ -92,7 +92,13 @@ export class SliderService {
                     })
                     .andWhere(`slider.backLink LIKE (:backLink)`, { backLink: `%${backLink}%` })
                     .andWhere(`slider.createdAt >= (:createdAt)`, { createdAt: date })
-                    .andWhere(`slider.isShow = (:isShow)`, { isShow: isShow })
+                    .andWhere(
+                        new Brackets((qb) => {
+                            qb.where('slider.isShow = :isShowMinValue', {
+                                isShowMinValue: isShowValue.minValue,
+                            }).orWhere('slider.isShow = :isShowMaxValue', { isShowMaxValue: isShowValue.maxValue });
+                        }),
+                    )
                     .orderBy(`slider.createdAt`, 'DESC')
                     .skip(currentPage * pageSize)
                     .take(pageSize)
@@ -105,7 +111,13 @@ export class SliderService {
                     })
                     .andWhere(`slider.backLink LIKE (:backLink)`, { backLink: `%${backLink}%` })
                     .andWhere(`slider.createdAt >= (:createdAt)`, { createdAt: date })
-                    .andWhere(`slider.isShow = (:isShow)`, { isShow: isShow })
+                    .andWhere(
+                        new Brackets((qb) => {
+                            qb.where('slider.isShow = :isShowMinValue', {
+                                isShowMinValue: isShowValue.minValue,
+                            }).orWhere('slider.isShow = :isShowMaxValue', { isShowMaxValue: isShowValue.maxValue });
+                        }),
+                    )
                     .getCount();
             }
 
