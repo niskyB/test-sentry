@@ -30,7 +30,7 @@ export class FilterBlogsDTO {
 export const vFilterBlogsDTO = joi.object<FilterBlogsDTO>({
     title: joi.string().required().failover(''),
     userId: joi.string().required().failover(''),
-    isShow: joi.boolean().required().failover(true),
+    isShow: joi.boolean().required().failover(null),
     createdAt: joi.string().required().failover('1/1/2022'),
     currentPage: joi.number().min(0).required().failover(0),
     pageSize: joi.number().min(1).required().failover(4),

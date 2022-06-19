@@ -43,6 +43,8 @@ export class SliderController {
         const newSlider = new Slider();
         newSlider.title = body.title;
         newSlider.backLink = body.backLink;
+        newSlider.notes = body.notes;
+        newSlider.isShow = body.isShow;
         newSlider.marketing = marketing;
 
         const result = await this.s3Service.uploadFile(file);
@@ -73,6 +75,7 @@ export class SliderController {
 
         slider.title = body.title || slider.title;
         slider.backLink = body.backLink || slider.backLink;
+        slider.notes = body.notes || slider.notes;
         slider.isShow = body.isShow === null || body.isShow === undefined ? slider.isShow : body.isShow;
 
         if (file) {

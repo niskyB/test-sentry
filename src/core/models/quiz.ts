@@ -28,6 +28,10 @@ export class Quiz {
     @Column({ default: null })
     numberOfQuestion: number;
 
+    @ApiProperty({ description: 'Is public' })
+    @Column({ nullable: false, default: true })
+    isPublic: boolean;
+
     @ApiProperty({ description: 'Quiz Type' })
     @ManyToOne(() => QuizType, { nullable: false })
     type: QuizType;

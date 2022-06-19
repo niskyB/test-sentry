@@ -22,6 +22,10 @@ export class Slider {
     @Column({ default: null })
     backLink: string;
 
+    @ApiProperty({ description: 'Notes' })
+    @Column({ default: null })
+    notes: string;
+
     @ApiProperty({ description: 'Is Show' })
     @Column({ default: true })
     isShow: boolean;
@@ -54,4 +58,10 @@ export const sliderValidateSchema = {
         .boolean()
         .required()
         .messages(JoiMessage.createBooleanMessages({ field: 'Is Show' })),
+    notes: joi
+        .string()
+        .min(3)
+        .max(255)
+        .required()
+        .messages(JoiMessage.createStringMessages({ field: 'Notes' })),
 };
