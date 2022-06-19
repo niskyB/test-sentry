@@ -1,3 +1,4 @@
+import { FilterModule } from './../core/providers/filter/filter.module';
 import { Role, User } from './../core/models';
 import { forwardRef, Module } from '@nestjs/common';
 import { UserService } from './user.service';
@@ -10,7 +11,7 @@ import { S3Module } from 'src/core/providers/s3/s3.module';
 import { Connection } from 'typeorm';
 
 @Module({
-    imports: [forwardRef(() => AuthModule), S3Module, TypeOrmModule.forFeature([User]), TypeOrmModule.forFeature([Role])],
+    imports: [forwardRef(() => AuthModule), S3Module, TypeOrmModule.forFeature([User]), TypeOrmModule.forFeature([Role]), FilterModule],
     controllers: [UserController, UsersController],
     providers: [
         UserService,

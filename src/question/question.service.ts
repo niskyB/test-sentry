@@ -1,3 +1,4 @@
+import { FilterService } from './../core/providers/filter/filter.service';
 import { Question } from './../core/models';
 import { QuestionRepository } from './../core/repositories';
 import { Injectable } from '@nestjs/common';
@@ -5,7 +6,7 @@ import { Brackets } from 'typeorm';
 
 @Injectable()
 export class QuestionService {
-    constructor(private readonly questionRepository: QuestionRepository) {}
+    constructor(private readonly questionRepository: QuestionRepository, private readonly filterService: FilterService) {}
 
     async saveQuestion(question: Question): Promise<Question> {
         return await this.questionRepository.save(question);
@@ -24,24 +25,6 @@ export class QuestionService {
             .getMany();
     }
 
-    getMinMaxValue(value: boolean) {
-        if (value === false)
-            return {
-                minValue: 0,
-                maxValue: 0,
-            };
-        if (value === true)
-            return {
-                minValue: 1,
-                maxValue: 1,
-            };
-        if (value === null)
-            return {
-                minValue: 0,
-                maxValue: 1,
-            };
-    }
-
     async getQuestionsForAdmin(
         subject: string,
         lesson: string,
@@ -52,7 +35,7 @@ export class QuestionService {
         currentPage: number,
         pageSize: number,
     ): Promise<{ data: Question[]; count: number }> {
-        const activeValue = this.getMinMaxValue(isActive);
+        const activeValue = this.filterService.getMinMaxValue(isActive);
         const questions = await this.questionRepository
             .createQueryBuilder('question')
             .leftJoinAndSelect('question.lesson', 'lesson')
@@ -107,7 +90,7 @@ export class QuestionService {
         currentPage: number,
         pageSize: number,
     ): Promise<{ data: Question[]; count: number }> {
-        const activeValue = this.getMinMaxValue(isActive);
+        const activeValue = this.filterService.getMinMaxValue(isActive);
         const questions = await this.questionRepository
             .createQueryBuilder('question')
             .leftJoinAndSelect('question.lesson', 'lesson')
