@@ -1,3 +1,4 @@
+import { FilterModule } from './../core/providers/filter/filter.module';
 import { Blog } from './../core/models';
 import { BlogCategoryModule } from './../blog-category/blog-category.module';
 import { S3Module } from '../core/providers/s3/s3.module';
@@ -13,7 +14,7 @@ import { BlogsController } from './blogs.controller';
 import { Connection } from 'typeorm';
 
 @Module({
-    imports: [TypeOrmModule.forFeature([Blog]), AuthModule, UserModule, MarketingModule, S3Module, BlogCategoryModule],
+    imports: [TypeOrmModule.forFeature([Blog]), AuthModule, UserModule, MarketingModule, S3Module, BlogCategoryModule, FilterModule],
     controllers: [BlogController, BlogsController],
     providers: [BlogService, { provide: BlogRepository, useFactory: (connection: Connection) => connection.getCustomRepository(BlogRepository), inject: [Connection] }],
     exports: [BlogService],

@@ -1,11 +1,13 @@
+import { FilterService } from './../core/providers/filter/filter.service';
 import { SortOrder } from '../core/interface';
 import { Injectable } from '@nestjs/common';
 import { Role, User, Gender } from '../core/models';
 import { RoleRepository, UserRepository } from '../core/repositories';
+import { Brackets } from 'typeorm';
 
 @Injectable()
 export class UserService {
-    constructor(private readonly userRepository: UserRepository, private readonly roleRepository: RoleRepository) {}
+    constructor(private readonly userRepository: UserRepository, private readonly roleRepository: RoleRepository, private readonly filterService: FilterService) {}
 
     async saveUser(user: User): Promise<User> {
         return await this.userRepository.save(user);
@@ -38,11 +40,18 @@ export class UserService {
         email: string,
         mobile: string,
     ): Promise<{ data: User[]; count: number }> {
+        const activeValue = this.filterService.getMinMaxValue(isActive);
         try {
             const users = await this.userRepository
                 .createQueryBuilder('user')
                 .where(`user.gender Like (:gender)`, { gender: `${gender}%` })
-                .andWhere(`user.isActive = (:isActive)`, { isActive })
+                .andWhere(
+                    new Brackets((qb) => {
+                        qb.where('user.isActive = :activeMinValue', {
+                            activeMinValue: activeValue.minValue,
+                        }).orWhere('user.isActive = :activeMaxValue', { activeMaxValue: activeValue.maxValue });
+                    }),
+                )
                 .andWhere(`user.fullName Like (:fullName)`, { fullName: `%${fullName}%` })
                 .andWhere(`user.email Like (:email)`, { email: `%${email}%` })
                 .andWhere(`user.mobile Like (:mobile)`, { mobile: `%${mobile}%` })
@@ -56,7 +65,13 @@ export class UserService {
             const count = await this.userRepository
                 .createQueryBuilder('user')
                 .where(`user.gender LIKE (:gender)`, { gender: `${gender}%` })
-                .andWhere(`user.isActive = (:isActive)`, { isActive })
+                .andWhere(
+                    new Brackets((qb) => {
+                        qb.where('user.isActive = :activeMinValue', {
+                            activeMinValue: activeValue.minValue,
+                        }).orWhere('user.isActive = :activeMaxValue', { activeMaxValue: activeValue.maxValue });
+                    }),
+                )
                 .andWhere(`user.fullName Like (:fullName)`, { fullName: `%${fullName}%` })
                 .andWhere(`user.email Like (:email)`, { email: `%${email}%` })
                 .andWhere(`user.mobile Like (:mobile)`, { mobile: `%${mobile}%` })

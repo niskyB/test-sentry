@@ -1,3 +1,4 @@
+import { FilterService } from './../core/providers/filter/filter.service';
 import { SortOrder } from './../core/interface';
 import { Subject } from './../core/models';
 import { SubjectRepository } from './../core/repositories';
@@ -6,7 +7,7 @@ import { Brackets } from 'typeorm';
 
 @Injectable()
 export class SubjectService {
-    constructor(private readonly subjectRepository: SubjectRepository) {}
+    constructor(private readonly subjectRepository: SubjectRepository, private readonly filterService: FilterService) {}
 
     async getSubjectByField(field: keyof Subject, value: any): Promise<Subject> {
         return await this.subjectRepository
@@ -22,24 +23,6 @@ export class SubjectService {
 
     async saveSubject(subject: Subject): Promise<Subject> {
         return await this.subjectRepository.save(subject);
-    }
-
-    getMinMaxValue(value: boolean) {
-        if (value === false)
-            return {
-                minValue: 0,
-                maxValue: 0,
-            };
-        if (value === true)
-            return {
-                minValue: 1,
-                maxValue: 1,
-            };
-        if (value === null)
-            return {
-                minValue: 0,
-                maxValue: 1,
-            };
     }
 
     async getAllSubjects(): Promise<Subject[]> {
@@ -80,8 +63,8 @@ export class SubjectService {
     ): Promise<{ data: Subject[]; count: number }> {
         try {
             const date = new Date(createdAt);
-            const activeValue = this.getMinMaxValue(isActive);
-            const featureValue = this.getMinMaxValue(isFeature);
+            const activeValue = this.filterService.getMinMaxValue(isActive);
+            const featureValue = this.filterService.getMinMaxValue(isFeature);
             const subjects = await this.subjectRepository
                 .createQueryBuilder('subject')
                 .where(`subject.name LIKE (:name)`, {
@@ -160,8 +143,8 @@ export class SubjectService {
     ): Promise<{ data: Subject[]; count: number }> {
         try {
             const date = new Date(createdAt);
-            const activeValue = this.getMinMaxValue(isActive);
-            const featureValue = this.getMinMaxValue(isFeature);
+            const activeValue = this.filterService.getMinMaxValue(isActive);
+            const featureValue = this.filterService.getMinMaxValue(isFeature);
             const subjects = await this.subjectRepository
                 .createQueryBuilder('subject')
                 .where(`subject.name LIKE (:name)`, {

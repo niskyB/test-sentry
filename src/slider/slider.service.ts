@@ -2,10 +2,11 @@ import { SliderRepository } from './../core/repositories';
 import { Slider } from './../core/models';
 import { Injectable } from '@nestjs/common';
 import { Brackets } from 'typeorm';
+import { FilterService } from '../core/providers/filter/filter.service';
 
 @Injectable()
 export class SliderService {
-    constructor(private readonly sliderRepository: SliderRepository) {}
+    constructor(private readonly sliderRepository: SliderRepository, private readonly filterService: FilterService) {}
 
     async saveSlider(slider: Slider): Promise<Slider> {
         return await this.sliderRepository.save(slider);
@@ -20,27 +21,9 @@ export class SliderService {
             .getOne();
     }
 
-    getMinMaxValue(value: boolean) {
-        if (value === false)
-            return {
-                minValue: 0,
-                maxValue: 0,
-            };
-        if (value === true)
-            return {
-                minValue: 1,
-                maxValue: 1,
-            };
-        if (value === null)
-            return {
-                minValue: 0,
-                maxValue: 1,
-            };
-    }
-
     async filterSliders(title: string, backLink: string, userId: string, createdAt: string, currentPage: number, pageSize: number, isShow: boolean): Promise<{ data: Slider[]; count: number }> {
         try {
-            const isShowValue = this.getMinMaxValue(isShow);
+            const isShowValue = this.filterService.getMinMaxValue(isShow);
             const date = new Date(createdAt);
             let sliders, count;
             if (userId) {

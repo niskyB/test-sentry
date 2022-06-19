@@ -1,3 +1,4 @@
+import { FilterService } from './../core/providers/filter/filter.service';
 import { SortOrder } from './../core/interface';
 import { Blog } from './../core/models';
 import { BlogRepository } from './../core/repositories';
@@ -6,7 +7,7 @@ import { Brackets } from 'typeorm';
 
 @Injectable()
 export class BlogService {
-    constructor(private readonly blogRepository: BlogRepository) {}
+    constructor(private readonly blogRepository: BlogRepository, private readonly filterService: FilterService) {}
 
     async saveBlog(blog: Blog): Promise<Blog> {
         return await this.blogRepository.save(blog);
@@ -14,24 +15,6 @@ export class BlogService {
 
     async getBlogByField(field: keyof Blog, value: any): Promise<Blog> {
         return await this.blogRepository.findOneByField(field, value);
-    }
-
-    getMinMaxValue(value: boolean) {
-        if (value === false)
-            return {
-                minValue: 0,
-                maxValue: 0,
-            };
-        if (value === true)
-            return {
-                minValue: 1,
-                maxValue: 1,
-            };
-        if (value === null)
-            return {
-                minValue: 0,
-                maxValue: 1,
-            };
     }
 
     async filterBlogs(
@@ -45,7 +28,7 @@ export class BlogService {
         order: SortOrder,
     ): Promise<{ data: Blog[]; count: number }> {
         try {
-            const activeValue = this.getMinMaxValue(isShow);
+            const activeValue = this.filterService.getMinMaxValue(isShow);
             const date = new Date(createdAt);
             let blogs, count;
             if (!userId) {
