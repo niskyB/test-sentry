@@ -1,3 +1,6 @@
+import { SubjectTopicService } from './../subject-topic/subject-topic.service';
+import { LessonQuizService } from './../lesson-quiz/lesson-quiz.service';
+import { LessonDetailService } from './../lesson-detail/lesson-detail.service';
 import { UserService } from './../user/user.service';
 import { QuizService } from './../quiz/quiz.service';
 import { Lesson, LessonDetail, LessonQuiz, LessonTypes, SubjectTopic, UserRole } from './../core/models';
@@ -23,17 +26,26 @@ export class LessonController {
         private readonly subjectService: SubjectService,
         private readonly quizService: QuizService,
         private readonly userService: UserService,
+        private readonly lessonDetailService: LessonDetailService,
+        private readonly lessonQuizService: LessonQuizService,
+        private readonly subjectTopicService: SubjectTopicService,
     ) {}
 
     @Get('/:id')
     @ApiParam({ name: 'id', example: 'TVgJIjsRFmIvyjUeBOLv4gOD3eQZY', description: 'lesson id' })
     async cGetLessonById(@Param('id') id: string, @Res() res: Response) {
-        let lesson = await this.lessonService.getLessonByField('id', id);
+        const lesson = await this.lessonService.getLessonByField('id', id);
 
         if (!lesson) throw new HttpException({ errorMessage: ResponseMessage.NOT_FOUND }, StatusCodes.NOT_FOUND);
 
-        if (lesson.type.description == 'Lesson Detail') lesson = await this.lessonService.getLessonDetailById(lesson.id);
-        if (lesson.type.description == 'Lesson Quiz') lesson = await this.lessonService.getLessonQuizById(lesson.id);
+        if (lesson.type.description == 'Lesson Detail') {
+            const lessonDetail = await this.lessonDetailService.getLessonDetailByLessonId(lesson.id);
+            lesson.lessonDetail = lessonDetail;
+        }
+        if (lesson.type.description == 'Lesson Quiz') {
+            const lessonQuiz = await this.lessonQuizService.getLessonQuizByLessonId(lesson.id);
+            lesson.lessonQuiz = lessonQuiz;
+        }
 
         lesson.subject.assignTo.user.password = '';
         lesson.subject.assignTo.user.token = '';
@@ -65,9 +77,23 @@ export class LessonController {
         newLesson.isActive = body.isActive === null || body.isActive === undefined ? newLesson.isActive : body.isActive;
         newLesson.type = lessonType;
 
+        try {
+            await this.lessonService.saveLesson(newLesson);
+        } catch (err) {
+            console.log(err);
+        }
+
         if (lessonType.description === LessonTypes.TOPIC) {
             const subjectTopic = new SubjectTopic();
-            newLesson.subjectTopic = subjectTopic;
+            subjectTopic.lesson = newLesson;
+
+            try {
+                await this.subjectTopicService.saveSubjectTopic(subjectTopic);
+            } catch (error) {
+                console.log(error);
+                await this.lessonService.deleteLesson(newLesson);
+                throw new HttpException({ errorMessage: ResponseMessage.SOMETHING_WRONG }, StatusCodes.INTERNAL_SERVER_ERROR);
+            }
         }
 
         if (lessonType.description === LessonTypes.LESSON) {
@@ -76,8 +102,15 @@ export class LessonController {
             const lessonDetail = new LessonDetail();
             lessonDetail.htmlContent = body.htmlContent;
             lessonDetail.videoLink = body.videoLink;
+            lessonDetail.lesson = newLesson;
 
-            newLesson.lessonDetail = lessonDetail;
+            try {
+                await this.lessonDetailService.saveLessonDetail(lessonDetail);
+            } catch (error) {
+                console.log(error);
+                await this.lessonService.deleteLesson(newLesson);
+                throw new HttpException({ errorMessage: ResponseMessage.SOMETHING_WRONG }, StatusCodes.INTERNAL_SERVER_ERROR);
+            }
         }
 
         if (lessonType.description === LessonTypes.QUIZ) {
@@ -92,14 +125,15 @@ export class LessonController {
                 if (res) lessonQuiz.quizs.push(res);
             }
             lessonQuiz.htmlContent = body.htmlContent;
+            lessonQuiz.lesson = newLesson;
 
-            newLesson.lessonQuiz = lessonQuiz;
-        }
-
-        try {
-            await this.lessonService.saveLesson(newLesson);
-        } catch (err) {
-            console.log(err);
+            try {
+                await this.lessonQuizService.saveLessonQuiz(lessonQuiz);
+            } catch (error) {
+                console.log(error);
+                await this.lessonService.deleteLesson(newLesson);
+                throw new HttpException({ errorMessage: ResponseMessage.SOMETHING_WRONG }, StatusCodes.INTERNAL_SERVER_ERROR);
+            }
         }
 
         newLesson.subject.assignTo.user.password = '';

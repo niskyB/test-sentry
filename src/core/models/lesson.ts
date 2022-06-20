@@ -47,15 +47,15 @@ export class Lesson {
     subject: Subject;
 
     @ApiProperty({ description: 'Subject Topic' })
-    @OneToOne(() => SubjectTopic, { cascade: true })
+    @OneToOne(() => SubjectTopic)
     subjectTopic: SubjectTopic;
 
     @ApiProperty({ description: 'Lesson Quiz' })
-    @OneToOne(() => LessonQuiz, { cascade: true })
+    @OneToOne(() => LessonQuiz)
     lessonQuiz: LessonQuiz;
 
     @ApiProperty({ description: 'Lesson Detail' })
-    @OneToOne(() => LessonDetail, { cascade: true })
+    @OneToOne(() => LessonDetail)
     lessonDetail: LessonDetail;
 }
 
