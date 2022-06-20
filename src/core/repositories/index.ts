@@ -26,3 +26,5 @@ export * from './quizResult.repository';
 export * from './questionInQuiz.repository';
 export * from './attendedQuestion.repository';
 export * from './questionLevel.repository';
+export * from './quizType.repository';
+export * from './examLevel.repository';

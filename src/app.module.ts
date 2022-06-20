@@ -31,6 +31,8 @@ import { UserAnswerModule } from './user-answer/user-answer.module';
 import { QuestionInQuizModule } from './question-in-quiz/question-in-quiz.module';
 import { AttendedQuestionModule } from './attended-question/attended-question.module';
 import { QuestionLevelModule } from './question-level/question-level.module';
+import { QuizTypeModule } from './quiz-type/quiz-type.module';
+import { ExamLevelModule } from './exam-level/exam-level.module';
 @Module({
     imports: [
         DbModule,
@@ -67,6 +69,8 @@ import { QuestionLevelModule } from './question-level/question-level.module';
         QuestionInQuizModule,
         AttendedQuestionModule,
         QuestionLevelModule,
+        QuizTypeModule,
+        ExamLevelModule,
     ],
 })
 export class AppModule {}
