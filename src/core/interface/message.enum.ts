@@ -21,6 +21,8 @@ export enum ResponseMessage {
     INVALID_QUIZ = 'Invalid quiz',
     INVALID_DIMENSION = 'Invalid dimension',
     INVALID_LESSON = 'Invalid lesson',
+    INVALID_QUIZ_TYPE = 'Invalid quiz type',
+    INVALID_EXAM_LEVEL = 'Invalid exam level',
     DUPLICATED_CATEGORY = 'This category has already existed',
     QUESTION_ANSWER_CORRECT_ERROR = 'Question should have one correct answer',
     SINGLE_CHOICE_ERROR = 'Single choice question should have only one correct answer',

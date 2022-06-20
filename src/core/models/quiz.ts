@@ -69,4 +69,8 @@ export const quizValidateSchema = {
         .min(1)
         .required()
         .messages(JoiMessage.createNumberMessages({ field: 'Number of Question', min: 1 })),
+    isPublic: joi
+        .boolean()
+        .required()
+        .messages(JoiMessage.createBooleanMessages({ field: 'Is Public' })),
 };
