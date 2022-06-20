@@ -14,9 +14,22 @@ import { LessonController } from './lesson.controller';
 import { LessonService } from './lesson.service';
 import { LessonsController } from './lessons.controller';
 import { Connection } from 'typeorm';
+import { FilterModule } from 'src/core/providers/filter/filter.module';
 
 @Module({
-    imports: [TypeOrmModule.forFeature([Lesson]), AuthModule, UserModule, LessonTypeModule, SubjectModule, SubjectTopicModule, LessonDetailModule, LessonQuizModule, QuizModule, UserModule],
+    imports: [
+        TypeOrmModule.forFeature([Lesson]),
+        AuthModule,
+        UserModule,
+        LessonTypeModule,
+        SubjectModule,
+        SubjectTopicModule,
+        LessonDetailModule,
+        LessonQuizModule,
+        QuizModule,
+        UserModule,
+        FilterModule,
+    ],
     controllers: [LessonController, LessonsController],
     providers: [LessonService, { provide: LessonRepository, useFactory: (connection: Connection) => connection.getCustomRepository(LessonRepository), inject: [Connection] }],
     exports: [LessonService],
