@@ -16,7 +16,7 @@ export class LessonQuiz {
     htmlContent: string;
 
     @ApiProperty({ description: 'Lesson' })
-    @OneToOne(() => Lesson, { nullable: false })
+    @OneToOne(() => Lesson, { nullable: false, cascade: true })
     @JoinColumn()
     lesson: Lesson;
 

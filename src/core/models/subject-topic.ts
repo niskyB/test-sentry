@@ -9,7 +9,7 @@ export class SubjectTopic {
     id: string;
 
     @ApiProperty({ description: 'Lesson' })
-    @OneToOne(() => Lesson, { nullable: false })
+    @OneToOne(() => Lesson, { nullable: false, cascade: true })
     @JoinColumn()
     lesson: Lesson;
 }

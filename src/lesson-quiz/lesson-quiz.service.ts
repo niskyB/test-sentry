@@ -11,6 +11,6 @@ export class LessonQuizService {
     }
 
     async getLessonQuizByLessonId(id: string): Promise<LessonQuiz> {
-        return await this.lessonQuizRepository.createQueryBuilder('lesson_quiz').leftJoinAndSelect('lesson_quiz.lesson', 'lesson').where('lesson.id = (:id)', { id }).getOne();
+        return await this.lessonQuizRepository.createQueryBuilder('lesson_quiz').leftJoin('lesson_quiz.lesson', 'lesson').where('lesson.id = (:id)', { id }).getOne();
     }
 }
