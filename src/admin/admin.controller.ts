@@ -6,12 +6,12 @@ import { User, UserRole, Marketing, Expert, Sale } from './../core/models';
 import { StatusCodes } from 'http-status-codes';
 import { ResponseMessage } from './../core/interface/message.enum';
 import { UserService } from './../user/user.service';
-import { vCreateUserDTO, CreateUserDTO, vFilterUsersDTO, FilterUsersDTO } from './dto';
+import { vCreateUserDTO, CreateUserDTO, vFilterUsersDTO, FilterUsersDTO, vUpdateUserStatusDTO, UpdateUserStatusDTO } from './dto';
 import { JoiValidatorPipe, QueryJoiValidatorPipe } from './../core/pipe';
 import { MarketingService } from './../marketing/marketing.service';
 import { AdminGuard } from './../auth/guard';
 import { ApiTags, ApiBearerAuth, ApiParam } from '@nestjs/swagger';
-import { Controller, UseGuards, Post, UsePipes, Body, Res, HttpException, Get, Query, Param } from '@nestjs/common';
+import { Controller, UseGuards, Post, UsePipes, Body, Res, HttpException, Get, Query, Param, Put } from '@nestjs/common';
 import { Response } from 'express';
 import { constant } from '../core';
 import { SaleService } from '../sale/sale.service';
@@ -106,5 +106,20 @@ export class AdminController {
             throw new HttpException({ errorMessage: ResponseMessage.SOMETHING_WRONG }, StatusCodes.INTERNAL_SERVER_ERROR);
         }
         return res.send();
+    }
+
+    @Put('/user/status/:id')
+    @ApiParam({ name: 'id', example: 'TVgJIjsRFmIvyjUeBOLv4gOD3eQZY' })
+    @UsePipes(new JoiValidatorPipe(vUpdateUserStatusDTO))
+    async cUpdateUserStatus(@Param('id') id: string, @Res() res: Response, @Body() body: UpdateUserStatusDTO) {
+        const user = await this.userService.findUser('id', id);
+
+        if (!user) throw new HttpException({ errorMessage: ResponseMessage.NOT_EXISTED_USER }, StatusCodes.NOT_FOUND);
+
+        user.isActive = body.isActive;
+
+        user.password = '';
+        user.token = '';
+        return res.send(user);
     }
 }

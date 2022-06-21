@@ -6,7 +6,6 @@ import { StatusCodes } from 'http-status-codes';
 import { UserService } from '../../user/user.service';
 import { JwtToken } from '../../core/interface';
 import { Role, UserRole } from '../../core/models';
-import { constant } from '../../core';
 
 @Injectable()
 export class SaleGuard implements CanActivate {
@@ -18,7 +17,6 @@ export class SaleGuard implements CanActivate {
 
         const authorization = req.headers['authorization'] || '';
         const token = this.getTokenFromHeader(authorization);
-        // const token = req.cookies[constant.authController.tokenName] || '';
 
         const { data, error } = await this.authService.verifyToken<JwtToken>(token);
         console.log(error);
@@ -29,6 +27,10 @@ export class SaleGuard implements CanActivate {
         const user = await this.userService.findUser('id', data.id);
 
         if (!user) {
+            throw new HttpException({}, StatusCodes.UNAUTHORIZED);
+        }
+
+        if (!user.isActive) {
             throw new HttpException({}, StatusCodes.UNAUTHORIZED);
         }
 
