@@ -1,7 +1,7 @@
 import { Lesson } from './../core/models';
 import { LessonRepository } from './../core/repositories';
 import { Injectable } from '@nestjs/common';
-import { FilterService } from 'src/core/providers/filter/filter.service';
+import { FilterService } from '../core/providers/filter/filter.service';
 import { Brackets } from 'typeorm';
 
 @Injectable()
@@ -35,7 +35,7 @@ export class LessonService {
                 .leftJoinAndSelect('subject.assignTo', 'assignTo')
                 .leftJoinAndSelect('assignTo.user', 'user')
                 .leftJoinAndSelect('Lesson.type', 'type')
-                .andWhere('type.description LIKE (:type)', { type: `%${type}%` })
+                .andWhere('type.id LIKE (:type)', { type: `%${type}%` })
                 .andWhere('Lesson.createdAt >= (:createdAt)', { createdAt })
                 .andWhere('Lesson.updatedAt >= (:updatedAt)', { updatedAt })
                 .andWhere(
