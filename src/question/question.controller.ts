@@ -62,6 +62,7 @@ export class QuestionController {
         newQuestion.videoLink = body.videoLink;
         newQuestion.isMultipleChoice = body.isMultipleChoice;
         newQuestion.explanation = body.explanation;
+        newQuestion.isActive = body.isActive === null || body.isActive === undefined ? newQuestion.isActive : body.isActive;
         newQuestion.questionLevel = questionLevel;
         newQuestion.dimensions = [];
         if (file) {
@@ -98,6 +99,7 @@ export class QuestionController {
     @UsePipes(new JoiValidatorPipe(vUpdateQuestionDTO))
     async cUpdateQuestion(@Param('id') id: string, @Res() res: Response, @Body() body: UpdateQuestionDTO, @UploadedFile() file: Express.Multer.File) {
         const question = await this.questionService.getQuestionByField('id', id);
+
         const answers = body.answers ? (JSON.parse(body.answers) as Answer[]) : question.answers;
         body.isMultipleChoice = body.isMultipleChoice || question.isMultipleChoice;
 
@@ -118,6 +120,11 @@ export class QuestionController {
         newQuestion.audioLink = body.audioLink || question.audioLink;
         newQuestion.videoLink = body.videoLink || question.videoLink;
         newQuestion.isMultipleChoice = body.isMultipleChoice;
+        newQuestion.explanation = body.explanation;
+        newQuestion.isActive = body.isActive === null || body.isActive === undefined ? newQuestion.isActive : body.isActive;
+        newQuestion.dimensions = question.dimensions;
+        newQuestion.lesson = question.lesson;
+
         if (file) {
             const result = await this.s3Service.uploadFile(file);
             if (result) newQuestion.imageUrl = result.Location;
