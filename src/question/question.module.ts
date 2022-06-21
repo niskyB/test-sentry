@@ -10,13 +10,13 @@ import { DimensionModule } from './../dimension/dimension.module';
 import { S3Module } from '../core/providers/s3/s3.module';
 import { QuestionRepository } from './../core/repositories';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { Module } from '@nestjs/common';
+import { Module, forwardRef } from '@nestjs/common';
 import { QuestionController } from './question.controller';
 import { QuestionService } from './question.service';
 import { Connection } from 'typeorm';
 
 @Module({
-    imports: [TypeOrmModule.forFeature([Question]), S3Module, DimensionModule, AuthModule, UserModule, LessonModule, AnswerModule, QuestionLevelModule, FilterModule],
+    imports: [TypeOrmModule.forFeature([Question]), S3Module, DimensionModule, AuthModule, UserModule, forwardRef(() => LessonModule), AnswerModule, QuestionLevelModule, FilterModule],
     controllers: [QuestionController, QuestionsController],
     providers: [QuestionService, { provide: QuestionRepository, useFactory: (connection: Connection) => connection.getCustomRepository(QuestionRepository), inject: [Connection] }],
     exports: [QuestionService],
