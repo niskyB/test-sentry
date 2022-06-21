@@ -30,7 +30,7 @@ export class QuizController {
 
     @Post('')
     @UsePipes(new JoiValidatorPipe(vCreateQuizDTO))
-    async cCreateSlider(@Req() req: Request, @Res() res: Response, @Body() body: CreateQuizDTO) {
+    async cCreateQuiz(@Req() req: Request, @Res() res: Response, @Body() body: CreateQuizDTO) {
         const user = req.user;
 
         const subject = await this.subjectService.getSubjectByField('id', body.subject);

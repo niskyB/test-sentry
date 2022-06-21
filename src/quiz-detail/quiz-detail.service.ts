@@ -9,4 +9,13 @@ export class QuizDetailService {
     async saveQuizDetail(quizDetail: QuizDetail): Promise<QuizDetail> {
         return await this.quizDetailRepository.save(quizDetail);
     }
+
+    async getQuizDetailsByQuizId(id: string): Promise<QuizDetail[]> {
+        return await this.quizDetailRepository
+            .createQueryBuilder('quiz_detail')
+            .leftJoinAndSelect('quiz_detail.quiz', 'quiz')
+            .where('quiz.id = (:id)', { id })
+            .leftJoinAndSelect('quiz_detail.question', 'question')
+            .getMany();
+    }
 }
