@@ -1,3 +1,4 @@
+import { DataModule } from './../core/providers/fake-data/data.module';
 import { ExpertModule } from './../expert/expert.module';
 import { SaleModule } from './../sale/sale.module';
 import { AuthModule } from './../auth/auth.module';
@@ -8,7 +9,7 @@ import { AdminService } from './admin.service';
 import { AdminController } from './admin.controller';
 
 @Module({
-    imports: [MarketingModule, UserModule, AuthModule, SaleModule, ExpertModule],
+    imports: [MarketingModule, UserModule, AuthModule, SaleModule, ExpertModule, DataModule],
     providers: [AdminService],
     controllers: [AdminController],
 })
