@@ -183,19 +183,25 @@ export class LessonController {
         lesson.topic = body.topic || lesson.topic;
 
         if (type.description === LessonTypes.LESSON) {
-            lesson.lessonDetail.htmlContent = body.htmlContent || lesson.lessonDetail.htmlContent;
-            lesson.lessonDetail.videoLink = body.videoLink || lesson.lessonDetail.videoLink;
+            const lessonDetail = await this.lessonDetailService.getLessonDetailByLessonId(id);
+            lessonDetail.htmlContent = body.htmlContent || lessonDetail.htmlContent;
+            lessonDetail.videoLink = body.videoLink || lessonDetail.videoLink;
+
+            await this.lessonDetailService.saveLessonDetail(lessonDetail);
         }
 
         if (type.description === LessonTypes.QUIZ) {
-            lesson.lessonQuiz.htmlContent = body.htmlContent || lesson.lessonQuiz.htmlContent;
-            if (body.quiz) lesson.lessonQuiz.quizs = [];
+            const lessonQuiz = await this.lessonQuizService.getLessonQuizByLessonId(id);
+            lessonQuiz.htmlContent = body.htmlContent || lessonQuiz.htmlContent;
+            if (body.quiz) lessonQuiz.quizs = [];
 
             const quiz = body.quiz.split(',');
             for (const item of quiz) {
                 const res = await this.quizService.getQuizByField('id', item);
-                if (res) lesson.lessonQuiz.quizs.push(res);
+                if (res) lessonQuiz.quizs.push(res);
             }
+
+            await this.lessonQuizService.saveLessonQuiz(lessonQuiz);
         }
 
         lesson.updatedAt = new Date().toISOString();
