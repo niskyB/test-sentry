@@ -40,7 +40,7 @@ export class QuizController {
         const type = await this.quizTypeService.getQuizTypeByField('id', body.type);
         if (!type) throw new HttpException({ type: ResponseMessage.INVALID_QUIZ_TYPE }, StatusCodes.BAD_REQUEST);
 
-        const level = await this.examLevelService.getExamLevelByField('id', body.level);
+        const level = await this.examLevelService.getExamLevelByField('id', body.quizLevel);
         if (!level) throw new HttpException({ level: ResponseMessage.INVALID_EXAM_LEVEL }, StatusCodes.BAD_REQUEST);
 
         const newQuiz = new Quiz();
