@@ -17,6 +17,8 @@ export class QuestionService {
             .createQueryBuilder('question')
             .leftJoinAndSelect('question.answers', 'answers')
             .leftJoinAndSelect('question.questionLevel', 'questionLevel')
+            .leftJoinAndSelect('question.dimensions', 'dimensions')
+            .leftJoinAndSelect('question.lesson', 'lesson')
             .where(`question.${field} = (:value)`, { value })
             .getOne();
     }
