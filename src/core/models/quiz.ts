@@ -5,6 +5,7 @@ import * as joi from 'joi';
 import JoiMessage from 'joi-message';
 import { QuizType } from './quiz-type';
 import { ExamLevel } from './exam-level';
+import { Question } from './question';
 
 @Entity()
 export class Quiz {
@@ -43,6 +44,9 @@ export class Quiz {
     @ApiProperty({ description: 'Subject' })
     @ManyToOne(() => Subject, { nullable: false })
     subject: Subject;
+
+    @ApiProperty({ description: 'Questions' })
+    questions: Question[];
 }
 
 export const quizValidateSchema = {

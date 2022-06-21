@@ -13,4 +13,31 @@ export class QuizService {
     async getQuizByField(field: keyof Quiz, value: any): Promise<Quiz> {
         return await this.quizRepository.findOneByField(field, value);
     }
+
+    async filterQuizzes({ name, subject, type }): Promise<{ data: Quiz[]; count: number }> {
+        let quizzes, count;
+        try {
+            quizzes = await this.quizRepository
+                .createQueryBuilder('quiz')
+                .where('quiz.name LIKE (:name)', { name: `%${name}%` })
+                .leftJoinAndSelect('quiz.subject', 'subject')
+                .andWhere('subject.id = (:subjectId)', { subjectId: subject })
+                .leftJoinAndSelect('quiz.type', 'type')
+                .andWhere('type.id LIKE (:typeId)', { typeId: `%${type}%` })
+                .leftJoinAndSelect('quiz.level', 'level')
+                .getMany();
+            count = await this.quizRepository
+                .createQueryBuilder('quiz')
+                .where('quiz.name LIKE (:name)', { name: `%${name}%` })
+                .leftJoinAndSelect('quiz.subject', 'subject')
+                .andWhere('subject.id = (:subjectId)', { subjectId: subject })
+                .leftJoinAndSelect('quiz.type', 'type')
+                .andWhere('type.id LIKE (:typeId)', { typeId: `%${type}%` })
+                .getCount();
+        } catch (err) {
+            console.log(err);
+            return { data: [], count: 0 };
+        }
+        return { data: quizzes, count };
+    }
 }

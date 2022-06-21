@@ -12,10 +12,11 @@ import { Module, forwardRef } from '@nestjs/common';
 import { QuizController } from './quiz.controller';
 import { QuizService } from './quiz.service';
 import { Connection } from 'typeorm';
+import { QuizzesController } from './quizes.controller';
 
 @Module({
     imports: [TypeOrmModule.forFeature([Quiz]), SubjectModule, QuizTypeModule, ExamLevelModule, AuthModule, UserModule, forwardRef(() => QuestionModule), QuizDetailModule],
-    controllers: [QuizController],
+    controllers: [QuizController, QuizzesController],
     providers: [QuizService, { provide: QuizRepository, useFactory: (connection: Connection) => connection.getCustomRepository(QuizRepository), inject: [Connection] }],
     exports: [QuizService],
 })
