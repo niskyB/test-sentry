@@ -43,6 +43,8 @@ export class QuizController {
         const level = await this.examLevelService.getExamLevelByField('id', body.quizLevel);
         if (!level) throw new HttpException({ level: ResponseMessage.INVALID_EXAM_LEVEL }, StatusCodes.BAD_REQUEST);
 
+        if (body.questions.length !== body.numberOfQuestion) throw new HttpException({ numberOfQuestion: ResponseMessage.INVALID_NUMBER_OF_QUESTION }, StatusCodes.BAD_REQUEST);
+
         const newQuiz = new Quiz();
         newQuiz.name = body.name;
         newQuiz.duration = body.duration;
