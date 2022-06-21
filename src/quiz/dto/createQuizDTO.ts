@@ -23,7 +23,7 @@ export class CreateQuizDTO {
     type: string;
 
     @ApiProperty({ description: 'Quiz Level', example: 'Medium' })
-    level: string;
+    quizLevel: string;
 
     @ApiProperty({ description: 'Subject', example: '123-1123-123' })
     subject: string;
@@ -37,11 +37,12 @@ export const vCreateQuizDTO = joi.object<CreateQuizDTO>({
     duration: quizValidateSchema.duration,
     passRate: quizValidateSchema.passRate,
     isPublic: quizValidateSchema.isPublic,
+    numberOfQuestion: quizValidateSchema.numberOfQuestion,
     type: joi
         .string()
         .required()
         .messages(JoiMessage.createObjectMessages({ field: 'Quiz Type' })),
-    level: joi
+    quizLevel: joi
         .string()
         .required()
         .messages(JoiMessage.createStringMessages({ field: 'Quiz Level' })),
