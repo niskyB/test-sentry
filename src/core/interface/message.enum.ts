@@ -28,4 +28,5 @@ export enum ResponseMessage {
     SINGLE_CHOICE_ERROR = 'Single choice question should have only one correct answer',
     MULTIPLE_CHOICE_ERROR = 'Multiple choice question should have at least two correct answer',
     QUESTION_LEVEL_ERROR = 'Invalid question level',
+    INVALID_NUMBER_OF_QUESTION = 'You can not add more question than number of question',
 }
