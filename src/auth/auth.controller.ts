@@ -1,8 +1,8 @@
 import { ResponseMessage } from './../core/interface';
 import { CustomerService } from './../customer/customer.service';
-import { Body, Controller, Get, HttpException, Param, Post, Req, Res, UsePipes } from '@nestjs/common';
+import { Body, Controller, Get, HttpException, Param, Post, Res, UsePipes } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiCreatedResponse } from '@nestjs/swagger';
-import { Request, Response } from 'express';
+import { Response } from 'express';
 import { UserService } from '../user/user.service';
 import { AuthService } from './auth.service';
 import { StatusCodes } from 'http-status-codes';
@@ -105,7 +105,7 @@ export class AuthController {
 
     @Post('/logout')
     @ApiOperation({ summary: 'Logout user account' })
-    async cLogout(@Req() req: Request, @Res() res: Response) {
+    async cLogout(@Res() res: Response) {
         return res.cookie(constant.authController.tokenName, '', { maxAge: -999 }).send();
     }
 
