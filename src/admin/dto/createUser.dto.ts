@@ -31,5 +31,5 @@ export const vCreateUserDTO = joi.object<CreateUserDTO>({
         .boolean()
         .required()
         .messages(JoiMessage.createBooleanMessages({ field: 'isActive' })),
-    role: joi.string().trim().valid(UserRole.MARKETING, UserRole.SALE, UserRole.EXPERT).required(),
+    role: joi.string().trim().valid(UserRole.MARKETING, UserRole.SALE, UserRole.EXPERT, UserRole.CUSTOMER).required(),
 });
