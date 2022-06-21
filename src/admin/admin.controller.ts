@@ -1,3 +1,5 @@
+import { EmailAction } from './../core/interface';
+import { DataService } from './../core/providers/fake-data/data.service';
 import { ExpertService } from './../expert/expert.service';
 import { AuthService } from './../auth/auth.service';
 import { User, UserRole, Marketing, Expert, Sale } from './../core/models';
@@ -25,6 +27,7 @@ export class AdminController {
         private readonly authService: AuthService,
         private readonly saleService: SaleService,
         private readonly expertService: ExpertService,
+        private readonly dataService: DataService,
     ) {}
 
     @Get('/users')
@@ -69,7 +72,8 @@ export class AdminController {
 
         newUser.fullName = body.fullName;
         newUser.email = body.email;
-        newUser.password = await this.authService.encryptPassword('12345678', constant.default.hashingSalt);
+        const password = this.dataService.generateData(8, 'lettersAndNumbers');
+        newUser.password = await this.authService.encryptPassword(password, constant.default.hashingSalt);
         newUser.gender = body.gender;
         newUser.mobile = body.mobile;
         newUser.isActive = body.isActive;
@@ -94,6 +98,13 @@ export class AdminController {
 
         newUser.typeId = newEmployee.id;
         await this.userService.saveUser(newUser);
+        newUser.password = password;
+
+        const isSend = await this.authService.sendEmailToken(newUser, EmailAction.SEND_PASSWORD);
+
+        if (!isSend) {
+            throw new HttpException({ errorMessage: ResponseMessage.SOMETHING_WRONG }, StatusCodes.INTERNAL_SERVER_ERROR);
+        }
         return res.send();
     }
 }
