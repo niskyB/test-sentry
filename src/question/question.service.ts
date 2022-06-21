@@ -13,7 +13,12 @@ export class QuestionService {
     }
 
     async getQuestionByField(field: keyof Question, value: any): Promise<Question> {
-        return await this.questionRepository.createQueryBuilder('question').leftJoinAndSelect('question.answers', 'answers').where(`question.${field} = (:value)`, { value }).getOne();
+        return await this.questionRepository
+            .createQueryBuilder('question')
+            .leftJoinAndSelect('question.answers', 'answers')
+            .leftJoinAndSelect('question.questionLevel', 'questionLevel')
+            .where(`question.${field} = (:value)`, { value })
+            .getOne();
     }
 
     async getQuestionBySubjectId(id: string): Promise<Question[]> {
