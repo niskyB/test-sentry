@@ -1,3 +1,5 @@
+import { QuizDetailService } from './../quiz-detail/quiz-detail.service';
+import { QuestionService } from './../question/question.service';
 import { ExamLevelService } from './../exam-level/exam-level.service';
 import { QuizTypeService } from './../quiz-type/quiz-type.service';
 import { SubjectService } from '../subject/subject.service';
@@ -10,7 +12,7 @@ import { Request, Response } from 'express';
 import { StatusCodes } from 'http-status-codes';
 import { QuizService } from './quiz.service';
 import { CreateQuizDTO, vCreateQuizDTO } from './dto';
-import { Quiz, UserRole } from '../core/models';
+import { Quiz, QuizDetail, UserRole } from '../core/models';
 
 @ApiTags('quiz')
 @ApiBearerAuth()
@@ -22,6 +24,8 @@ export class QuizController {
         private readonly subjectService: SubjectService,
         private readonly quizTypeService: QuizTypeService,
         private readonly examLevelService: ExamLevelService,
+        private readonly questionService: QuestionService,
+        private readonly quizDetailService: QuizDetailService,
     ) {}
 
     @Post('')
@@ -54,6 +58,14 @@ export class QuizController {
         if (newQuiz.subject.assignTo) {
             newQuiz.subject.assignTo.user.password = '';
             newQuiz.subject.assignTo.user.token = '';
+        }
+
+        for (const item of body.questions) {
+            const question = await this.questionService.getQuestionByField('id', item);
+            const quizDetail = new QuizDetail();
+            quizDetail.question = question;
+            quizDetail.quiz = newQuiz;
+            await this.quizDetailService.saveQuizDetail(quizDetail);
         }
 
         return res.send(newQuiz);

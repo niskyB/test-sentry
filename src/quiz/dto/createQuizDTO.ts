@@ -27,6 +27,9 @@ export class CreateQuizDTO {
 
     @ApiProperty({ description: 'Subject', example: '123-1123-123' })
     subject: string;
+
+    @ApiProperty({ description: 'Question' })
+    questions: Array<string>;
 }
 
 export const vCreateQuizDTO = joi.object<CreateQuizDTO>({
@@ -46,4 +49,8 @@ export const vCreateQuizDTO = joi.object<CreateQuizDTO>({
         .string()
         .required()
         .messages(JoiMessage.createStringMessages({ field: 'Subject' })),
+    questions: joi
+        .array()
+        .required()
+        .messages(JoiMessage.createArrayMessages({ field: 'Questions' })),
 });

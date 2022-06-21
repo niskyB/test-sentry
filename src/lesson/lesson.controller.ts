@@ -38,11 +38,11 @@ export class LessonController {
 
         if (!lesson) throw new HttpException({ errorMessage: ResponseMessage.NOT_FOUND }, StatusCodes.NOT_FOUND);
 
-        if (lesson.type.description == 'Lesson Detail') {
+        if (lesson.type.description == LessonTypes.LESSON) {
             const lessonDetail = await this.lessonDetailService.getLessonDetailByLessonId(lesson.id);
             lesson.lessonDetail = lessonDetail;
         }
-        if (lesson.type.description == 'Lesson Quiz') {
+        if (lesson.type.description == LessonTypes.QUIZ) {
             const lessonQuiz = await this.lessonQuizService.getLessonQuizByLessonId(lesson.id);
             lesson.lessonQuiz = lessonQuiz;
         }
