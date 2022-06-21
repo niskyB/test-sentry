@@ -21,7 +21,7 @@ export class QuizService {
                 .createQueryBuilder('quiz')
                 .where('quiz.name LIKE (:name)', { name: `%${name}%` })
                 .leftJoinAndSelect('quiz.subject', 'subject')
-                .andWhere('subject.id = (:subjectId)', { subjectId: subject })
+                .andWhere('subject.id LIKE (:subjectId)', { subjectId: `%${subject}%` })
                 .leftJoinAndSelect('quiz.type', 'type')
                 .andWhere('type.id LIKE (:typeId)', { typeId: `%${type}%` })
                 .leftJoinAndSelect('quiz.level', 'level')
@@ -30,7 +30,7 @@ export class QuizService {
                 .createQueryBuilder('quiz')
                 .where('quiz.name LIKE (:name)', { name: `%${name}%` })
                 .leftJoinAndSelect('quiz.subject', 'subject')
-                .andWhere('subject.id = (:subjectId)', { subjectId: subject })
+                .andWhere('subject.id LIKE (:subjectId)', { subjectId: `%${subject}%` })
                 .leftJoinAndSelect('quiz.type', 'type')
                 .andWhere('type.id LIKE (:typeId)', { typeId: `%${type}%` })
                 .getCount();
