@@ -61,6 +61,7 @@ export class QuestionController {
         newQuestion.audioLink = body.audioLink;
         newQuestion.videoLink = body.videoLink;
         newQuestion.isMultipleChoice = body.isMultipleChoice;
+        newQuestion.explanation = body.explanation;
         newQuestion.questionLevel = questionLevel;
         newQuestion.dimensions = [];
         if (file) {
