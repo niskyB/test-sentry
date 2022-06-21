@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { MailDataRequired, MailService } from '@sendgrid/mail';
-import { monoLogger } from 'mono-utils-core';
+import { monoEnum, monoLogger } from 'mono-utils-core';
 import { config } from '../../config';
 import { constant } from '../../constant';
 
@@ -16,7 +16,7 @@ export class EmailService {
             html: `<div>${content}</div>`,
             mailSettings: {
                 sandboxMode: {
-                    enable: false,
+                    enable: config.NODE_ENV !== monoEnum.NODE_ENV_MODE.PRODUCTION,
                 },
             },
         };
