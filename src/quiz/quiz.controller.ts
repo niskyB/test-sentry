@@ -7,7 +7,7 @@ import { SubjectService } from '../subject/subject.service';
 import { ResponseMessage } from './../core/interface';
 import { JoiValidatorPipe } from './../core/pipe';
 import { ExpertGuard } from './../auth/guard';
-import { Body, Controller, Post, Req, Res, UseGuards, UsePipes, HttpException, Put, Param } from '@nestjs/common';
+import { Body, Controller, Post, Req, Res, UseGuards, UsePipes, HttpException, Put, Param, Delete } from '@nestjs/common';
 import { ApiTags, ApiBearerAuth, ApiParam } from '@nestjs/swagger';
 import { Request, Response } from 'express';
 import { StatusCodes } from 'http-status-codes';
@@ -119,5 +119,28 @@ export class QuizController {
         quiz.isPublic = body.isPublic === null || body.isPublic === undefined ? quiz.isPublic : body.isPublic;
 
         await this.quizService.saveQuiz(quiz);
+        return res.send(quiz);
+    }
+
+    @Delete('/:id')
+    @ApiParam({ name: 'id', example: 'TVgJIjsRFmIvyjUeBOLv4gOD3eQZY' })
+    async cDeleteQuiz(@Req() req: Request, @Res() res: Response, @Body() body: UpdateQuizDTO, @Param('id') id: string) {
+        const user = req.user;
+        const quiz = await this.quizService.getQuizByField('id', id);
+
+        if (!quiz) throw new HttpException({ quiz: ResponseMessage.NOT_FOUND }, StatusCodes.NOT_FOUND);
+
+        const attendedQuestion = await this.attendedQuestionService.getAttendedQuestionByQuizId(id);
+        if (attendedQuestion) throw new HttpException({ errorMessage: ResponseMessage.QUIZ_TAKEN }, StatusCodes.BAD_REQUEST);
+
+        if (user.role.description !== UserRole.ADMIN && quiz.subject.assignTo.id !== user.typeId) throw new HttpException({ errorMessage: ResponseMessage.FORBIDDEN }, StatusCodes.FORBIDDEN);
+
+        const quizDetails = await this.quizDetailService.getQuizDetailsByQuizId(quiz.id);
+        for (const item of quizDetails) {
+            await this.quizDetailService.deleteQuizDetail(item);
+        }
+        await this.quizService.deleteQuiz(quiz);
+
+        return res.send();
     }
 }
