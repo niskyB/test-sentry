@@ -1,3 +1,4 @@
+import { AttendedQuestionModule } from './../attended-question/attended-question.module';
 import { QuizDetailModule } from './../quiz-detail/quiz-detail.module';
 import { QuestionModule } from './../question/question.module';
 import { UserModule } from '../user/user.module';
@@ -15,7 +16,7 @@ import { Connection } from 'typeorm';
 import { QuizzesController } from './quizes.controller';
 
 @Module({
-    imports: [TypeOrmModule.forFeature([Quiz]), SubjectModule, QuizTypeModule, ExamLevelModule, AuthModule, UserModule, forwardRef(() => QuestionModule), QuizDetailModule],
+    imports: [TypeOrmModule.forFeature([Quiz]), SubjectModule, QuizTypeModule, ExamLevelModule, AuthModule, UserModule, forwardRef(() => QuestionModule), QuizDetailModule, AttendedQuestionModule],
     controllers: [QuizController, QuizzesController],
     providers: [QuizService, { provide: QuizRepository, useFactory: (connection: Connection) => connection.getCustomRepository(QuizRepository), inject: [Connection] }],
     exports: [QuizService],

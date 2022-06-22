@@ -18,4 +18,14 @@ export class QuizDetailService {
             .leftJoinAndSelect('quiz_detail.question', 'question')
             .getMany();
     }
+
+    async getQuizDetailByQuizIdAndQuestionId(quizId: string, questionId: string): Promise<QuizDetail> {
+        return await this.quizDetailRepository
+            .createQueryBuilder('quiz_detail')
+            .leftJoinAndSelect('quiz_detail.quiz', 'quiz')
+            .where('quiz.id = (:quizId)', { quizId })
+            .leftJoinAndSelect('quiz_detail.question', 'question')
+            .andWhere('question.id = (:questionId)', { questionId })
+            .getOne();
+    }
 }
