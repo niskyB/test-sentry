@@ -10,6 +10,10 @@ export class QuizDetailService {
         return await this.quizDetailRepository.save(quizDetail);
     }
 
+    async deleteQuizDetail(quizDetail: QuizDetail) {
+        return await this.quizDetailRepository.delete(quizDetail);
+    }
+
     async getQuizDetailsByQuizId(id: string): Promise<QuizDetail[]> {
         return await this.quizDetailRepository
             .createQueryBuilder('quiz_detail')
