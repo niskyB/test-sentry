@@ -6,12 +6,12 @@ import { SubjectService } from '../subject/subject.service';
 import { ResponseMessage } from './../core/interface';
 import { JoiValidatorPipe } from './../core/pipe';
 import { ExpertGuard } from './../auth/guard';
-import { Body, Controller, Post, Req, Res, UseGuards, UsePipes, HttpException } from '@nestjs/common';
-import { ApiTags, ApiBearerAuth } from '@nestjs/swagger';
+import { Body, Controller, Post, Req, Res, UseGuards, UsePipes, HttpException, Put, Param } from '@nestjs/common';
+import { ApiTags, ApiBearerAuth, ApiParam } from '@nestjs/swagger';
 import { Request, Response } from 'express';
 import { StatusCodes } from 'http-status-codes';
 import { QuizService } from './quiz.service';
-import { CreateQuizDTO, vCreateQuizDTO } from './dto';
+import { CreateQuizDTO, UpdateQuizDTO, vCreateQuizDTO, vUpdateQuizDTO } from './dto';
 import { Quiz, QuizDetail, UserRole } from '../core/models';
 
 @ApiTags('quiz')
@@ -71,5 +71,19 @@ export class QuizController {
         }
 
         return res.send(newQuiz);
+    }
+
+    @Put('/:id')
+    @ApiParam({ name: 'id', example: 'TVgJIjsRFmIvyjUeBOLv4gOD3eQZY' })
+    @UsePipes(new JoiValidatorPipe(vUpdateQuizDTO))
+    async cUpdateQuiz(@Req() req: Request, @Res() res: Response, @Body() body: UpdateQuizDTO, @Param('id') id: string) {
+        const user = req.user;
+
+        const subject = await this.subjectService.getSubjectByField('id', body.subject);
+        if (subject && user.role.description !== UserRole.ADMIN && subject.assignTo.id !== user.typeId) throw new HttpException({ errorMessage: ResponseMessage.FORBIDDEN }, StatusCodes.FORBIDDEN);
+
+        const quiz = await this.quizService.getQuizByField('id', id);
+        const type = await this.quizTypeService.getQuizTypeByField('id', body.type);
+        const level = await this.examLevelService.getExamLevelByField('id', body.quizLevel);
     }
 }
