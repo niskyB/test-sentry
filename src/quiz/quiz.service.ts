@@ -6,12 +6,24 @@ import { Injectable } from '@nestjs/common';
 export class QuizService {
     constructor(private readonly quizRepository: QuizRepository) {}
 
-    async saveQuiz(lesson: Quiz): Promise<Quiz> {
-        return await this.quizRepository.save(lesson);
+    async saveQuiz(quiz: Quiz): Promise<Quiz> {
+        return await this.quizRepository.save(quiz);
+    }
+
+    async deleteQuiz(quiz: Quiz) {
+        return await this.quizRepository.delete(quiz);
     }
 
     async getQuizByField(field: keyof Quiz, value: any): Promise<Quiz> {
-        return await this.quizRepository.findOneByField(field, value);
+        return await this.quizRepository
+            .createQueryBuilder('quiz')
+            .where(`quiz.${field} = (:value)`, { value })
+            .leftJoinAndSelect('quiz.subject', 'subject')
+            .leftJoinAndSelect('subject.assignTo', 'assignTo')
+            .leftJoinAndSelect('assignTo.user', 'user')
+            .leftJoinAndSelect('quiz.type', 'type')
+            .leftJoinAndSelect('quiz.level', 'level')
+            .getOne();
     }
 
     async filterQuizzes({ name, subject, type }): Promise<{ data: Quiz[]; count: number }> {

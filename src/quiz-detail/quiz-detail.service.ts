@@ -10,6 +10,10 @@ export class QuizDetailService {
         return await this.quizDetailRepository.save(quizDetail);
     }
 
+    async deleteQuizDetail(quizDetail: QuizDetail) {
+        return await this.quizDetailRepository.delete(quizDetail);
+    }
+
     async getQuizDetailsByQuizId(id: string): Promise<QuizDetail[]> {
         return await this.quizDetailRepository
             .createQueryBuilder('quiz_detail')
@@ -17,5 +21,15 @@ export class QuizDetailService {
             .where('quiz.id = (:id)', { id })
             .leftJoinAndSelect('quiz_detail.question', 'question')
             .getMany();
+    }
+
+    async getQuizDetailByQuizIdAndQuestionId(quizId: string, questionId: string): Promise<QuizDetail> {
+        return await this.quizDetailRepository
+            .createQueryBuilder('quiz_detail')
+            .leftJoinAndSelect('quiz_detail.quiz', 'quiz')
+            .where('quiz.id = (:quizId)', { quizId })
+            .leftJoinAndSelect('quiz_detail.question', 'question')
+            .andWhere('question.id = (:questionId)', { questionId })
+            .getOne();
     }
 }
