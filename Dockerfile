@@ -10,4 +10,4 @@ RUN yarn run build:prod
 FROM node:14-alpine
 WORKDIR /app
 COPY --from=builder /app ./
-CMD ["yarn", "run", "start:dev"]
+CMD ["yarn", "run", "start:prod"]
