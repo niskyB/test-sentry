@@ -19,7 +19,7 @@ export class QuestionService {
             .leftJoinAndSelect('question.questionLevel', 'questionLevel')
             .leftJoinAndSelect('question.dimensions', 'dimensions')
             .leftJoinAndSelect('question.lesson', 'lesson')
-            .where(`question.${field} = (:value)`, { value })
+            .where(`question.${field.toString()} = (:value)`, { value })
             .getOne();
     }
 

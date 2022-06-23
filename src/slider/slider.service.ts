@@ -15,7 +15,7 @@ export class SliderService {
     async getSliderByField(field: keyof Slider, value: any): Promise<Slider> {
         return await this.sliderRepository
             .createQueryBuilder('slider')
-            .where(`slider.${field} = (:value)`, { value })
+            .where(`slider.${field.toString()} = (:value)`, { value })
             .leftJoinAndSelect('slider.marketing', 'marketing')
             .leftJoinAndSelect('marketing.user', 'user')
             .getOne();
