@@ -38,6 +38,10 @@ export class Registration {
     @Column()
     validTo: string;
 
+    @ApiProperty({ description: 'Notes' })
+    @Column()
+    notes: string;
+
     @ApiProperty({ description: 'Status' })
     @Column()
     status: RegistrationStatus;
