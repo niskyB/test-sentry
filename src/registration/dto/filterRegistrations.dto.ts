@@ -9,7 +9,7 @@ export class FilterRegistrationsDTO {
     @ApiProperty({ description: 'Subject Id', example: 'asdf asdf asdf ', nullable: true })
     subject: string;
 
-    @ApiProperty({ description: 'Email', nullable: true })
+    @ApiProperty({ description: 'Email', example: 'adsfasdf', nullable: true })
     email: string;
 
     @ApiProperty({ description: 'status', example: RegistrationStatus.SUBMITTED, nullable: true })

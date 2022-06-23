@@ -71,7 +71,7 @@ export class RegistrationController {
         registration.registrationTime = body.registrationTime;
         registration.status = body.status;
         registration.totalCost = pricePackage.salePrice;
-        registration.validForm = body.validFrom;
+        registration.validFrom = body.validFrom;
         registration.validTo = body.validTo;
         registration.pricePackage = pricePackage;
         registration.notes = body.note;
@@ -115,7 +115,7 @@ export class RegistrationController {
 
         registration.pricePackage = pricePackage || registration.pricePackage;
         registration.totalCost = registration.pricePackage.salePrice;
-        registration.validForm = body.validFrom || registration.validForm;
+        registration.validFrom = body.validFrom || registration.validFrom;
         registration.validTo = body.validTo || registration.validTo;
         registration.registrationTime = body.registrationTime || registration.registrationTime;
         registration.notes = body.note || registration.notes;

@@ -68,7 +68,7 @@ export class RegistrationService {
                 .createQueryBuilder('registration')
                 .leftJoinAndSelect('registration.pricePackage', 'pricePackage')
                 .leftJoinAndSelect('pricePackage.subject', 'subject')
-                .where('subject.id LIKE (:subjectId)', { subjectId: `%${subject}%` })
+                // .where('subject.id LIKE (:subjectId)', { subjectId: `%${subject}%` })
                 .andWhere('registration.validFrom >= (:validFrom)', { validFrom })
                 .andWhere('registration.validTo >= (:validTo)', { validTo })
                 .andWhere('registration.status LIKE (:status)', { status: `%${status}%` })
