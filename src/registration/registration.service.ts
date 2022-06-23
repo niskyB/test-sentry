@@ -31,12 +31,12 @@ export class RegistrationService {
         currentPage: number,
         pageSize: number,
         order: SortOrder,
-        orderBy: keyof Registration,
+        orderBy: string,
     ): Promise<{ data: Registration[]; count: number }> {
         let registrations, count;
+        let registrationsQuery = this.registrationRepository.createQueryBuilder('registration');
         try {
-            registrations = await this.registrationRepository
-                .createQueryBuilder('registration')
+            registrationsQuery = registrationsQuery
                 .leftJoinAndSelect('registration.pricePackage', 'pricePackage')
                 .leftJoinAndSelect('pricePackage.subject', 'subject')
                 .where('subject.id LIKE (:subjectId)', { subjectId: `%${subject}%` })
@@ -45,8 +45,21 @@ export class RegistrationService {
                 .andWhere('registration.status LIKE (:status)', { status: `%${status}%` })
                 .leftJoinAndSelect('registration.customer', 'customer')
                 .leftJoinAndSelect('customer.user', 'user')
-                .andWhere('user.email LIKE (:email)', { email: `%${email}%` })
-                .orderBy(`user.${orderBy}`, order)
+                .andWhere('user.email LIKE (:email)', { email: `%${email}%` });
+            switch (orderBy) {
+                case 'subject':
+                    registrationsQuery = registrationsQuery.orderBy(`subject.id`, order);
+                    break;
+                case 'email':
+                    registrationsQuery = registrationsQuery.orderBy(`user.email`, order);
+                    break;
+                case 'package':
+                    registrationsQuery = registrationsQuery.orderBy(`pricePackage.id`, order);
+                    break;
+                default:
+                    registrationsQuery = registrationsQuery.orderBy(`registration.${orderBy}`, order);
+            }
+            registrations = await registrationsQuery
                 .skip(currentPage * pageSize)
                 .take(pageSize)
                 .getMany();
