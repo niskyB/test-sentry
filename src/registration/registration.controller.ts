@@ -96,6 +96,7 @@ export class RegistrationController {
         if (body.status === RegistrationStatus.PAID) {
             const password = this.dataService.generateData(8, 'lettersAndNumbers');
             registration.customer.user.password = await this.authService.encryptPassword(password, constant.default.hashingSalt);
+            registration.customer.user.isActive = true;
             await this.userService.saveUser(registration.customer.user);
             registration.customer.user.password = password;
             const isSend = await this.authService.sendEmailToken(registration.customer.user, EmailAction.SEND_PASSWORD);
