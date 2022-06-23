@@ -128,6 +128,8 @@ export class AdminController {
         user.isActive = body.isActive;
         user.updatedAt = new Date().toISOString();
 
+        await this.userService.saveUser(user);
+
         user.password = '';
         user.token = '';
         return res.send(user);
@@ -196,6 +198,7 @@ export class AdminController {
 
         user.role = await this.userService.findRole('description', body.role);
         user.updatedAt = new Date().toISOString();
+        await this.userService.saveUser(user);
 
         user.password = '';
         user.token = '';
