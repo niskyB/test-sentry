@@ -4,9 +4,6 @@ import * as joi from 'joi';
 import JoiMessage from 'joi-message';
 
 export class CreateRegistrationDTO {
-    @ApiProperty({ description: 'Subject', example: 'subject id' })
-    subject: string;
-
     @ApiProperty({ description: 'Price package', example: 'package id' })
     pricePackage: string;
 
@@ -36,13 +33,12 @@ export class CreateRegistrationDTO {
 
     @ApiProperty({ description: 'Note', example: 'cc' })
     note: string;
+
+    @ApiProperty({ description: 'User Id', example: 'cc' })
+    sale: string;
 }
 
 export const vCreateRegistrationDTO = joi.object<CreateRegistrationDTO>({
-    subject: joi
-        .string()
-        .required()
-        .messages(JoiMessage.createStringMessages({ field: 'Subject' })),
     pricePackage: joi
         .string()
         .required()
@@ -71,4 +67,5 @@ export const vCreateRegistrationDTO = joi.object<CreateRegistrationDTO>({
         .string()
         .required()
         .messages(JoiMessage.createStringMessages({ field: 'note' })),
+    sale: joi.string().required().failover(''),
 });

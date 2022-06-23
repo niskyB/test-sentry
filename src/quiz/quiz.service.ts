@@ -17,7 +17,7 @@ export class QuizService {
     async getQuizByField(field: keyof Quiz, value: any): Promise<Quiz> {
         return await this.quizRepository
             .createQueryBuilder('quiz')
-            .where(`quiz.${field} = (:value)`, { value })
+            .where(`quiz.${field.toString()} = (:value)`, { value })
             .leftJoinAndSelect('quiz.subject', 'subject')
             .leftJoinAndSelect('subject.assignTo', 'assignTo')
             .leftJoinAndSelect('assignTo.user', 'user')
