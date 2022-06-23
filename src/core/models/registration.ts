@@ -32,7 +32,7 @@ export class Registration {
 
     @ApiProperty({ description: 'Valid Form' })
     @Column()
-    validForm: string;
+    validFrom: string;
 
     @ApiProperty({ description: 'Valid To' })
     @Column()
