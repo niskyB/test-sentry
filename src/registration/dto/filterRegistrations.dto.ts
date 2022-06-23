@@ -1,5 +1,5 @@
 import { SortOrder } from './../../core/interface';
-import { Registration, RegistrationStatus, registrationValidateSchema } from './../../core/models';
+import { RegistrationStatus, registrationValidateSchema } from './../../core/models';
 import { ApiProperty } from '@nestjs/swagger';
 import * as joi from 'joi';
 import { constant } from '../../core';
@@ -27,11 +27,11 @@ export class FilterRegistrationsDTO {
     @ApiProperty({ description: 'Page Size', example: '4', nullable: true })
     pageSize: number;
 
-    @ApiProperty({ description: 'Created At', example: '18/5/2022', nullable: true })
+    @ApiProperty({ description: 'Order', example: 'ASC', nullable: true })
     order: SortOrder;
 
     @ApiProperty({ description: 'Order by', example: 'name', nullable: true })
-    orderBy: keyof Registration;
+    orderBy: string;
 }
 
 export const vFilterRegistrationsDTO = joi.object<FilterRegistrationsDTO>({
