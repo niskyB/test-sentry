@@ -1,6 +1,7 @@
+import { SortOrder } from './../core/interface';
 import { RegistrationStatus } from './../core/models/registration';
 import { Injectable } from '@nestjs/common';
-import { Registration } from 'src/core/models';
+import { Registration } from '../core/models';
 import { RegistrationRepository } from '../core/repositories';
 
 @Injectable()
@@ -21,7 +22,17 @@ export class RegistrationService {
             .getOne();
     }
 
-    async filterRegistrations(subject: string, validFrom: string, validTo: string, status: RegistrationStatus, email: string): Promise<{ data: Registration[]; count: number }> {
+    async filterRegistrations(
+        subject: string,
+        validFrom: string,
+        validTo: string,
+        status: RegistrationStatus,
+        email: string,
+        currentPage: number,
+        pageSize: number,
+        order: SortOrder,
+        orderBy: keyof Registration,
+    ): Promise<{ data: Registration[]; count: number }> {
         let registrations, count;
         try {
             registrations = await this.registrationRepository
@@ -35,6 +46,9 @@ export class RegistrationService {
                 .leftJoinAndSelect('registration.customer', 'customer')
                 .leftJoinAndSelect('customer.user', 'user')
                 .andWhere('user.email LIKE (:email)', { email: `%${email}%` })
+                .orderBy(`user.${orderBy}`, order)
+                .skip(currentPage * pageSize)
+                .take(pageSize)
                 .getMany();
 
             count = await this.registrationRepository
