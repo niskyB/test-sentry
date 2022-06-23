@@ -4,7 +4,7 @@ import { DataService } from './../core/providers/fake-data/data.service';
 import { CustomerService } from './../customer/customer.service';
 import { Customer, RegistrationStatus, User, UserRole } from './../core/models';
 import { Body, Controller, HttpException, Param, Post, Put, Req, Res, UseGuards, UsePipes } from '@nestjs/common';
-import { ApiBearerAuth, ApiParam } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiParam, ApiTags } from '@nestjs/swagger';
 import { Request, Response } from 'express';
 import { StatusCodes } from 'http-status-codes';
 import { AuthService } from 'src/auth/auth.service';
@@ -18,6 +18,7 @@ import { CreateRegistrationDTO, UpdateRegistrationDTO, vCreateRegistrationDTO, v
 import { RegistrationService } from './registration.service';
 import { constant } from '../core';
 
+@ApiTags('registration')
 @Controller('registration')
 @ApiBearerAuth()
 export class RegistrationController {

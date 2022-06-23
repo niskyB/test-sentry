@@ -6,19 +6,19 @@ import { constant } from '../../core';
 
 const { currentPage, pageSize, orderBy } = constant.default;
 export class FilterRegistrationsDTO {
-    @ApiProperty({ description: 'Subject Id', example: 'asdf asdf asdf ' })
+    @ApiProperty({ description: 'Subject Id', example: 'asdf asdf asdf ', nullable: true })
     subject: string;
 
-    @ApiProperty({ description: 'Email' })
+    @ApiProperty({ description: 'Email', nullable: true })
     email: string;
 
-    @ApiProperty({ description: 'status', example: RegistrationStatus.SUBMITTED })
+    @ApiProperty({ description: 'status', example: RegistrationStatus.SUBMITTED, nullable: true })
     status: RegistrationStatus;
 
-    @ApiProperty({ description: 'Valid from', example: 'cc' })
+    @ApiProperty({ description: 'Valid from', example: 'cc', nullable: true })
     validFrom: string;
 
-    @ApiProperty({ description: 'Valid to', example: 'cc' })
+    @ApiProperty({ description: 'Valid to', example: 'cc', nullable: true })
     validTo: string;
 
     @ApiProperty({ description: 'Current Page', example: '0', nullable: true })
