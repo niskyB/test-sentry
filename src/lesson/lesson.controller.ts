@@ -117,12 +117,12 @@ export class LessonController {
             if (!body.htmlContent) throw new HttpException({ htmlContent: ResponseMessage.INVALID_HTML_CONTENT }, StatusCodes.BAD_REQUEST);
             if (!body.quiz) throw new HttpException({ videoLink: ResponseMessage.INVALID_QUIZ }, StatusCodes.BAD_REQUEST);
 
-            const quizs = body.quiz.split(',');
+            const quizzes = body.quiz.split(',');
             const lessonQuiz = new LessonQuiz();
-            lessonQuiz.quizs = [];
-            for (const item of quizs) {
+            lessonQuiz.quizzes = [];
+            for (const item of quizzes) {
                 const res = await this.quizService.getQuizByField('id', item);
-                if (res) lessonQuiz.quizs.push(res);
+                if (res) lessonQuiz.quizzes.push(res);
             }
             lessonQuiz.htmlContent = body.htmlContent;
             lessonQuiz.lesson = newLesson;
@@ -193,12 +193,12 @@ export class LessonController {
         if (type.description === LessonTypes.QUIZ) {
             const lessonQuiz = await this.lessonQuizService.getLessonQuizByLessonId(id);
             lessonQuiz.htmlContent = body.htmlContent || lessonQuiz.htmlContent;
-            if (body.quiz) lessonQuiz.quizs = [];
+            if (body.quiz) lessonQuiz.quizzes = [];
 
             const quiz = body.quiz.split(',');
             for (const item of quiz) {
                 const res = await this.quizService.getQuizByField('id', item);
-                if (res) lessonQuiz.quizs.push(res);
+                if (res) lessonQuiz.quizzes.push(res);
             }
 
             await this.lessonQuizService.saveLessonQuiz(lessonQuiz);

@@ -23,7 +23,7 @@ export class LessonQuiz {
     @ApiProperty({ description: 'Quiz' })
     @ManyToMany(() => Quiz)
     @JoinTable({ name: 'lesson_quiz_details' })
-    quizs: Quiz[];
+    quizzes: Quiz[];
 }
 
 export const lessonQuizValidateSchema = {
