@@ -94,7 +94,7 @@ export class EmailService {
         );
     }
 
-    async sendPasswordForUser(receiver: string, name: string, password: string) {
+    async sendPasswordForUser(receiver: string, name: string, password: string, email: string) {
         return await this.sendMail(
             receiver,
             'WELCOME TO FUQUIZ',
@@ -112,6 +112,7 @@ export class EmailService {
                         <p style="font-size:12px; line-height:20px;">
                             <p style="font-size:28px">Hello ${name}</p>
                             <p style="font-size:22px">We are from Tetcha Team</p>
+                            <p style="font-size:18px; margin: 16px 0">Your login email: ${email}</p>
                             <p style="font-size:18px; margin: 16px 0">Your password: ${password}</p>
                         </p>
                     </div>

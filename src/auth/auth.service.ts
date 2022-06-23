@@ -57,7 +57,7 @@ export class AuthService {
                 isSend = await this.emailService.sendResetPassword(user.email, otp, user.fullName);
                 break;
             case EmailAction.SEND_PASSWORD:
-                isSend = await this.emailService.sendPasswordForUser(user.email, user.fullName, user.password);
+                isSend = await this.emailService.sendPasswordForUser(user.email, user.fullName, user.password, user.email);
                 break;
         }
 
