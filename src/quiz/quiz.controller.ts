@@ -7,7 +7,7 @@ import { SubjectService } from '../subject/subject.service';
 import { ResponseMessage } from './../core/interface';
 import { JoiValidatorPipe } from './../core/pipe';
 import { ExpertGuard } from './../auth/guard';
-import { Body, Controller, Post, Req, Res, UseGuards, UsePipes, HttpException, Put, Param, Delete } from '@nestjs/common';
+import { Body, Controller, Post, Req, Res, UseGuards, UsePipes, HttpException, Put, Param, Delete, Get } from '@nestjs/common';
 import { ApiTags, ApiBearerAuth, ApiParam } from '@nestjs/swagger';
 import { Request, Response } from 'express';
 import { StatusCodes } from 'http-status-codes';
@@ -17,7 +17,6 @@ import { Quiz, QuizDetail, UserRole } from '../core/models';
 
 @ApiTags('quiz')
 @ApiBearerAuth()
-@UseGuards(ExpertGuard)
 @Controller('quiz')
 export class QuizController {
     constructor(
@@ -30,7 +29,26 @@ export class QuizController {
         private readonly attendedQuestionService: AttendedQuestionService,
     ) {}
 
+    @Get('/:id')
+    @ApiParam({ name: 'id', example: 'TVgJIjsRFmIvyjUeBOLv4gOD3eQZY' })
+    async cGetQuiz(@Res() res: Response, @Param('id') id: string) {
+        const quiz = await this.quizService.getQuizByField('id', id);
+        quiz.questions = [];
+        const quizDetail = await this.quizDetailService.getQuizDetailsByQuizId(id);
+
+        for (const item of quizDetail) {
+            quiz.questions.push(item.question);
+        }
+
+        if (quiz.subject.assignTo) {
+            quiz.subject.assignTo.user.password = '';
+            quiz.subject.assignTo.user.token = '';
+        }
+        return res.send(quiz);
+    }
+
     @Post('')
+    @UseGuards(ExpertGuard)
     @UsePipes(new JoiValidatorPipe(vCreateQuizDTO))
     async cCreateQuiz(@Req() req: Request, @Res() res: Response, @Body() body: CreateQuizDTO) {
         const user = req.user;
@@ -77,6 +95,7 @@ export class QuizController {
 
     @Put('/:id')
     @ApiParam({ name: 'id', example: 'TVgJIjsRFmIvyjUeBOLv4gOD3eQZY' })
+    @UseGuards(ExpertGuard)
     @UsePipes(new JoiValidatorPipe(vUpdateQuizDTO))
     async cUpdateQuiz(@Req() req: Request, @Res() res: Response, @Body() body: UpdateQuizDTO, @Param('id') id: string) {
         const user = req.user;
