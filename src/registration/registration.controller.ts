@@ -100,7 +100,7 @@ export class RegistrationController {
             registration.customer.user.isActive = true;
             await this.userService.saveUser(registration.customer.user);
             registration.customer.user.password = password;
-            const isSend = await this.authService.sendEmailToken(registration.customer.user, EmailAction.SEND_PASSWORD);
+            const isSend = await this.authService.sendEmailToken(registration.customer.user, EmailAction.SEND_PASSWORD, registration.customer.user.password);
             if (!isSend) {
                 throw new HttpException({ errorMessage: ResponseMessage.SOMETHING_WRONG }, StatusCodes.INTERNAL_SERVER_ERROR);
             }

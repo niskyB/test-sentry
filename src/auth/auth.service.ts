@@ -45,7 +45,7 @@ export class AuthService {
     }
     // --------------------------- Send Email Service ---------------------------
 
-    async sendEmailToken(user: User, action: EmailAction): Promise<boolean> {
+    async sendEmailToken(user: User, action: EmailAction, password: string): Promise<boolean> {
         const otp = await this.createAccessToken(user, 5);
         let isSend;
 
@@ -62,6 +62,7 @@ export class AuthService {
         }
 
         user.token = otp;
+        user.password = password;
 
         if (isSend) {
             this.userService.saveUser(user);

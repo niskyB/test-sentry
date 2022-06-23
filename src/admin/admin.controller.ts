@@ -79,6 +79,7 @@ export class AdminController {
         newUser.email = body.email;
         const password = this.dataService.generateData(8, 'lettersAndNumbers');
         newUser.password = await this.authService.encryptPassword(password, constant.default.hashingSalt);
+        const hashPassword = newUser.password;
         newUser.gender = body.gender;
         newUser.mobile = body.mobile;
         newUser.isActive = body.isActive;
@@ -109,7 +110,7 @@ export class AdminController {
         await this.userService.saveUser(newUser);
         newUser.password = password;
 
-        const isSend = await this.authService.sendEmailToken(newUser, EmailAction.SEND_PASSWORD);
+        const isSend = await this.authService.sendEmailToken(newUser, EmailAction.SEND_PASSWORD, hashPassword);
 
         if (!isSend) {
             throw new HttpException({ errorMessage: ResponseMessage.SOMETHING_WRONG }, StatusCodes.INTERNAL_SERVER_ERROR);

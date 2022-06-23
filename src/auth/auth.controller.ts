@@ -26,7 +26,7 @@ export class AuthController {
             throw new HttpException({ errorMessage: ResponseMessage.NOT_EXISTED_USER }, StatusCodes.BAD_REQUEST);
         }
 
-        if (!this.authService.sendEmailToken(user, EmailAction.VERIFY_EMAIL)) {
+        if (!this.authService.sendEmailToken(user, EmailAction.VERIFY_EMAIL, user.password)) {
             throw new HttpException({ errorMessage: ResponseMessage.SOMETHING_WRONG }, StatusCodes.INTERNAL_SERVER_ERROR);
         }
 
@@ -78,7 +78,7 @@ export class AuthController {
 
         await this.userService.saveUser(newUser);
 
-        const isSend = await this.authService.sendEmailToken(newUser, EmailAction.VERIFY_EMAIL);
+        const isSend = await this.authService.sendEmailToken(newUser, EmailAction.VERIFY_EMAIL, newUser.password);
 
         if (!isSend) {
             throw new HttpException({ errorMessage: ResponseMessage.SOMETHING_WRONG }, StatusCodes.INTERNAL_SERVER_ERROR);
@@ -118,7 +118,7 @@ export class AuthController {
             throw new HttpException({ errorMessage: ResponseMessage.NOT_EXISTED_USER }, StatusCodes.BAD_REQUEST);
         }
 
-        const isSend = await this.authService.sendEmailToken(user, EmailAction.RESET_PASSWORD);
+        const isSend = await this.authService.sendEmailToken(user, EmailAction.RESET_PASSWORD, user.password);
 
         if (!isSend) {
             throw new HttpException({ errorMessage: ResponseMessage.SOMETHING_WRONG }, StatusCodes.INTERNAL_SERVER_ERROR);
