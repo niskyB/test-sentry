@@ -45,7 +45,7 @@ export const vUpdateRegistrationDTO = joi.object<UpdateRegistrationDTO>({
     gender: joi.string().required().failover(''),
     status: registrationValidateSchema.status.failover(''),
     registrationTime: registrationValidateSchema.registrationTime.failover(''),
-    validFrom: registrationValidateSchema.validFrom.failover(''),
-    validTo: registrationValidateSchema.validTo.failover(''),
+    validFrom: registrationValidateSchema.validFrom,
+    validTo: registrationValidateSchema.validTo,
     notes: joi.string().required().failover(''),
 });
