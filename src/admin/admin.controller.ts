@@ -77,7 +77,8 @@ export class AdminController {
 
         newUser.fullName = body.fullName;
         newUser.email = body.email;
-        const password = this.dataService.generateData(8, 'lettersAndNumbers');
+        // const password = this.dataService.generateData(8, 'lettersAndNumbers');
+        const password = '12345678';
         newUser.password = await this.authService.encryptPassword(password, constant.default.hashingSalt);
         const hashPassword = newUser.password;
         newUser.gender = body.gender;
