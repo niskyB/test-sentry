@@ -21,7 +21,7 @@ export class RegistrationService {
             .leftJoinAndSelect('registration.pricePackage', 'pricePackage')
             .leftJoinAndSelect('pricePackage.subject', 'subject')
             .leftJoinAndSelect('registration.sale', 'sale')
-            .leftJoinAndSelect('sale.user', 'user')
+            .leftJoinAndSelect('sale.user', 'saleUser')
             .getOne();
     }
 
@@ -49,7 +49,7 @@ export class RegistrationService {
                 .leftJoinAndSelect('registration.customer', 'customer')
                 .leftJoinAndSelect('customer.user', 'user')
                 .leftJoinAndSelect('registration.sale', 'sale')
-                .leftJoinAndSelect('sale.user', 'user')
+                .leftJoinAndSelect('sale.user', 'saleUser')
                 .andWhere('user.email LIKE (:email)', { email: `%${email}%` });
             switch (orderBy) {
                 case 'subject':
