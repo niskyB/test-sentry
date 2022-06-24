@@ -27,7 +27,7 @@ export class FilterSubjectsDTO {
     @ApiProperty({ description: 'Created At', example: '18/5/2022', nullable: true })
     createdAt: string;
 
-    @ApiProperty({ description: 'Created At', example: '18/5/2022', nullable: true })
+    @ApiProperty({ description: 'Sort', example: 'ASC', nullable: true })
     order: SortOrder;
 }
 

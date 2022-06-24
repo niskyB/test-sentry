@@ -1,11 +1,13 @@
+import { FilterService } from './../core/providers/filter/filter.service';
 import { SortOrder } from './../core/interface';
 import { Injectable } from '@nestjs/common';
 import { Registration } from '../core/models';
 import { RegistrationRepository } from '../core/repositories';
+import { Brackets } from 'typeorm';
 
 @Injectable()
 export class RegistrationService {
-    constructor(private readonly registrationRepository: RegistrationRepository) {}
+    constructor(private readonly registrationRepository: RegistrationRepository, private readonly filterService: FilterService) {}
 
     async saveRegistration(registration: Registration): Promise<Registration> {
         return await this.registrationRepository.save(registration);
@@ -74,13 +76,75 @@ export class RegistrationService {
                 .createQueryBuilder('registration')
                 .leftJoinAndSelect('registration.pricePackage', 'pricePackage')
                 .leftJoinAndSelect('pricePackage.subject', 'subject')
-                // .where('subject.id LIKE (:subjectId)', { subjectId: `%${subject}%` })
+                .where('subject.id LIKE (:subjectId)', { subjectId: `%${subject}%` })
                 .andWhere('registration.validFrom >= (:validFrom)', { validFrom })
                 .andWhere('registration.validTo >= (:validTo)', { validTo })
                 .andWhere('registration.status LIKE (:status)', { status: `%${status}%` })
                 .leftJoinAndSelect('registration.customer', 'customer')
                 .leftJoinAndSelect('customer.user', 'user')
                 .andWhere('user.email LIKE (:email)', { email: `%${email}%` })
+                .getCount();
+        } catch (err) {
+            console.log(err);
+            return { data: [], count: 0 };
+        }
+
+        return { data: registrations, count };
+    }
+
+    async filterMyRegistrations(
+        userId: string,
+        name: string,
+        category: string,
+        isFeature: boolean,
+        order: SortOrder,
+        currentPage: number,
+        pageSize: number,
+    ): Promise<{ data: Registration[]; count: number }> {
+        let registrations, count;
+        const featureValue = this.filterService.getMinMaxValue(isFeature);
+        try {
+            registrations = await this.registrationRepository
+                .createQueryBuilder('registration')
+                .leftJoinAndSelect('registration.pricePackage', 'pricePackage')
+                .leftJoinAndSelect('pricePackage.subject', 'subject')
+                .where('subject.name LIKE (:subjectName)', { subjectName: `%${name}%` })
+                .andWhere(
+                    new Brackets((qb) => {
+                        qb.where('subject.isFeature = :featureMinValue', {
+                            featureMinValue: featureValue.minValue,
+                        }).orWhere('subject.isFeature = :featureMaxValue', { featureMaxValue: featureValue.maxValue });
+                    }),
+                )
+                .leftJoinAndSelect('subject.category', 'category')
+                .andWhere('category.id LIKE (:categoryId)', { categoryId: `%${category}%` })
+                .leftJoinAndSelect('registration.customer', 'customer')
+                .leftJoinAndSelect('customer.user', 'user')
+                .andWhere('user.id = (:userId)', { userId })
+                .leftJoinAndSelect('registration.sale', 'sale')
+                .leftJoinAndSelect('sale.user', 'saleUser')
+                .orderBy(`subject.updatedAt`, order)
+                .skip(currentPage * pageSize)
+                .take(pageSize)
+                .getMany();
+
+            count = await this.registrationRepository
+                .createQueryBuilder('registration')
+                .leftJoinAndSelect('registration.pricePackage', 'pricePackage')
+                .leftJoinAndSelect('pricePackage.subject', 'subject')
+                .where('subject.name LIKE (:subjectName)', { subjectName: `%${name}%` })
+                .andWhere(
+                    new Brackets((qb) => {
+                        qb.where('subject.isFeature = :featureMinValue', {
+                            featureMinValue: featureValue.minValue,
+                        }).orWhere('subject.isFeature = :featureMaxValue', { featureMaxValue: featureValue.maxValue });
+                    }),
+                )
+                .leftJoinAndSelect('subject.category', 'category')
+                .andWhere('category.id LIKE (:categoryId)', { categoryId: `%${category}%` })
+                .leftJoinAndSelect('registration.customer', 'customer')
+                .leftJoinAndSelect('customer.user', 'user')
+                .andWhere('user.id = (:userId)', { userId })
                 .getCount();
         } catch (err) {
             console.log(err);

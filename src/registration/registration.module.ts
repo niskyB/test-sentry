@@ -1,3 +1,4 @@
+import { FilterModule } from '../core/providers/filter/filter.module';
 import { SaleModule } from './../sale/sale.module';
 import { DataModule } from './../core/providers/fake-data/data.module';
 import { CustomerModule } from './../customer/customer.module';
@@ -14,7 +15,7 @@ import { Connection } from 'typeorm';
 import { RegistrationsController } from './registrations.controller';
 
 @Module({
-    imports: [AuthModule, UserModule, PricePackageModule, TypeOrmModule.forFeature([Registration]), CustomerModule, DataModule, SaleModule],
+    imports: [AuthModule, UserModule, PricePackageModule, TypeOrmModule.forFeature([Registration]), CustomerModule, DataModule, SaleModule, FilterModule],
     controllers: [RegistrationController, RegistrationsController],
     providers: [RegistrationService, { provide: RegistrationRepository, useFactory: (connection: Connection) => connection.getCustomRepository(RegistrationRepository), inject: [Connection] }],
     exports: [],
