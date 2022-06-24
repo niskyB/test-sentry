@@ -19,7 +19,7 @@ export class SaleGuard implements CanActivate {
         const token = this.getTokenFromHeader(authorization);
 
         const { data, error } = await this.authService.verifyToken<JwtToken>(token);
-        console.log(error);
+
         if (error) {
             throw new HttpException({}, StatusCodes.UNAUTHORIZED);
         }
