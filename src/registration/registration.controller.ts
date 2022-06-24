@@ -102,6 +102,7 @@ export class RegistrationController {
         const registration = await this.registrationService.getRegistrationByField('id', id);
 
         registration.status = body.status || registration.status;
+        registration.notes = body.note || registration.notes;
         if (body.status === RegistrationStatus.PAID) {
             const password = this.dataService.generateData(8, 'lettersAndNumbers');
             registration.customer.user.password = await this.authService.encryptPassword(password, constant.default.hashingSalt);
@@ -114,7 +115,7 @@ export class RegistrationController {
             }
         }
 
-        if (body.status !== RegistrationStatus.SUBMITTED || (registration.sale && registration.sale.id !== req.user.typeId)) {
+        if (body.status !== RegistrationStatus.SUBMITTED || (registration.sale && registration.sale.id !== req.user.typeId && req.user.role.description !== UserRole.ADMIN)) {
             await this.registrationService.saveRegistration(registration);
             return res.send();
         }
@@ -126,7 +127,6 @@ export class RegistrationController {
         registration.validFrom = body.validFrom || registration.validFrom;
         registration.validTo = body.validTo || registration.validTo;
         registration.registrationTime = body.registrationTime || registration.registrationTime;
-        registration.notes = body.note || registration.notes;
         let user = await this.userService.findUser('email', body.email);
         let customer;
         if (user) {
