@@ -1,19 +1,17 @@
-import { EmailAction } from './../core/interface/email.enum';
+import { RegistrationGuard, SaleGuard } from './../auth/guard';
+import { EmailAction, ResponseMessage } from './../core/interface';
 import { SaleService } from './../sale/sale.service';
 import { DataService } from './../core/providers/fake-data/data.service';
 import { CustomerService } from './../customer/customer.service';
-import { Customer, RegistrationStatus, User, UserRole } from './../core/models';
+import { Customer, RegistrationStatus, User, UserRole, Registration } from './../core/models';
 import { Body, Controller, Get, HttpException, Param, Post, Put, Req, Res, UseGuards, UsePipes } from '@nestjs/common';
 import { ApiBearerAuth, ApiParam, ApiTags } from '@nestjs/swagger';
 import { Request, Response } from 'express';
 import { StatusCodes } from 'http-status-codes';
-import { AuthService } from 'src/auth/auth.service';
-import { SaleGuard } from 'src/auth/guard/sale.guard';
-import { ResponseMessage } from 'src/core/interface';
-import { Registration } from 'src/core/models';
-import { JoiValidatorPipe } from 'src/core/pipe';
-import { PricePackageService } from 'src/price-package/price-package.service';
-import { UserService } from 'src/user/user.service';
+import { AuthService } from '../auth/auth.service';
+import { JoiValidatorPipe } from '../core/pipe';
+import { PricePackageService } from '../price-package/price-package.service';
+import { UserService } from '../user/user.service';
 import { CreateRegistrationDTO, UpdateRegistrationDTO, vCreateRegistrationDTO, vUpdateRegistrationDTO } from './dto';
 import { RegistrationService } from './registration.service';
 import { constant } from '../core';
@@ -41,6 +39,7 @@ export class RegistrationController {
     }
 
     @Post('')
+    @UseGuards(RegistrationGuard)
     @UsePipes(new JoiValidatorPipe(vCreateRegistrationDTO))
     async cCreateLesson(@Req() req: Request, @Res() res: Response, @Body() body: CreateRegistrationDTO) {
         const pricePackage = await this.pricePackageService.getPricePackageByField('id', body.pricePackage);
