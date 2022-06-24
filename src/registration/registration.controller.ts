@@ -46,7 +46,7 @@ export class RegistrationController {
         if (!pricePackage) throw new HttpException({ errorMessage: ResponseMessage.INVALID_TYPE }, StatusCodes.BAD_REQUEST);
 
         let user;
-        if (req.user) {
+        if (req.user && req.user.role.description !== UserRole.ADMIN && req.user.role.description !== UserRole.SALE) {
             user = req.user;
             const existedRegistration = await this.registrationService.filterRegistrations(pricePackage.subject.id, '01/01/2022', '01/01/2024', '', user.email, 0, 4, SortOrder.ASC, 'id');
             if (existedRegistration.count > 0) throw new HttpException({ errorMessage: ResponseMessage.DUPLICATED_REGISTRATION }, StatusCodes.BAD_REQUEST);
