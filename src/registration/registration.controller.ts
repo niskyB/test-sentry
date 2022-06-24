@@ -68,10 +68,15 @@ export class RegistrationController {
                 customer = await this.customerService.getCustomerByUserId(user.id);
                 user.typeId = customer.id;
                 await this.userService.saveUser(user);
-            }
+            } else throw new HttpException({ email: ResponseMessage.EMAIL_TAKEN }, StatusCodes.BAD_REQUEST);
         }
 
-        const customer = await this.customerService.getCustomerByUserId(user.id);
+        let customer = await this.customerService.getCustomerByUserId(user.id);
+        if (!customer) {
+            customer = new Customer();
+            customer.user = user;
+            await this.customerService.saveCustomer(customer);
+        }
         const sale = await this.saleService.getSaleByUserId(body.sale);
 
         const registration = new Registration();
