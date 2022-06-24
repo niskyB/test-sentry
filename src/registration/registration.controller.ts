@@ -68,10 +68,15 @@ export class RegistrationController {
                 customer = await this.customerService.getCustomerByUserId(user.id);
                 user.typeId = customer.id;
                 await this.userService.saveUser(user);
-            }
+            } else throw new HttpException({ email: ResponseMessage.EMAIL_TAKEN }, StatusCodes.BAD_REQUEST);
         }
 
-        const customer = await this.customerService.getCustomerByUserId(user.id);
+        let customer = await this.customerService.getCustomerByUserId(user.id);
+        if (!customer) {
+            customer = new Customer();
+            customer.user = user;
+            await this.customerService.saveCustomer(customer);
+        }
         const sale = await this.saleService.getSaleByUserId(body.sale);
 
         const registration = new Registration();
@@ -102,6 +107,7 @@ export class RegistrationController {
         const registration = await this.registrationService.getRegistrationByField('id', id);
 
         registration.status = body.status || registration.status;
+        registration.notes = body.note || registration.notes;
         if (body.status === RegistrationStatus.PAID) {
             const password = this.dataService.generateData(8, 'lettersAndNumbers');
             registration.customer.user.password = await this.authService.encryptPassword(password, constant.default.hashingSalt);
@@ -114,7 +120,7 @@ export class RegistrationController {
             }
         }
 
-        if (body.status !== RegistrationStatus.SUBMITTED || (registration.sale && registration.sale.id !== req.user.typeId)) {
+        if (body.status !== RegistrationStatus.SUBMITTED || (registration.sale && registration.sale.id !== req.user.typeId && req.user.role.description !== UserRole.ADMIN)) {
             await this.registrationService.saveRegistration(registration);
             return res.send();
         }
@@ -126,7 +132,6 @@ export class RegistrationController {
         registration.validFrom = body.validFrom || registration.validFrom;
         registration.validTo = body.validTo || registration.validTo;
         registration.registrationTime = body.registrationTime || registration.registrationTime;
-        registration.notes = body.note || registration.notes;
         let user = await this.userService.findUser('email', body.email);
         let customer;
         if (user) {
