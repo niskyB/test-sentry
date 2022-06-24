@@ -87,7 +87,7 @@ export class RegistrationController {
         registration.validFrom = body.validFrom;
         registration.validTo = body.validTo;
         registration.pricePackage = pricePackage;
-        registration.notes = body.note;
+        registration.notes = body.notes;
         if (sale) registration.sale = sale;
 
         try {
@@ -113,7 +113,7 @@ export class RegistrationController {
             throw new HttpException({ status: ResponseMessage.INVALID_STATUS }, StatusCodes.BAD_REQUEST);
 
         registration.status = body.status || registration.status;
-        registration.notes = body.note || registration.notes;
+        registration.notes = body.notes || registration.notes;
         if (body.status === RegistrationStatus.PAID) {
             const password = this.dataService.generateData(8, 'lettersAndNumbers');
             registration.customer.user.password = await this.authService.encryptPassword(password, constant.default.hashingSalt);
