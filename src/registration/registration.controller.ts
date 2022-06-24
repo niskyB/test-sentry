@@ -88,7 +88,10 @@ export class RegistrationController {
         registration.validTo = body.validTo;
         registration.pricePackage = pricePackage;
         registration.notes = body.notes;
-        if (sale) registration.sale = sale;
+        if (sale) {
+            registration.sale = sale;
+            registration.lastUpdatedBy = sale.user.id;
+        }
 
         try {
             await this.registrationService.saveRegistration(registration);
