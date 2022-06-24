@@ -19,6 +19,7 @@ export class RegistrationService {
             .leftJoinAndSelect('registration.customer', 'customer')
             .leftJoinAndSelect('customer.user', 'user')
             .leftJoinAndSelect('registration.pricePackage', 'pricePackage')
+            .leftJoinAndSelect('pricePackage.subject', 'subject')
             .getOne();
     }
 
