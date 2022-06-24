@@ -106,6 +106,12 @@ export class RegistrationController {
     async cUpdateRegistration(@Req() req: Request, @Res() res: Response, @Body() body: UpdateRegistrationDTO, @Param('id') id: string) {
         const registration = await this.registrationService.getRegistrationByField('id', id);
 
+        if (
+            (registration.status === RegistrationStatus.PAID && body.status === RegistrationStatus.SUBMITTED) ||
+            (registration.status === RegistrationStatus.INACTIVE && (body.status === RegistrationStatus.PAID || body.status === RegistrationStatus.SUBMITTED))
+        )
+            throw new HttpException({ status: ResponseMessage.INVALID_STATUS }, StatusCodes.BAD_REQUEST);
+
         registration.status = body.status || registration.status;
         registration.notes = body.note || registration.notes;
         if (body.status === RegistrationStatus.PAID) {
@@ -134,12 +140,14 @@ export class RegistrationController {
         registration.registrationTime = body.registrationTime || registration.registrationTime;
         let user = await this.userService.findUser('email', body.email);
         let customer;
-        if (user) {
+        if (user && registration.customer.user.email === body.email) {
             user.fullName = body.fullName || user.fullName;
             user.gender = body.gender || user.gender;
             user.mobile = body.mobile || user.mobile;
             await this.userService.saveUser(user);
             customer = await this.customerService.getCustomerByUserId(user.id);
+        } else if (user) {
+            throw new HttpException({ email: ResponseMessage.EMAIL_TAKEN }, StatusCodes.BAD_REQUEST);
         } else {
             user = new User();
             customer = new Customer();
@@ -162,6 +170,6 @@ export class RegistrationController {
         registration.customer = customer;
         await this.registrationService.saveRegistration(registration);
 
-        return res.send();
+        return res.send(registration);
     }
 }
