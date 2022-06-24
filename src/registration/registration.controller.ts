@@ -12,7 +12,7 @@ import { AuthService } from '../auth/auth.service';
 import { JoiValidatorPipe } from '../core/pipe';
 import { PricePackageService } from '../price-package/price-package.service';
 import { UserService } from '../user/user.service';
-import { CreateRegistrationDTO, UpdateGeneralInformationDTO, vCreateRegistrationDTO, vUpdateGeneralInformationDTO } from './dto';
+import { CreateRegistrationDTO, UpdateGeneralInformationDTO, UpdateSpecificInformationDTO, vCreateRegistrationDTO, vUpdateGeneralInformationDTO, vUpdateSpecificInformationDTO } from './dto';
 import { RegistrationService } from './registration.service';
 import { constant } from '../core';
 
@@ -199,11 +199,74 @@ export class RegistrationController {
         )
             throw new HttpException({ status: ResponseMessage.INVALID_STATUS }, StatusCodes.BAD_REQUEST);
 
+        if (body.status === RegistrationStatus.PAID && registration.status !== RegistrationStatus.PAID) {
+            const password = this.dataService.generateData(8, 'lettersAndNumbers');
+            registration.customer.user.password = await this.authService.encryptPassword(password, constant.default.hashingSalt);
+            registration.customer.user.isActive = true;
+            await this.userService.saveUser(registration.customer.user);
+            registration.customer.user.password = password;
+            const isSend = await this.authService.sendEmailToken(registration.customer.user, EmailAction.SEND_PASSWORD, registration.customer.user.password);
+            if (!isSend) {
+                throw new HttpException({ errorMessage: ResponseMessage.SOMETHING_WRONG }, StatusCodes.INTERNAL_SERVER_ERROR);
+            }
+        }
+
         registration.status = body.status || registration.status;
         registration.notes = body.notes || registration.notes;
         registration.lastUpdatedBy = req.user.fullName;
         registration.validFrom = body.validFrom || registration.validFrom;
         registration.validTo = body.validTo || registration.validTo;
+
+        await this.registrationService.saveRegistration(registration);
+        return res.send();
+    }
+
+    @Put('/specific/:id')
+    @ApiParam({ name: 'id', example: 'TVgJIjsRFmIvyjUeBOLv4gOD3eQZY' })
+    @UseGuards(SaleGuard)
+    @UsePipes(new JoiValidatorPipe(vUpdateSpecificInformationDTO))
+    async cUpdateSpecificInformationRegistration(@Req() req: Request, @Res() res: Response, @Param('id') id: string, @Body() body: UpdateSpecificInformationDTO) {
+        const registration = await this.registrationService.getRegistrationByField('id', id);
+
+        if (registration.status !== RegistrationStatus.SUBMITTED) throw new HttpException({ errorMessage: ResponseMessage.INVALID_STATUS }, StatusCodes.BAD_REQUEST);
+        if (registration.sale && registration.sale.id !== req.user.typeId && req.user.role.description !== UserRole.ADMIN)
+            throw new HttpException({ errorMessage: ResponseMessage.UNAUTHORIZED }, StatusCodes.UNAUTHORIZED);
+
+        const pricePackage = await this.pricePackageService.getPricePackageByField('id', body.pricePackage);
+
+        registration.pricePackage = pricePackage || registration.pricePackage;
+        registration.totalCost = registration.pricePackage.salePrice;
+        registration.registrationTime = body.registrationTime || registration.registrationTime;
+        let user = await this.userService.findUser('email', body.email);
+        let customer;
+        if (user && registration.customer.user.email === body.email) {
+            user.fullName = body.fullName || user.fullName;
+            user.gender = body.gender || user.gender;
+            user.mobile = body.mobile || user.mobile;
+            await this.userService.saveUser(user);
+            customer = await this.customerService.getCustomerByUserId(user.id);
+        } else if (user) {
+            throw new HttpException({ email: ResponseMessage.EMAIL_TAKEN }, StatusCodes.BAD_REQUEST);
+        } else {
+            user = new User();
+            customer = new Customer();
+            user.fullName = body.fullName;
+            user.email = body.email;
+            user.gender = body.gender;
+            user.password = '';
+            user.mobile = body.mobile;
+            user.role = await this.userService.findRole('description', UserRole.CUSTOMER);
+            user.createdAt = new Date().toISOString();
+            user.updatedAt = new Date().toISOString();
+            customer.user = user;
+            await this.userService.saveUser(user);
+            await this.customerService.saveCustomer(customer);
+
+            customer = await this.customerService.getCustomerByUserId(user.id);
+            user.typeId = customer.id;
+            await this.userService.saveUser(user);
+        }
+        registration.customer = customer;
 
         await this.registrationService.saveRegistration(registration);
         return res.send();
