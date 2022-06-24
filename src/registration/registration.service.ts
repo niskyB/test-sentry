@@ -1,5 +1,4 @@
 import { SortOrder } from './../core/interface';
-import { RegistrationStatus } from './../core/models/registration';
 import { Injectable } from '@nestjs/common';
 import { Registration } from '../core/models';
 import { RegistrationRepository } from '../core/repositories';
@@ -20,6 +19,7 @@ export class RegistrationService {
             .leftJoinAndSelect('customer.user', 'user')
             .leftJoinAndSelect('registration.pricePackage', 'pricePackage')
             .leftJoinAndSelect('pricePackage.subject', 'subject')
+            .leftJoinAndSelect('subject.category', 'category')
             .leftJoinAndSelect('registration.sale', 'sale')
             .leftJoinAndSelect('sale.user', 'saleUser')
             .getOne();
@@ -42,6 +42,7 @@ export class RegistrationService {
             registrationsQuery = registrationsQuery
                 .leftJoinAndSelect('registration.pricePackage', 'pricePackage')
                 .leftJoinAndSelect('pricePackage.subject', 'subject')
+                .leftJoinAndSelect('subject.category', 'category')
                 .where('subject.id LIKE (:subjectId)', { subjectId: `%${subject}%` })
                 .andWhere('registration.validFrom >= (:validFrom)', { validFrom })
                 .andWhere('registration.validTo >= (:validTo)', { validTo })
