@@ -76,10 +76,14 @@ export const registrationValidateSchema = {
         .messages(JoiMessage.createStringMessages({ field: 'Registration time' })),
     validFrom: joi
         .string()
+        .trim()
+        .min(2)
         .required()
         .messages(JoiMessage.createStringMessages({ field: 'Valid from' })),
     validTo: joi
         .string()
+        .trim()
+        .min(2)
         .required()
         .messages(JoiMessage.createStringMessages({ field: 'Valid to' })),
 };
