@@ -12,11 +12,7 @@ export class SaleService {
 
     async getSaleByUserId(userId: string): Promise<Sale> {
         try {
-            const sale = await this.saleRepository
-                .createQueryBuilder('sale')
-                .leftJoinAndSelect('sale.user', 'user')
-                .andWhere('user.id LIKE (:userId)', { userId: `%${userId}%` })
-                .getOne();
+            const sale = await this.saleRepository.createQueryBuilder('sale').leftJoinAndSelect('sale.user', 'user').andWhere('user.id = (:userId)', { userId }).getOne();
             return sale;
         } catch (err) {
             return new Sale();
