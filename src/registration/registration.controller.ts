@@ -92,7 +92,7 @@ export class RegistrationController {
             registration.sale = sale;
             registration.lastUpdatedBy = sale.user.fullName;
         }
-        if (req.user.role.description === UserRole.ADMIN) registration.lastUpdatedBy = req.user.fullName;
+        if (req.user && req.user.role.description === UserRole.ADMIN) registration.lastUpdatedBy = req.user.fullName;
 
         try {
             await this.registrationService.saveRegistration(registration);
