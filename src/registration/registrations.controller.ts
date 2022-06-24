@@ -1,9 +1,10 @@
-import { QueryJoiValidatorPipe } from './../core/pipe/queryValidator.pipe';
-import { Controller, Res, Get, UsePipes, Query } from '@nestjs/common';
+import { CommonGuard } from './../auth/guard';
+import { QueryJoiValidatorPipe } from './../core/pipe';
+import { Controller, Res, Get, UsePipes, Query, Req, UseGuards } from '@nestjs/common';
 import { ApiTags, ApiBearerAuth } from '@nestjs/swagger';
-import { Response } from 'express';
+import { Response, Request } from 'express';
 import { RegistrationService } from './registration.service';
-import { FilterRegistrationsDTO, vFilterRegistrationsDTO } from './dto';
+import { FilterMyRegistrationsDTO, FilterRegistrationsDTO, vFilterMyRegistrationsDTO, vFilterRegistrationsDTO } from './dto';
 
 @ApiTags('registrations')
 @ApiBearerAuth()
@@ -16,6 +17,15 @@ export class RegistrationsController {
     async cFilterRegistrations(@Res() res: Response, @Query() queries: FilterRegistrationsDTO) {
         const { subject, validFrom, validTo, email, status, currentPage, pageSize, order, orderBy } = queries;
         const result = await this.registrationService.filterRegistrations(subject, validFrom, validTo, status, email, currentPage, pageSize, order, orderBy);
+        return res.send(result);
+    }
+
+    @Get('/me')
+    @UseGuards(CommonGuard)
+    @UsePipes(new QueryJoiValidatorPipe(vFilterMyRegistrationsDTO))
+    async cFilterMyRegistrations(@Req() req: Request, @Res() res: Response, @Query() queries: FilterMyRegistrationsDTO) {
+        const { name, category, isFeature, order, currentPage, pageSize } = queries;
+        const result = await this.registrationService.filterMyRegistrations(req.user.id, name, category, isFeature, order, currentPage, pageSize);
         return res.send(result);
     }
 }
