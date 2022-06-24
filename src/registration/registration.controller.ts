@@ -33,7 +33,7 @@ export class RegistrationController {
     ) {}
 
     @Get('/:id')
-    @ApiParam({ name: 'registration id', example: 'TVgJIjsRFmIvyjUeBOLv4gOD3eQZY' })
+    @ApiParam({ name: 'id', example: 'TVgJIjsRFmIvyjUeBOLv4gOD3eQZY' })
     async cGetRegistration(@Res() res: Response, @Param('id') id: string) {
         const registration = await this.registrationService.getRegistrationByField('id', id);
         if (!registration) throw new HttpException({ errorMessage: ResponseMessage.NOT_FOUND }, StatusCodes.NOT_FOUND);
@@ -95,7 +95,7 @@ export class RegistrationController {
     }
 
     @Put('/:id')
-    @ApiParam({ name: 'registration id', example: 'TVgJIjsRFmIvyjUeBOLv4gOD3eQZY' })
+    @ApiParam({ name: 'id', example: 'TVgJIjsRFmIvyjUeBOLv4gOD3eQZY' })
     @UseGuards(SaleGuard)
     @UsePipes(new JoiValidatorPipe(vUpdateRegistrationDTO))
     async cUpdateRegistration(@Req() req: Request, @Res() res: Response, @Body() body: UpdateRegistrationDTO, @Param('id') id: string) {
