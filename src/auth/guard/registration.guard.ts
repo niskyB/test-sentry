@@ -16,14 +16,19 @@ export class RegistrationGuard implements CanActivate {
         const token = this.getTokenFromHeader(authorization);
 
         const { data } = await this.authService.verifyToken<JwtToken>(token);
-        const user = await this.userService.findUser('id', data.id);
+
+        let user;
+
+        if (data) user = await this.userService.findUser('id', data.id);
 
         if (user && !user.isActive) {
             throw new HttpException({}, StatusCodes.UNAUTHORIZED);
         }
 
-        user.password = '';
-        req.user = user;
+        if (user) {
+            user.password = '';
+            req.user = user;
+        }
 
         return true;
     }
