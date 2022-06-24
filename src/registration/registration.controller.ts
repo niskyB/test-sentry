@@ -114,6 +114,7 @@ export class RegistrationController {
 
         registration.status = body.status || registration.status;
         registration.notes = body.notes || registration.notes;
+        registration.lastUpdatedBy = req.user.id;
         if (body.status === RegistrationStatus.PAID && registration.status !== RegistrationStatus.PAID) {
             const password = this.dataService.generateData(8, 'lettersAndNumbers');
             registration.customer.user.password = await this.authService.encryptPassword(password, constant.default.hashingSalt);

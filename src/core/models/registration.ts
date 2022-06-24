@@ -42,6 +42,10 @@ export class Registration {
     @Column()
     notes: string;
 
+    @ApiProperty({ description: 'Last Updated By' })
+    @Column()
+    lastUpdatedBy: string;
+
     @ApiProperty({ description: 'Status' })
     @Column()
     status: RegistrationStatus;
