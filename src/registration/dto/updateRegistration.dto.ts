@@ -31,7 +31,7 @@ export class UpdateRegistrationDTO {
     validTo: string;
 
     @ApiProperty({ description: 'Note', example: 'cc' })
-    note: string;
+    notes: string;
 
     @ApiProperty({ description: 'User Id', example: 'cc' })
     sale: string;
@@ -47,5 +47,5 @@ export const vUpdateRegistrationDTO = joi.object<UpdateRegistrationDTO>({
     registrationTime: registrationValidateSchema.registrationTime.failover(''),
     validFrom: registrationValidateSchema.validFrom.failover(''),
     validTo: registrationValidateSchema.validTo.failover(''),
-    note: joi.string().required().failover(''),
+    notes: joi.string().required().failover(''),
 });
