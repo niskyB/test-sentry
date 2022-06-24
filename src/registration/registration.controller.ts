@@ -121,7 +121,7 @@ export class RegistrationController {
         registration.status = body.status || registration.status;
         registration.notes = body.notes || registration.notes;
         registration.lastUpdatedBy = req.user.fullName;
-        console.log('check 1');
+
         if (body.status === RegistrationStatus.PAID && registration.status !== RegistrationStatus.PAID) {
             const password = this.dataService.generateData(8, 'lettersAndNumbers');
             registration.customer.user.password = await this.authService.encryptPassword(password, constant.default.hashingSalt);
@@ -133,15 +133,14 @@ export class RegistrationController {
                 throw new HttpException({ errorMessage: ResponseMessage.SOMETHING_WRONG }, StatusCodes.INTERNAL_SERVER_ERROR);
             }
             await this.registrationService.saveRegistration(registration);
-            console.log('check 2');
         }
 
         if (
-            body.status === RegistrationStatus.INACTIVE ||
-            (registration.sale && registration.sale.id !== req.user.typeId && req.user.role.description !== UserRole.ADMIN) ||
-            (body.status === RegistrationStatus.PAID && registration.status === RegistrationStatus.PAID)
+            (body.status === RegistrationStatus.INACTIVE ||
+                (registration.sale && registration.sale.id !== req.user.typeId && req.user.role.description !== UserRole.ADMIN) ||
+                (body.status === RegistrationStatus.PAID && registration.status === RegistrationStatus.PAID)) &&
+            (body.email || body.fullName || body.gender || body.mobile || body.pricePackage || body.registrationTime)
         ) {
-            console.log('check 3');
             throw new HttpException({ errorMessage: ResponseMessage.UNAUTHORIZED }, StatusCodes.UNAUTHORIZED);
         }
 
@@ -185,5 +184,18 @@ export class RegistrationController {
         await this.registrationService.saveRegistration(registration);
 
         return res.send(registration);
+    }
+
+    @Put('/cancel/:id')
+    @ApiParam({ name: 'id', example: 'TVgJIjsRFmIvyjUeBOLv4gOD3eQZY' })
+    async cCancelRegistration(@Res() res: Response, @Param('id') id: string) {
+        const registration = await this.registrationService.getRegistrationByField('id', id);
+
+        if (!registration) throw new HttpException({ errorMessage: ResponseMessage.NOT_FOUND }, StatusCodes.NOT_FOUND);
+        if (registration.status !== RegistrationStatus.SUBMITTED) throw new HttpException({ status: ResponseMessage.INVALID_STATUS }, StatusCodes.BAD_REQUEST);
+
+        registration.status = RegistrationStatus.INACTIVE;
+        await this.registrationService.saveRegistration(registration);
+        return res.send();
     }
 }
