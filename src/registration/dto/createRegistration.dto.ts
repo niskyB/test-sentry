@@ -61,8 +61,8 @@ export const vCreateRegistrationDTO = joi.object<CreateRegistrationDTO>({
         .messages(JoiMessage.createStringMessages({ field: 'gender' })),
     status: registrationValidateSchema.status,
     registrationTime: registrationValidateSchema.registrationTime,
-    validFrom: registrationValidateSchema.validFrom,
-    validTo: registrationValidateSchema.validTo,
+    validFrom: registrationValidateSchema.validFrom.failover(''),
+    validTo: registrationValidateSchema.validTo.failover(''),
     notes: joi
         .string()
         .required()
