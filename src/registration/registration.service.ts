@@ -20,6 +20,8 @@ export class RegistrationService {
             .leftJoinAndSelect('customer.user', 'user')
             .leftJoinAndSelect('registration.pricePackage', 'pricePackage')
             .leftJoinAndSelect('pricePackage.subject', 'subject')
+            .leftJoinAndSelect('registration.sale', 'sale')
+            .leftJoinAndSelect('sale.user', 'user')
             .getOne();
     }
 
@@ -46,6 +48,8 @@ export class RegistrationService {
                 .andWhere('registration.status LIKE (:status)', { status: `%${status}%` })
                 .leftJoinAndSelect('registration.customer', 'customer')
                 .leftJoinAndSelect('customer.user', 'user')
+                .leftJoinAndSelect('registration.sale', 'sale')
+                .leftJoinAndSelect('sale.user', 'user')
                 .andWhere('user.email LIKE (:email)', { email: `%${email}%` });
             switch (orderBy) {
                 case 'subject':
