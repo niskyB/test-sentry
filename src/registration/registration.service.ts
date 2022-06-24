@@ -29,7 +29,7 @@ export class RegistrationService {
         subject: string,
         validFrom: string,
         validTo: string,
-        status: RegistrationStatus,
+        status: string,
         email: string,
         currentPage: number,
         pageSize: number,

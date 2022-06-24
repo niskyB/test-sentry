@@ -1,5 +1,5 @@
 import { RegistrationGuard, SaleGuard } from './../auth/guard';
-import { EmailAction, ResponseMessage } from './../core/interface';
+import { EmailAction, ResponseMessage, SortOrder } from './../core/interface';
 import { SaleService } from './../sale/sale.service';
 import { DataService } from './../core/providers/fake-data/data.service';
 import { CustomerService } from './../customer/customer.service';
@@ -46,8 +46,11 @@ export class RegistrationController {
         if (!pricePackage) throw new HttpException({ errorMessage: ResponseMessage.INVALID_TYPE }, StatusCodes.BAD_REQUEST);
 
         let user;
-        if (req.user) user = req.user;
-        else {
+        if (req.user) {
+            user = req.user;
+            const existedRegistration = await this.registrationService.filterRegistrations(pricePackage.subject.id, '01/01/2022', '01/01/2024', '', user.email, 0, 4, SortOrder.ASC, 'id');
+            if (existedRegistration.count > 0) throw new HttpException({ errorMessage: ResponseMessage.DUPLICATED_REGISTRATION }, StatusCodes.BAD_REQUEST);
+        } else {
             user = await this.userService.findUser('email', body.email);
             if (!user) {
                 user = new User();
@@ -118,6 +121,7 @@ export class RegistrationController {
         registration.status = body.status || registration.status;
         registration.notes = body.notes || registration.notes;
         registration.lastUpdatedBy = req.user.fullName;
+        console.log('check 1');
         if (body.status === RegistrationStatus.PAID && registration.status !== RegistrationStatus.PAID) {
             const password = this.dataService.generateData(8, 'lettersAndNumbers');
             registration.customer.user.password = await this.authService.encryptPassword(password, constant.default.hashingSalt);
@@ -129,6 +133,7 @@ export class RegistrationController {
                 throw new HttpException({ errorMessage: ResponseMessage.SOMETHING_WRONG }, StatusCodes.INTERNAL_SERVER_ERROR);
             }
             await this.registrationService.saveRegistration(registration);
+            console.log('check 2');
         }
 
         if (
@@ -136,6 +141,7 @@ export class RegistrationController {
             (registration.sale && registration.sale.id !== req.user.typeId && req.user.role.description !== UserRole.ADMIN) ||
             (body.status === RegistrationStatus.PAID && registration.status === RegistrationStatus.PAID)
         ) {
+            console.log('check 3');
             throw new HttpException({ errorMessage: ResponseMessage.UNAUTHORIZED }, StatusCodes.UNAUTHORIZED);
         }
 
