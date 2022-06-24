@@ -46,10 +46,12 @@ export class RegistrationController {
         if (!pricePackage) throw new HttpException({ errorMessage: ResponseMessage.INVALID_TYPE }, StatusCodes.BAD_REQUEST);
 
         let user;
-        if (req.user) {
+        if (req.user && req.user.role.description !== UserRole.ADMIN && req.user.role.description !== UserRole.SALE) {
             user = req.user;
-            const existedRegistration = await this.registrationService.filterRegistrations(pricePackage.subject.id, '01/01/2022', '01/01/2024', '', user.email, 0, 4, SortOrder.ASC, 'id');
-            if (existedRegistration.count > 0) throw new HttpException({ errorMessage: ResponseMessage.DUPLICATED_REGISTRATION }, StatusCodes.BAD_REQUEST);
+            const existedRegistration = (await this.registrationService.filterRegistrations(pricePackage.subject.id, '', '', '', user.email, 0, 4, SortOrder.ASC, 'subject')).data.map(
+                (item) => item.status !== RegistrationStatus.INACTIVE,
+            );
+            if (existedRegistration.length > 0) throw new HttpException({ errorMessage: ResponseMessage.DUPLICATED_REGISTRATION }, StatusCodes.BAD_REQUEST);
         } else {
             user = await this.userService.findUser('email', body.email);
             if (!user) {
@@ -105,87 +107,6 @@ export class RegistrationController {
         return res.send(registration);
     }
 
-    // @Put('/:id')
-    // @ApiParam({ name: 'id', example: 'TVgJIjsRFmIvyjUeBOLv4gOD3eQZY' })
-    // @UseGuards(SaleGuard)
-    // @UsePipes(new JoiValidatorPipe(vUpdateRegistrationDTO))
-    // async cUpdateRegistration(@Req() req: Request, @Res() res: Response, @Body() body: UpdateRegistrationDTO, @Param('id') id: string) {
-    //     const registration = await this.registrationService.getRegistrationByField('id', id);
-
-    //     if (
-    //         (registration.status === RegistrationStatus.PAID && body.status === RegistrationStatus.SUBMITTED) ||
-    //         (registration.status === RegistrationStatus.INACTIVE && (body.status === RegistrationStatus.PAID || body.status === RegistrationStatus.SUBMITTED))
-    //     )
-    //         throw new HttpException({ status: ResponseMessage.INVALID_STATUS }, StatusCodes.BAD_REQUEST);
-
-    //     registration.status = body.status || registration.status;
-    //     registration.notes = body.notes || registration.notes;
-    //     registration.lastUpdatedBy = req.user.fullName;
-
-    //     if (body.status === RegistrationStatus.PAID && registration.status !== RegistrationStatus.PAID) {
-    //         const password = this.dataService.generateData(8, 'lettersAndNumbers');
-    //         registration.customer.user.password = await this.authService.encryptPassword(password, constant.default.hashingSalt);
-    //         registration.customer.user.isActive = true;
-    //         await this.userService.saveUser(registration.customer.user);
-    //         registration.customer.user.password = password;
-    //         const isSend = await this.authService.sendEmailToken(registration.customer.user, EmailAction.SEND_PASSWORD, registration.customer.user.password);
-    //         if (!isSend) {
-    //             throw new HttpException({ errorMessage: ResponseMessage.SOMETHING_WRONG }, StatusCodes.INTERNAL_SERVER_ERROR);
-    //         }
-    //         await this.registrationService.saveRegistration(registration);
-    //     }
-
-    //     if (
-    //         (body.status === RegistrationStatus.INACTIVE ||
-    //             (registration.sale && registration.sale.id !== req.user.typeId && req.user.role.description !== UserRole.ADMIN) ||
-    //             (body.status === RegistrationStatus.PAID && registration.status === RegistrationStatus.PAID)) &&
-    //         (body.email || body.fullName || body.gender || body.mobile || body.pricePackage || body.registrationTime)
-    //     ) {
-    //         throw new HttpException({ errorMessage: ResponseMessage.UNAUTHORIZED }, StatusCodes.UNAUTHORIZED);
-    //     }
-
-    //     const pricePackage = await this.pricePackageService.getPricePackageByField('id', body.pricePackage);
-
-    //     registration.pricePackage = pricePackage || registration.pricePackage;
-    //     registration.totalCost = registration.pricePackage.salePrice;
-    //     registration.validFrom = body.validFrom || registration.validFrom;
-    //     registration.validTo = body.validTo || registration.validTo;
-    //     registration.registrationTime = body.registrationTime || registration.registrationTime;
-    //     let user = await this.userService.findUser('email', body.email);
-    //     let customer;
-    //     if (user && registration.customer.user.email === body.email) {
-    //         user.fullName = body.fullName || user.fullName;
-    //         user.gender = body.gender || user.gender;
-    //         user.mobile = body.mobile || user.mobile;
-    //         await this.userService.saveUser(user);
-    //         customer = await this.customerService.getCustomerByUserId(user.id);
-    //     } else if (user) {
-    //         throw new HttpException({ email: ResponseMessage.EMAIL_TAKEN }, StatusCodes.BAD_REQUEST);
-    //     } else {
-    //         user = new User();
-    //         customer = new Customer();
-    //         user.fullName = body.fullName;
-    //         user.email = body.email;
-    //         user.gender = body.gender;
-    //         user.password = '';
-    //         user.mobile = body.mobile;
-    //         user.role = await this.userService.findRole('description', UserRole.CUSTOMER);
-    //         user.createdAt = new Date().toISOString();
-    //         user.updatedAt = new Date().toISOString();
-    //         customer.user = user;
-    //         await this.userService.saveUser(user);
-    //         await this.customerService.saveCustomer(customer);
-
-    //         customer = await this.customerService.getCustomerByUserId(user.id);
-    //         user.typeId = customer.id;
-    //         await this.userService.saveUser(user);
-    //     }
-    //     registration.customer = customer;
-    //     await this.registrationService.saveRegistration(registration);
-
-    //     return res.send(registration);
-    // }
-
     @Put('/general/:id')
     @ApiParam({ name: 'id', example: 'TVgJIjsRFmIvyjUeBOLv4gOD3eQZY' })
     @UseGuards(SaleGuard)
@@ -202,10 +123,11 @@ export class RegistrationController {
         if (body.status === RegistrationStatus.PAID && registration.status !== RegistrationStatus.PAID) {
             const password = this.dataService.generateData(8, 'lettersAndNumbers');
             registration.customer.user.password = await this.authService.encryptPassword(password, constant.default.hashingSalt);
+            const hashPassword = registration.customer.user.password;
             registration.customer.user.isActive = true;
             await this.userService.saveUser(registration.customer.user);
             registration.customer.user.password = password;
-            const isSend = await this.authService.sendEmailToken(registration.customer.user, EmailAction.SEND_PASSWORD, registration.customer.user.password);
+            const isSend = await this.authService.sendEmailToken(registration.customer.user, EmailAction.SEND_PASSWORD, hashPassword);
             if (!isSend) {
                 throw new HttpException({ errorMessage: ResponseMessage.SOMETHING_WRONG }, StatusCodes.INTERNAL_SERVER_ERROR);
             }
