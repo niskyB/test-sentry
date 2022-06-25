@@ -113,7 +113,7 @@ export class QuizController {
             console.log(err);
         }
 
-        return res.send();
+        return res.send(quizResult);
     }
 
     @Post('')
