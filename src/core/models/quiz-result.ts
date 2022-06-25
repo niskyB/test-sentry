@@ -12,7 +12,7 @@ export class QuizResult {
     id: string;
 
     @ApiProperty({ description: 'Rate' })
-    @Column({ default: null })
+    @Column({ type: 'double', default: null })
     rate: number;
 
     @ApiProperty({ description: 'Created At' })
