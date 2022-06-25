@@ -107,7 +107,11 @@ export class QuizController {
             if (isCorrect) correctAnswers++;
         }
         quizResult.rate = correctAnswers / quizResult.attendedQuestions[0].questionInQuiz.quiz.numberOfQuestion;
-        await this.quizResultService.saveQuizResult(quizResult);
+        try {
+            await this.quizResultService.updateQuizResult(quizResult);
+        } catch (err) {
+            console.log(err);
+        }
 
         return res.send();
     }
