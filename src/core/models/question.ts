@@ -18,15 +18,15 @@ export class Question {
     content: string;
 
     @ApiProperty({ description: 'Link' })
-    @Column({ default: null })
+    @Column('longtext', { default: null })
     videoLink: string;
 
     @ApiProperty({ description: 'Audio Link' })
-    @Column({ default: null })
+    @Column('longtext', { default: null })
     audioLink: string;
 
     @ApiProperty({ description: 'Image Url' })
-    @Column({ default: null })
+    @Column('longtext', { default: null })
     imageUrl: string;
 
     @ApiProperty({ description: 'Explanation' })

@@ -47,6 +47,25 @@ export class QuizController {
         return res.send(quiz);
     }
 
+    @Post('/handle/:id')
+    @ApiParam({ name: 'id', example: 'TVgJIjsRFmIvyjUeBOLv4gOD3eQZY' })
+    async cHandleQuiz(@Res() res: Response, @Param('id') id: string) {
+        const quiz = await this.quizService.getQuizByField('id', id);
+
+        quiz.questions = [];
+        const quizDetail = await this.quizDetailService.getQuizDetailsByQuizId(id);
+
+        for (const item of quizDetail) {
+            quiz.questions.push(item.question);
+        }
+
+        if (quiz.subject.assignTo) {
+            quiz.subject.assignTo.user.password = '';
+            quiz.subject.assignTo.user.token = '';
+        }
+        return res.send(quiz);
+    }
+
     @Post('')
     @UseGuards(ExpertGuard)
     @UsePipes(new JoiValidatorPipe(vCreateQuizDTO))
