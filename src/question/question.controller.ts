@@ -75,6 +75,7 @@ export class QuestionController {
         for (const item of dimensions) {
             if (item) {
                 const dimension = await this.dimensionService.getDimensionByField('id', item);
+                if (!dimension) throw new HttpException({ dimensions: ResponseMessage.INVALID_DIMENSION }, StatusCodes.BAD_REQUEST);
                 newQuestion.dimensions.push(dimension);
             }
         }
