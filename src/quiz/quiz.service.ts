@@ -52,4 +52,32 @@ export class QuizService {
         }
         return { data: quizzes, count };
     }
+
+    async filterSimulationExams({ subject, name, currentPage, pageSize }): Promise<{ data: Quiz[]; count: number }> {
+        let simulationExams, count;
+        try {
+            simulationExams = await this.quizRepository
+                .createQueryBuilder('quiz')
+                .leftJoinAndSelect('quiz.subject', 'subject')
+                .where('subject.id LIKE (:subjectId)', { subjectId: `%${subject}%` })
+                .andWhere('quiz.name LIKE (:name)', { name: `%${name}%` })
+                .skip(currentPage * pageSize)
+                .take(pageSize)
+                .getMany();
+
+            count = await this.quizRepository
+                .createQueryBuilder('quiz')
+                .leftJoinAndSelect('quiz.subject', 'subject')
+                .where('subject.id LIKE (:subjectId)', { subjectId: `%${subject}%` })
+                .andWhere('quiz.name LIKE (:name)', { name: `%${name}%` })
+                .skip(currentPage * pageSize)
+                .take(pageSize)
+                .getCount();
+        } catch (err) {
+            console.log(err);
+            return { data: [], count: 0 };
+        }
+
+        return { data: simulationExams, count };
+    }
 }
