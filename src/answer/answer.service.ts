@@ -9,4 +9,8 @@ export class AnswerService {
     async saveAnswer(answer: Answer): Promise<Answer> {
         return await this.answerRepository.save(answer);
     }
+
+    async getAnswerByField(field: keyof Answer, value: any): Promise<Answer> {
+        return await this.answerRepository.createQueryBuilder('answer').where(`answer.${field.toString()} = (:value)`, { value }).getOne();
+    }
 }

@@ -1,3 +1,5 @@
+import { AnswerModule } from './../answer/answer.module';
+import { UserAnswerModule } from './../user-answer/user-answer.module';
 import { CustomerModule } from './../customer/customer.module';
 import { QuizResultModule } from './../quiz-result/quiz-result.module';
 import { AttendedQuestionModule } from './../attended-question/attended-question.module';
@@ -30,6 +32,8 @@ import { QuizzesController } from './quizzes.controller';
         AttendedQuestionModule,
         QuizResultModule,
         CustomerModule,
+        UserAnswerModule,
+        AnswerModule,
     ],
     controllers: [QuizController, QuizzesController],
     providers: [QuizService, { provide: QuizRepository, useFactory: (connection: Connection) => connection.getCustomRepository(QuizRepository), inject: [Connection] }],
