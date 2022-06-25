@@ -20,6 +20,7 @@ export class AttendedQuestionService {
             .createQueryBuilder('attended_question')
             .where(`attended_question.${field.toString()} = (:value)`, { value })
             .leftJoinAndSelect('attended_question.questionInQuiz', 'questionInQuiz')
+            .leftJoinAndSelect('attended_question.quizResult', 'quizResult')
             .leftJoinAndSelect('questionInQuiz.quiz', 'quiz')
             .getOne();
     }

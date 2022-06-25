@@ -7,7 +7,11 @@ export class QuizResultService {
     constructor(private readonly quizResultRepository: QuizResultRepository) {}
 
     async saveQuizResult(quizResult: QuizResult): Promise<QuizResult> {
-        return await this.quizResultRepository.save(quizResult);
+        return await this.quizResultRepository.manager.save(quizResult);
+    }
+
+    async updateQuizResult(quizResult: QuizResult) {
+        return await this.quizResultRepository.manager.update(QuizResult, { id: quizResult.id }, { rate: quizResult.rate });
     }
 
     async getQuizResultByField(field: keyof QuizResult, value: any): Promise<QuizResult> {
@@ -29,6 +33,7 @@ export class QuizResultService {
             .leftJoinAndSelect('quiz_result.attendedQuestions', 'attendedQuestions')
             .where('attendedQuestions.id = (:id)', { id })
             .leftJoinAndSelect('attendedQuestions.questionInQuiz', 'questionInQuiz')
+            .leftJoinAndSelect('attendedQuestions.quizResult', 'quizResult')
             .leftJoinAndSelect('questionInQuiz.question', 'question')
             .leftJoinAndSelect('questionInQuiz.quiz', 'quiz')
             .getOne();
