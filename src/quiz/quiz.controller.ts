@@ -77,7 +77,7 @@ export class QuizController {
             quizResult.attendedQuestions.push(attendedQuestion);
         }
 
-        return res.send(quizResult);
+        return res.send(quizResult.id);
     }
 
     @Post('')
