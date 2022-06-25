@@ -27,6 +27,19 @@ export class RegistrationService {
             .getOne();
     }
 
+    async getExistedRegistration(subject: string, email: string): Promise<Registration[]> {
+        return await this.registrationRepository
+            .createQueryBuilder('registration')
+            .leftJoinAndSelect('registration.pricePackage', 'pricePackage')
+            .leftJoinAndSelect('pricePackage.subject', 'subject')
+            .leftJoinAndSelect('subject.category', 'category')
+            .where('subject.id LIKE (:subject)', { subject: `%${subject}%` })
+            .leftJoinAndSelect('registration.customer', 'customer')
+            .leftJoinAndSelect('customer.user', 'user')
+            .andWhere('user.email LIKE (:email)', { email: `%${email}%` })
+            .getMany();
+    }
+
     async filterRegistrations(
         subject: string,
         validFrom: string,
@@ -46,8 +59,8 @@ export class RegistrationService {
                 .leftJoinAndSelect('pricePackage.subject', 'subject')
                 .leftJoinAndSelect('subject.category', 'category')
                 .where('subject.name LIKE (:subject)', { subject: `%${subject}%` })
-                // .andWhere('registration.registrationTime >= (:validFrom)', { validFrom })
-                // .andWhere('registration.registrationTime <= (:validTo)', { validTo })
+                .andWhere('registration.registrationTime >= (:validFrom)', { validFrom })
+                .andWhere('registration.registrationTime <= (:validTo)', { validTo })
                 .andWhere('registration.status LIKE (:status)', { status: `%${status}%` })
                 .leftJoinAndSelect('registration.customer', 'customer')
                 .leftJoinAndSelect('customer.user', 'user')
