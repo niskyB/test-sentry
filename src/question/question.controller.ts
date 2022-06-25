@@ -70,6 +70,7 @@ export class QuestionController {
             if (result) newQuestion.imageUrl = result.Location;
             else throw new HttpException({ errorMessage: ResponseMessage.SOMETHING_WRONG }, StatusCodes.INTERNAL_SERVER_ERROR);
         }
+        if (body.imageUrl) newQuestion.imageUrl = body.imageUrl;
         const dimensions = body.dimensions.split(',');
         for (const item of dimensions) {
             if (item) {
