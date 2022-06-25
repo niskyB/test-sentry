@@ -1,3 +1,5 @@
+import { AnswerService } from './../answer/answer.service';
+import { UserAnswerService } from './../user-answer/user-answer.service';
 import { CustomerService } from './../customer/customer.service';
 import { QuizResultService } from './../quiz-result/quiz-result.service';
 import { AttendedQuestionService } from './../attended-question/attended-question.service';
@@ -14,8 +16,8 @@ import { ApiTags, ApiBearerAuth, ApiParam } from '@nestjs/swagger';
 import { Request, Response } from 'express';
 import { StatusCodes } from 'http-status-codes';
 import { QuizService } from './quiz.service';
-import { CreateQuizDTO, UpdateQuizDTO, vCreateQuizDTO, vUpdateQuizDTO } from './dto';
-import { Quiz, QuizDetail, UserRole, QuizResult, AttendedQuestion } from '../core/models';
+import { CreateQuizDTO, SubmitQuizDTO, UpdateQuizDTO, vCreateQuizDTO, vSubmitQuizDTO, vUpdateQuizDTO } from './dto';
+import { Quiz, QuizDetail, UserRole, QuizResult, AttendedQuestion, UserAnswer } from '../core/models';
 
 @ApiTags('quiz')
 @ApiBearerAuth()
@@ -31,6 +33,8 @@ export class QuizController {
         private readonly attendedQuestionService: AttendedQuestionService,
         private readonly quizResultService: QuizResultService,
         private readonly customerService: CustomerService,
+        private readonly userAnswerService: UserAnswerService,
+        private readonly answerService: AnswerService,
     ) {}
 
     @Get('/:id')
@@ -78,6 +82,34 @@ export class QuizController {
         }
 
         return res.send(quizResult.id);
+    }
+
+    @Post('/submit')
+    @UseGuards(CommonGuard)
+    @UsePipes(new JoiValidatorPipe(vSubmitQuizDTO))
+    async cSubmitQuiz(@Res() res: Response, @Body() body: SubmitQuizDTO) {
+        const quizResult = await this.quizResultService.getQuizResultByAttendedQuestionId(body.data[0].attendedQuestionId);
+        let correctAnswers = 0;
+
+        for (const item of body.data) {
+            let attendedQuestion = await this.attendedQuestionService.getAttendedQuestionByField('id', item.attendedQuestionId);
+            attendedQuestion.isMarked = item.isMarked;
+            attendedQuestion = await this.attendedQuestionService.saveAttendedQuestion(attendedQuestion);
+            let isCorrect = true;
+            for (const id of item.answerId) {
+                const answer = await this.answerService.getAnswerByField('id', id);
+                const userAnswer = new UserAnswer();
+                userAnswer.attendedQuestion = attendedQuestion;
+                userAnswer.answer = answer;
+                if (!answer.isCorrect) isCorrect = false;
+                await this.userAnswerService.saveUserAnswer(userAnswer);
+            }
+            if (isCorrect) correctAnswers++;
+        }
+        quizResult.rate = correctAnswers / quizResult.attendedQuestions[0].questionInQuiz.quiz.numberOfQuestion;
+        await this.quizResultService.saveQuizResult(quizResult);
+
+        return res.send();
     }
 
     @Post('')

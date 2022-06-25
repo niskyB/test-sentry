@@ -22,4 +22,15 @@ export class QuizResultService {
             .leftJoinAndSelect('question.answers', 'answers')
             .getOne();
     }
+
+    async getQuizResultByAttendedQuestionId(id: string): Promise<QuizResult> {
+        return await this.quizResultRepository
+            .createQueryBuilder('quiz_result')
+            .leftJoinAndSelect('quiz_result.attendedQuestions', 'attendedQuestions')
+            .where('attendedQuestions.id = (:id)', { id })
+            .leftJoinAndSelect('attendedQuestions.questionInQuiz', 'questionInQuiz')
+            .leftJoinAndSelect('questionInQuiz.question', 'question')
+            .leftJoinAndSelect('questionInQuiz.quiz', 'quiz')
+            .getOne();
+    }
 }

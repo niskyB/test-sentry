@@ -15,6 +15,15 @@ export class AttendedQuestionService {
             .getOne();
     }
 
+    async getAttendedQuestionByField(field: keyof AttendedQuestion, value: any): Promise<AttendedQuestion> {
+        return await this.attendedQuestionRepository
+            .createQueryBuilder('attended_question')
+            .where(`attended_question.${field.toString()} = (:value)`, { value })
+            .leftJoinAndSelect('attended_question.questionInQuiz', 'questionInQuiz')
+            .leftJoinAndSelect('questionInQuiz.quiz', 'quiz')
+            .getOne();
+    }
+
     async saveAttendedQuestion(attendedQuestion: AttendedQuestion): Promise<AttendedQuestion> {
         return await this.attendedQuestionRepository.save(attendedQuestion);
     }

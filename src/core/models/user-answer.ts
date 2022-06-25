@@ -14,6 +14,6 @@ export class UserAnswer {
     answer: Answer;
 
     @ApiProperty({ description: 'Attended Question' })
-    @ManyToOne(() => AttendedQuestion, { nullable: false })
+    @ManyToOne(() => AttendedQuestion, { nullable: false, cascade: true })
     attendedQuestion: AttendedQuestion;
 }
