@@ -13,8 +13,11 @@ export class FilterMyRegistrationsDTO {
     @ApiProperty({ description: 'Is Feature', example: 'true', nullable: true })
     isFeature: boolean;
 
-    @ApiProperty({ description: 'Created At', example: '18/5/2022', nullable: true })
+    @ApiProperty({ description: 'Order', example: '18/5/2022', nullable: true })
     order: SortOrder;
+
+    @ApiProperty({ description: 'Status', example: 'paid', nullable: true })
+    status: string;
 
     @ApiProperty({ description: 'Current Page', example: '0', nullable: true })
     currentPage: number;
@@ -28,6 +31,7 @@ export const vFilterMyRegistrationsDTO = joi.object<FilterMyRegistrationsDTO>({
     isFeature: joi.boolean().required().failover(null),
     category: joi.string().required().failover(''),
     order: joi.string().required().valid(SortOrder.ASC, SortOrder.DESC).failover(SortOrder.DESC),
+    status: joi.string().required().failover(''),
     currentPage: joi.number().min(0).required().failover(0),
     pageSize: joi.number().min(1).required().failover(4),
 });
