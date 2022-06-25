@@ -9,4 +9,8 @@ export class QuizResultService {
     async saveQuizResult(quizResult: QuizResult): Promise<QuizResult> {
         return await this.quizResultRepository.save(quizResult);
     }
+
+    async getQuizResultByField(field: keyof QuizResult, value: any): Promise<QuizResult> {
+        return await this.quizResultRepository.createQueryBuilder('quiz_result').where(`quiz_result.${field.toString()} = (:value)`, { value }).getOne();
+    }
 }
