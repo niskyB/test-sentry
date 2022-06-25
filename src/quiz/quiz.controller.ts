@@ -1,3 +1,5 @@
+import { CustomerService } from './../customer/customer.service';
+import { QuizResultService } from './../quiz-result/quiz-result.service';
 import { AttendedQuestionService } from './../attended-question/attended-question.service';
 import { QuizDetailService } from './../quiz-detail/quiz-detail.service';
 import { QuestionService } from './../question/question.service';
@@ -6,14 +8,14 @@ import { QuizTypeService } from './../quiz-type/quiz-type.service';
 import { SubjectService } from '../subject/subject.service';
 import { ResponseMessage } from './../core/interface';
 import { JoiValidatorPipe } from './../core/pipe';
-import { ExpertGuard } from './../auth/guard';
+import { CommonGuard, ExpertGuard } from './../auth/guard';
 import { Body, Controller, Post, Req, Res, UseGuards, UsePipes, HttpException, Put, Param, Delete, Get } from '@nestjs/common';
 import { ApiTags, ApiBearerAuth, ApiParam } from '@nestjs/swagger';
 import { Request, Response } from 'express';
 import { StatusCodes } from 'http-status-codes';
 import { QuizService } from './quiz.service';
 import { CreateQuizDTO, UpdateQuizDTO, vCreateQuizDTO, vUpdateQuizDTO } from './dto';
-import { Quiz, QuizDetail, UserRole } from '../core/models';
+import { Quiz, QuizDetail, UserRole, QuizResult, AttendedQuestion } from '../core/models';
 
 @ApiTags('quiz')
 @ApiBearerAuth()
@@ -27,6 +29,8 @@ export class QuizController {
         private readonly questionService: QuestionService,
         private readonly quizDetailService: QuizDetailService,
         private readonly attendedQuestionService: AttendedQuestionService,
+        private readonly quizResultService: QuizResultService,
+        private readonly customerService: CustomerService,
     ) {}
 
     @Get('/:id')
@@ -48,22 +52,32 @@ export class QuizController {
     }
 
     @Post('/handle/:id')
+    @UseGuards(CommonGuard)
     @ApiParam({ name: 'id', example: 'TVgJIjsRFmIvyjUeBOLv4gOD3eQZY' })
-    async cHandleQuiz(@Res() res: Response, @Param('id') id: string) {
+    async cHandleQuiz(@Req() req: Request, @Res() res: Response, @Param('id') id: string) {
         const quiz = await this.quizService.getQuizByField('id', id);
+        if (!quiz) throw new HttpException({ errorMessage: ResponseMessage.NOT_FOUND }, StatusCodes.NOT_FOUND);
 
-        quiz.questions = [];
+        let quizResult = new QuizResult();
+        quizResult.createdAt = new Date().toISOString();
+
+        const customer = await this.customerService.getCustomerByUserId(req.user.id);
+        if (!customer) throw new HttpException({ errorMessage: ResponseMessage.UNAUTHORIZED }, StatusCodes.UNAUTHORIZED);
+        quizResult.customer = customer;
+
+        quizResult = await this.quizResultService.saveQuizResult(quizResult);
+        quizResult.attendedQuestions = [];
+
         const quizDetail = await this.quizDetailService.getQuizDetailsByQuizId(id);
-
         for (const item of quizDetail) {
-            quiz.questions.push(item.question);
+            let attendedQuestion = new AttendedQuestion();
+            attendedQuestion.questionInQuiz = item;
+            attendedQuestion.quizResult = quizResult;
+            attendedQuestion = await this.attendedQuestionService.saveAttendedQuestion(attendedQuestion);
+            quizResult.attendedQuestions.push(attendedQuestion);
         }
 
-        if (quiz.subject.assignTo) {
-            quiz.subject.assignTo.user.password = '';
-            quiz.subject.assignTo.user.token = '';
-        }
-        return res.send(quiz);
+        return res.send(quizResult);
     }
 
     @Post('')

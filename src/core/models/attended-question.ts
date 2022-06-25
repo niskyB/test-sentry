@@ -18,6 +18,6 @@ export class AttendedQuestion {
     questionInQuiz: QuizDetail;
 
     @ApiProperty({ description: 'Quiz Result' })
-    @ManyToOne(() => QuizResult, { nullable: false })
+    @ManyToOne(() => QuizResult, { nullable: false, cascade: true })
     quizResult: QuizResult;
 }
