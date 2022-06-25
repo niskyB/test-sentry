@@ -20,6 +20,7 @@ export class QuizDetailService {
             .leftJoinAndSelect('quiz_detail.quiz', 'quiz')
             .where('quiz.id = (:id)', { id })
             .leftJoinAndSelect('quiz_detail.question', 'question')
+            .leftJoinAndSelect('question.answers', 'answers')
             .getMany();
     }
 
@@ -29,6 +30,7 @@ export class QuizDetailService {
             .leftJoinAndSelect('quiz_detail.quiz', 'quiz')
             .where('quiz.id = (:quizId)', { quizId })
             .leftJoinAndSelect('quiz_detail.question', 'question')
+            .leftJoinAndSelect('question.answers', 'answers')
             .andWhere('question.id = (:questionId)', { questionId })
             .getOne();
     }

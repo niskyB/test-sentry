@@ -61,6 +61,8 @@ export class QuizService {
                 .leftJoinAndSelect('quiz.subject', 'subject')
                 .where('subject.id LIKE (:subjectId)', { subjectId: `%${subject}%` })
                 .andWhere('quiz.name LIKE (:name)', { name: `%${name}%` })
+                .leftJoinAndSelect('quiz.type', 'type')
+                .leftJoinAndSelect('quiz.level', 'level')
                 .skip(currentPage * pageSize)
                 .take(pageSize)
                 .getMany();
