@@ -26,8 +26,8 @@ export class RegistrationsController {
     @UseGuards(CommonGuard)
     @UsePipes(new QueryJoiValidatorPipe(vFilterMyRegistrationsDTO))
     async cFilterMyRegistrations(@Req() req: Request, @Res() res: Response, @Query() queries: FilterMyRegistrationsDTO) {
-        const { name, category, isFeature, order, currentPage, pageSize } = queries;
-        const result = await this.registrationService.filterMyRegistrations(req.user.id, name, category, isFeature, order, currentPage, pageSize);
+        const { name, category, isFeature, order, currentPage, pageSize, status } = queries;
+        const result = await this.registrationService.filterMyRegistrations(req.user.id, name, category, isFeature, order, status, currentPage, pageSize);
         return res.send(result);
     }
 }

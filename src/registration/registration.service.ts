@@ -98,6 +98,7 @@ export class RegistrationService {
         category: string,
         isFeature: boolean,
         order: SortOrder,
+        status: string,
         currentPage: number,
         pageSize: number,
     ): Promise<{ data: Registration[]; count: number }> {
@@ -116,6 +117,7 @@ export class RegistrationService {
                         }).orWhere('subject.isFeature = :featureMaxValue', { featureMaxValue: featureValue.maxValue });
                     }),
                 )
+                .andWhere('registration.status LIKE (:status)', { status: `%${status}%` })
                 .leftJoinAndSelect('subject.category', 'category')
                 .andWhere('category.id LIKE (:categoryId)', { categoryId: `%${category}%` })
                 .leftJoinAndSelect('registration.customer', 'customer')
@@ -140,6 +142,7 @@ export class RegistrationService {
                         }).orWhere('subject.isFeature = :featureMaxValue', { featureMaxValue: featureValue.maxValue });
                     }),
                 )
+                .andWhere('registration.status LIKE (:status)', { status: `%${status}%` })
                 .leftJoinAndSelect('subject.category', 'category')
                 .andWhere('category.id LIKE (:categoryId)', { categoryId: `%${category}%` })
                 .leftJoinAndSelect('registration.customer', 'customer')
