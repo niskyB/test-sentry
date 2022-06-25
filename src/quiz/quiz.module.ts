@@ -13,7 +13,7 @@ import { Module, forwardRef } from '@nestjs/common';
 import { QuizController } from './quiz.controller';
 import { QuizService } from './quiz.service';
 import { Connection } from 'typeorm';
-import { QuizzesController } from './quizes.controller';
+import { QuizzesController } from './quizzes.controller';
 
 @Module({
     imports: [TypeOrmModule.forFeature([Quiz]), SubjectModule, QuizTypeModule, ExamLevelModule, AuthModule, UserModule, forwardRef(() => QuestionModule), QuizDetailModule, AttendedQuestionModule],
