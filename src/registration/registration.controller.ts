@@ -1,5 +1,5 @@
 import { RegistrationGuard, SaleGuard } from './../auth/guard';
-import { EmailAction, ResponseMessage, SortOrder } from './../core/interface';
+import { EmailAction, ResponseMessage } from './../core/interface';
 import { SaleService } from './../sale/sale.service';
 import { DataService } from './../core/providers/fake-data/data.service';
 import { CustomerService } from './../customer/customer.service';
@@ -48,9 +48,9 @@ export class RegistrationController {
         let user;
         if (req.user && req.user.role.description !== UserRole.ADMIN && req.user.role.description !== UserRole.SALE) {
             user = req.user;
-            const existedRegistration = (await this.registrationService.filterRegistrations(pricePackage.subject.id, '', '', '', user.email, 0, 4, SortOrder.ASC, 'subject')).data.map(
-                (item) => item.status !== RegistrationStatus.INACTIVE,
-            );
+            const existedRegistration = (await this.registrationService.getExistedRegistration(pricePackage.subject.id, user.email)).map((item) => {
+                return item.status !== RegistrationStatus.INACTIVE;
+            });
             if (existedRegistration.length > 0) throw new HttpException({ errorMessage: ResponseMessage.DUPLICATED_REGISTRATION }, StatusCodes.BAD_REQUEST);
         } else {
             user = await this.userService.findUser('email', body.email);
@@ -120,7 +120,7 @@ export class RegistrationController {
         )
             throw new HttpException({ status: ResponseMessage.INVALID_STATUS }, StatusCodes.BAD_REQUEST);
 
-        if (body.status === RegistrationStatus.PAID && registration.status !== RegistrationStatus.PAID) {
+        if (body.status === RegistrationStatus.PAID && registration.status !== RegistrationStatus.PAID && !registration.customer.user.isActive) {
             const password = this.dataService.generateData(8, 'lettersAndNumbers');
             registration.customer.user.password = await this.authService.encryptPassword(password, constant.default.hashingSalt);
             const hashPassword = registration.customer.user.password;
