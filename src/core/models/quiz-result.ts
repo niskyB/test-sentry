@@ -1,8 +1,9 @@
-import { Column, Entity, PrimaryGeneratedColumn, ManyToOne } from 'typeorm';
+import { Column, Entity, PrimaryGeneratedColumn, ManyToOne, OneToMany } from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
 import * as joi from 'joi';
 import JoiMessage from 'joi-message';
 import { Customer } from './customer';
+import { AttendedQuestion } from './attended-question';
 
 @Entity()
 export class QuizResult {
@@ -21,6 +22,10 @@ export class QuizResult {
     @ApiProperty({ description: 'Customer' })
     @ManyToOne(() => Customer, { cascade: true })
     customer: Customer;
+
+    @ApiProperty({ description: 'Customer' })
+    @OneToMany(() => AttendedQuestion, (attendedQuestion) => attendedQuestion.quizResult)
+    attendedQuestions: AttendedQuestion[];
 }
 
 export const quizResultValidateSchema = {

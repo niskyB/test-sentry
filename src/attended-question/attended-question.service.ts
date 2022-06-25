@@ -14,4 +14,8 @@ export class AttendedQuestionService {
             .where('quiz.id = (:id)', { id })
             .getOne();
     }
+
+    async saveAttendedQuestion(attendedQuestion: AttendedQuestion): Promise<AttendedQuestion> {
+        return await this.attendedQuestionRepository.save(attendedQuestion);
+    }
 }
