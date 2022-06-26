@@ -38,4 +38,33 @@ export class QuizResultService {
             .leftJoinAndSelect('questionInQuiz.quiz', 'quiz')
             .getOne();
     }
+
+    async getQuizResultByUserId(userId: string, currentPage: number, pageSize: number): Promise<{ data: QuizResult[]; count: number }> {
+        let quizResults, count;
+        try {
+            quizResults = await this.quizResultRepository
+                .createQueryBuilder('quiz_result')
+                .leftJoinAndSelect('quiz_result.customer', 'customer')
+                .leftJoinAndSelect('customer.user', 'user')
+                .where('user.id = (:userId)', { userId })
+                .leftJoinAndSelect('quiz_result.attendedQuestions', 'attendedQuestions')
+                .leftJoinAndSelect('attendedQuestions.userAnswers', 'userAnswers')
+                .leftJoinAndSelect('attendedQuestions.questionInQuiz', 'questionInQuiz')
+                .leftJoinAndSelect('questionInQuiz.quiz', 'quiz')
+                .skip(currentPage * pageSize)
+                .take(pageSize)
+                .getMany();
+
+            count = await this.quizResultRepository
+                .createQueryBuilder('quiz_result')
+                .leftJoinAndSelect('quiz_result.customer', 'customer')
+                .leftJoinAndSelect('customer.user', 'user')
+                .where('user.id = (:userId)', { userId })
+                .getCount();
+        } catch (err) {
+            console.log(err);
+            return { data: [], count: 0 };
+        }
+        return { data: quizResults, count };
+    }
 }
