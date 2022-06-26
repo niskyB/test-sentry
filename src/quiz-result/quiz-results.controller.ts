@@ -16,7 +16,7 @@ export class QuizResultsController {
     @UseGuards(CommonGuard)
     @UsePipes(new QueryJoiValidatorPipe(vFilterQuizResultsDTO))
     async cGetQuiz(@Req() req: Request, @Res() res: Response, @Body() body: FilterQuizResultsDTO) {
-        const quizResults = await this.quizResultService.getQuizResultByUserId(req.user.id, body.currentPage, body.pageSize);
+        const quizResults = await this.quizResultService.getQuizResultByUserId(req.user.id, body.subject, body.currentPage, body.pageSize);
 
         quizResults.data = quizResults.data.map((item) => {
             item.customer.user.password = '';

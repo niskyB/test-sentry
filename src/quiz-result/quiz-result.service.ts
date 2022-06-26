@@ -39,7 +39,7 @@ export class QuizResultService {
             .getOne();
     }
 
-    async getQuizResultByUserId(userId: string, currentPage: number, pageSize: number): Promise<{ data: QuizResult[]; count: number }> {
+    async getQuizResultByUserId(userId: string, subject: string, currentPage: number, pageSize: number): Promise<{ data: QuizResult[]; count: number }> {
         let quizResults, count;
         try {
             quizResults = await this.quizResultRepository
@@ -51,6 +51,8 @@ export class QuizResultService {
                 .leftJoinAndSelect('attendedQuestions.userAnswers', 'userAnswers')
                 .leftJoinAndSelect('attendedQuestions.questionInQuiz', 'questionInQuiz')
                 .leftJoinAndSelect('questionInQuiz.quiz', 'quiz')
+                .leftJoinAndSelect('quiz.subject', 'subject')
+                .andWhere('subject.id LIKE (:subjectId)', { subjectId: `%${subject}%` })
                 .skip(currentPage * pageSize)
                 .take(pageSize)
                 .getMany();
