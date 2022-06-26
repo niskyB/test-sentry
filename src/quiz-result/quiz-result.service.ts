@@ -52,6 +52,7 @@ export class QuizResultService {
                 .leftJoinAndSelect('attendedQuestions.questionInQuiz', 'questionInQuiz')
                 .leftJoinAndSelect('questionInQuiz.quiz', 'quiz')
                 .leftJoinAndSelect('quiz.subject', 'subject')
+                .leftJoinAndSelect('quiz.level', 'level')
                 .andWhere('subject.id LIKE (:subjectId)', { subjectId: `%${subject}%` })
                 .skip(currentPage * pageSize)
                 .take(pageSize)
