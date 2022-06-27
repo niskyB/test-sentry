@@ -140,7 +140,7 @@ export class QuizController {
 
         let newQuiz = new Quiz();
         newQuiz.isPublic = false;
-        newQuiz.name = `Practice - ${subject.name} - ${subjectTopic.name || 'All'} - ${dimension.name || 'All'}`;
+        newQuiz.name = `Practice - ${subject.name} - ${subjectTopic ? subjectTopic.name : 'All'} - ${dimension ? dimension.name : 'All'}`;
         newQuiz.passRate = 0;
         newQuiz.subject = subject;
         newQuiz.type = type;
