@@ -64,6 +64,7 @@ export class QuizResultService {
                 .leftJoinAndSelect('quiz_result.customer', 'customer')
                 .leftJoinAndSelect('customer.user', 'user')
                 .where('user.id = (:userId)', { userId })
+                .andWhere('subject.id LIKE (:subjectId)', { subjectId: `%${subject}%` })
                 .getCount();
         } catch (err) {
             console.log(err);
