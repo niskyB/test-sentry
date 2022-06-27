@@ -2,7 +2,7 @@ import { QuizResultService } from './../quiz-result/quiz-result.service';
 import { Controller, Res, Param, Get } from '@nestjs/common';
 import { ApiTags, ApiBearerAuth, ApiParam } from '@nestjs/swagger';
 import { Response } from 'express';
-import { Answer, AttendedQuestion } from 'src/core/models';
+import { AttendedQuestion } from 'src/core/models';
 
 @ApiTags('quiz result')
 @ApiBearerAuth()
