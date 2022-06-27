@@ -24,14 +24,6 @@ export const vCreatePracticeQuizDTO = joi.object<CreatePracticeQuizDTO>({
         .required()
         .messages(JoiMessage.createStringMessages({ field: 'Subject' })),
     numberOfQuestion: quizValidateSchema.numberOfQuestion,
-    subjectTopic: joi
-        .string()
-        .trim()
-        .required()
-        .messages(JoiMessage.createStringMessages({ field: 'Subject Topic' })),
-    dimension: joi
-        .string()
-        .trim()
-        .required()
-        .messages(JoiMessage.createStringMessages({ field: 'Dimension' })),
+    subjectTopic: joi.string().trim().required().failover(''),
+    dimension: joi.string().trim().required().failover(''),
 });
