@@ -32,6 +32,16 @@ export class QuestionService {
             .getMany();
     }
 
+    async getQuestionByLessonAndDimension(lessonId: string, dimensionId: string): Promise<Question[]> {
+        return await this.questionRepository
+            .createQueryBuilder('question')
+            .leftJoinAndSelect('question.dimensions', 'dimensions')
+            .where('dimensions.id LIKE (:dimensionId)', { dimensionId: `%${dimensionId}%` })
+            .leftJoinAndSelect('question.lesson', 'lesson')
+            .andWhere('lesson.id LIKE (:lessonId)', { lessonId: `%${lessonId}%` })
+            .getMany();
+    }
+
     async getQuestionsForAdmin(
         subject: string,
         lesson: string,
