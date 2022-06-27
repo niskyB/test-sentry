@@ -155,17 +155,17 @@ export class QuizController {
             }
             newQuiz.questions = Array.from(selectedQuestions);
         }
+        body.numberOfQuestion = body.numberOfQuestion <= questions.length ? body.numberOfQuestion : questions.length;
+        newQuiz.duration = body.numberOfQuestion;
+        newQuiz.numberOfQuestion = body.numberOfQuestion;
+
+        newQuiz = await this.quizService.saveQuiz(newQuiz);
         for (const item of newQuiz.questions) {
             const quizDetail = new QuizDetail();
             quizDetail.question = item;
             quizDetail.quiz = newQuiz;
             await this.quizDetailService.saveQuizDetail(quizDetail);
         }
-        body.numberOfQuestion = body.numberOfQuestion <= questions.length ? body.numberOfQuestion : questions.length;
-        newQuiz.duration = body.numberOfQuestion;
-        newQuiz.numberOfQuestion = body.numberOfQuestion;
-
-        newQuiz = await this.quizService.saveQuiz(newQuiz);
 
         let quizResult = new QuizResult();
         quizResult.createdAt = new Date().toISOString();
