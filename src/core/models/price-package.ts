@@ -1,5 +1,6 @@
+import { Registration } from './registration';
 import { Subject } from './subject';
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
 import * as joi from 'joi';
 import JoiMessage from 'joi-message';
@@ -45,6 +46,10 @@ export class PricePackage {
     @ApiProperty({ description: 'Marketing' })
     @ManyToOne(() => Subject, { nullable: false })
     subject: Subject;
+
+    @ApiProperty({ description: 'Marketing' })
+    @OneToMany(() => Registration, (registration) => registration.pricePackage)
+    registrations: Registration[];
 }
 
 export const pricePackageValidateSchema = {

@@ -53,13 +53,18 @@ export class QuizService {
         return { data: quizzes, count };
     }
 
-    async filterSimulationExams({ subject, name, currentPage, pageSize }): Promise<{ data: Quiz[]; count: number }> {
+    async filterSimulationExams(userId: string, subject: string, name: string, currentPage: number, pageSize: number): Promise<{ data: Quiz[]; count: number }> {
         let simulationExams, count;
         try {
             simulationExams = await this.quizRepository
                 .createQueryBuilder('quiz')
                 .leftJoinAndSelect('quiz.subject', 'subject')
+                .leftJoinAndSelect('subject.pricePackages', 'pricePackages')
+                .leftJoinAndSelect('pricePackages.registrations', 'registrations')
+                .leftJoinAndSelect('registrations.customer', 'customer')
+                .leftJoinAndSelect('customer.user', 'user')
                 .where('subject.id LIKE (:subjectId)', { subjectId: `%${subject}%` })
+                .andWhere('user.id = (:userId)', { userId: `%${userId}%` })
                 .andWhere('quiz.name LIKE (:name)', { name: `%${name}%` })
                 .leftJoinAndSelect('quiz.type', 'type')
                 .leftJoinAndSelect('quiz.level', 'level')
@@ -70,7 +75,12 @@ export class QuizService {
             count = await this.quizRepository
                 .createQueryBuilder('quiz')
                 .leftJoinAndSelect('quiz.subject', 'subject')
+                .leftJoinAndSelect('subject.pricePackages', 'pricePackages')
+                .leftJoinAndSelect('pricePackages.registrations', 'registrations')
+                .leftJoinAndSelect('registrations.customer', 'customer')
+                .leftJoinAndSelect('customer.user', 'user')
                 .where('subject.id LIKE (:subjectId)', { subjectId: `%${subject}%` })
+                .andWhere('user.id = (:userId)', { userId: `%${userId}%` })
                 .andWhere('quiz.name LIKE (:name)', { name: `%${name}%` })
                 .skip(currentPage * pageSize)
                 .take(pageSize)
