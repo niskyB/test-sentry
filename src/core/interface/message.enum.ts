@@ -32,4 +32,5 @@ export enum ResponseMessage {
     INVALID_NUMBER_OF_QUESTION = 'You can not add more question than number of question',
     QUIZ_TAKEN = 'This quiz is taken, cannot edit or delete',
     DUPLICATED_REGISTRATION = 'You should cancel this registration to do this action',
+    NO_QUESTION_FOUND = 'No question is found',
 }

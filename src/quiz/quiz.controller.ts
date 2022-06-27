@@ -1,3 +1,5 @@
+import { DimensionService } from './../dimension/dimension.service';
+import { LessonService } from './../lesson/lesson.service';
 import { AnswerService } from './../answer/answer.service';
 import { UserAnswerService } from './../user-answer/user-answer.service';
 import { CustomerService } from './../customer/customer.service';
@@ -16,8 +18,8 @@ import { ApiTags, ApiBearerAuth, ApiParam } from '@nestjs/swagger';
 import { Request, Response } from 'express';
 import { StatusCodes } from 'http-status-codes';
 import { QuizService } from './quiz.service';
-import { CreateQuizDTO, SubmitQuizDTO, UpdateQuizDTO, vCreateQuizDTO, vSubmitQuizDTO, vUpdateQuizDTO } from './dto';
-import { Quiz, QuizDetail, UserRole, QuizResult, AttendedQuestion, UserAnswer } from '../core/models';
+import { CreatePracticeQuizDTO, CreateQuizDTO, SubmitQuizDTO, UpdateQuizDTO, vCreatePracticeQuizDTO, vCreateQuizDTO, vSubmitQuizDTO, vUpdateQuizDTO } from './dto';
+import { Quiz, QuizDetail, UserRole, QuizResult, AttendedQuestion, UserAnswer, Question } from '../core/models';
 
 @ApiTags('quiz')
 @ApiBearerAuth()
@@ -35,6 +37,8 @@ export class QuizController {
         private readonly customerService: CustomerService,
         private readonly userAnswerService: UserAnswerService,
         private readonly answerService: AnswerService,
+        private readonly lessonService: LessonService,
+        private readonly dimensionService: DimensionService,
     ) {}
 
     @Get('/:id')
@@ -114,6 +118,68 @@ export class QuizController {
         }
 
         return res.send(quizResult);
+    }
+
+    @Post('/practice')
+    @UseGuards(CommonGuard)
+    @UsePipes(new JoiValidatorPipe(vCreatePracticeQuizDTO))
+    async cCreatePracticeQuiz(@Req() req: Request, @Res() res: Response, @Body() body: CreatePracticeQuizDTO) {
+        const { subject: subjectId, subjectTopic: subjectTopicId, dimension: dimensionId } = body;
+
+        const subject = await this.subjectService.getSubjectByField('id', subjectId);
+        if (!subject) throw new HttpException({ subject: ResponseMessage.INVALID_SUBJECT }, StatusCodes.BAD_REQUEST);
+
+        const questions = await this.questionService.getQuestionByLessonAndDimension(subjectTopicId, dimensionId);
+
+        if (!questions || questions.length === 0) throw new HttpException({ errorMessage: ResponseMessage.NO_QUESTION_FOUND }, StatusCodes.BAD_REQUEST);
+
+        const subjectTopic = await this.lessonService.getLessonByField('id', subjectTopicId);
+        const dimension = await this.dimensionService.getDimensionByField('id', dimensionId);
+        const type = await this.quizTypeService.getQuizTypeByField('description', 'Quiz Practice');
+        const level = await this.examLevelService.getExamLevelByField('name', 'Easy');
+
+        let newQuiz = new Quiz();
+        newQuiz.isPublic = false;
+        newQuiz.name = `Practice - ${subject.name} - ${subjectTopic.name || 'All'} - ${dimension.name || 'All'}`;
+        newQuiz.passRate = 0;
+        newQuiz.subject = subject;
+        newQuiz.type = type;
+        newQuiz.level = level;
+        if (body.numberOfQuestion >= questions.length) {
+            newQuiz.questions = questions;
+        } else {
+            const selectedQuestions = new Set<Question>();
+            while (selectedQuestions.size < body.numberOfQuestion) {
+                const random = Math.floor(Math.random() * questions.length);
+                selectedQuestions.add(questions[random]);
+            }
+            newQuiz.questions = Array.from(selectedQuestions);
+        }
+        body.numberOfQuestion = body.numberOfQuestion <= questions.length ? body.numberOfQuestion : questions.length;
+        newQuiz.duration = body.numberOfQuestion;
+        newQuiz.numberOfQuestion = body.numberOfQuestion;
+
+        newQuiz = await this.quizService.saveQuiz(newQuiz);
+
+        let quizResult = new QuizResult();
+        quizResult.createdAt = new Date().toISOString();
+
+        const customer = await this.customerService.getCustomerByUserId(req.user.id);
+        if (!customer) throw new HttpException({ errorMessage: ResponseMessage.UNAUTHORIZED }, StatusCodes.UNAUTHORIZED);
+        quizResult.customer = customer;
+
+        quizResult = await this.quizResultService.saveQuizResult(quizResult);
+        quizResult.attendedQuestions = [];
+        const quizDetail = await this.quizDetailService.getQuizDetailsByQuizId(newQuiz.id);
+        for (const item of quizDetail) {
+            let attendedQuestion = new AttendedQuestion();
+            attendedQuestion.questionInQuiz = item;
+            attendedQuestion.quizResult = quizResult;
+            attendedQuestion = await this.attendedQuestionService.saveAttendedQuestion(attendedQuestion);
+            quizResult.attendedQuestions.push(attendedQuestion);
+        }
+
+        return res.send(quizResult.id);
     }
 
     @Post('')

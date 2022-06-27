@@ -1,3 +1,5 @@
+import { DimensionModule } from './../dimension/dimension.module';
+import { LessonModule } from './../lesson/lesson.module';
 import { AnswerModule } from './../answer/answer.module';
 import { UserAnswerModule } from './../user-answer/user-answer.module';
 import { CustomerModule } from './../customer/customer.module';
@@ -34,6 +36,8 @@ import { QuizzesController } from './quizzes.controller';
         CustomerModule,
         UserAnswerModule,
         AnswerModule,
+        forwardRef(() => LessonModule),
+        DimensionModule,
     ],
     controllers: [QuizController, QuizzesController],
     providers: [QuizService, { provide: QuizRepository, useFactory: (connection: Connection) => connection.getCustomRepository(QuizRepository), inject: [Connection] }],
