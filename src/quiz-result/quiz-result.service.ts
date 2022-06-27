@@ -19,6 +19,7 @@ export class QuizResultService {
             .createQueryBuilder('quiz_result')
             .where(`quiz_result.${field.toString()} = (:value)`, { value })
             .leftJoinAndSelect('quiz_result.attendedQuestions', 'attendedQuestions')
+            .leftJoinAndSelect('attendedQuestions.userAnswers', 'userAnswers')
             .leftJoinAndSelect('attendedQuestions.questionInQuiz', 'questionInQuiz')
             .leftJoinAndSelect('questionInQuiz.question', 'question')
             .leftJoinAndSelect('questionInQuiz.quiz', 'quiz')
