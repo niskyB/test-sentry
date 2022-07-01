@@ -17,4 +17,8 @@ export class SubjectCategoryService {
     async getAllSubjectCategories(): Promise<SubjectCategory[]> {
         return await this.subjectCategoryRepository.createQueryBuilder('SubjectCategory').getMany();
     }
+
+    async getLastSubjectCategory(): Promise<SubjectCategory> {
+        return await this.subjectCategoryRepository.createQueryBuilder('SubjectCategory').orderBy('SubjectCategory.order', 'DESC').getOne();
+    }
 }

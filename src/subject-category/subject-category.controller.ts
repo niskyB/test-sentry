@@ -32,6 +32,10 @@ export class SubjectCategoryController {
         const subjectCategory = new SubjectCategory();
         subjectCategory.description = body.name;
 
+        const lastCategory = await this.subjectCategoryService.getLastSubjectCategory();
+        if (!lastCategory) subjectCategory.order = 1;
+        else subjectCategory.order = lastCategory.order + 1;
+
         try {
             await this.subjectCategoryService.saveSubjectCategory(subjectCategory);
         } catch (err) {
