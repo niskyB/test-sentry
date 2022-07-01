@@ -31,3 +31,4 @@ export * from './examLevel.repository';
 export * from './admin.repository';
 export * from './quizDetail.repository';
 export * from './userAnswer.repository';
+export * from './systemMenu.repository';
