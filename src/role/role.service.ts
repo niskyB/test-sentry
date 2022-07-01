@@ -9,6 +9,10 @@ import { Injectable } from '@nestjs/common';
 export class RoleService {
     constructor(private readonly roleRepository: RoleRepository, private readonly filterService: FilterService) {}
 
+    async saveRole(role: Role): Promise<Role> {
+        return await this.roleRepository.save(role);
+    }
+
     async getRoleByField(field: keyof Role, value: any): Promise<Role> {
         return await this.roleRepository.findOneByField(field, value);
     }
