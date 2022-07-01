@@ -12,8 +12,7 @@ export class S3Service {
     async uploadFile(file) {
         const { originalname } = file;
 
-        const res = await this.s3_upload(file.buffer, config.AWS_BUCKET, originalname, file.mimetype);
-        return res;
+        return await this.s3_upload(file.buffer, config.AWS_BUCKET, originalname, file.mimetype);
     }
 
     async s3_upload(file, bucket, name, mimetype) {
@@ -30,8 +29,7 @@ export class S3Service {
         };
 
         try {
-            const s3Response = await this.s3.upload(params).promise();
-            return s3Response;
+            return await this.s3.upload(params).promise();
         } catch (e) {
             console.log(e);
             return null;

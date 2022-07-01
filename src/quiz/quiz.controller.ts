@@ -284,7 +284,7 @@ export class QuizController {
 
     @Delete('/:id')
     @ApiParam({ name: 'id', example: 'TVgJIjsRFmIvyjUeBOLv4gOD3eQZY' })
-    async cDeleteQuiz(@Req() req: Request, @Res() res: Response, @Body() body: UpdateQuizDTO, @Param('id') id: string) {
+    async cDeleteQuiz(@Req() req: Request, @Res() res: Response, @Param('id') id: string) {
         const user = req.user;
         const quiz = await this.quizService.getQuizByField('id', id);
 

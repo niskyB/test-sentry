@@ -40,8 +40,7 @@ export class AuthService {
     }
 
     async createAccessToken(user: User, minutes?: number): Promise<string> {
-        const token = this.encryptAccessToken({ id: user.id }, minutes);
-        return token;
+        return await this.encryptAccessToken({ id: user.id }, minutes);
     }
     // --------------------------- Send Email Service ---------------------------
 

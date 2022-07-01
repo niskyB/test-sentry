@@ -12,12 +12,11 @@ export class ExpertService {
 
     async getExpertByUserId(userId: string): Promise<Expert> {
         try {
-            const expert = await this.expertRepository
+            return await this.expertRepository
                 .createQueryBuilder('expert')
                 .leftJoinAndSelect('expert.user', 'user')
                 .andWhere('user.id LIKE (:userId)', { userId: `%${userId}%` })
                 .getOne();
-            return expert;
         } catch (err) {
             return new Expert();
         }

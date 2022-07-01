@@ -8,12 +8,11 @@ export class MarketingService {
 
     async getMarketingByUserId(userId: string): Promise<Marketing> {
         try {
-            const marketing = await this.marketingRepository
+            return await this.marketingRepository
                 .createQueryBuilder('marketing')
                 .leftJoinAndSelect('marketing.user', 'user')
                 .andWhere('user.id LIKE (:userId)', { userId: `%${userId}%` })
                 .getOne();
-            return marketing;
         } catch (err) {
             return new Marketing();
         }

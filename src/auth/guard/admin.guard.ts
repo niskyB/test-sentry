@@ -45,7 +45,6 @@ export class AdminGuard implements CanActivate {
     }
 
     getTokenFromHeader(authorization: string): string {
-        const accessToken = authorization.split(' ')[1];
-        return accessToken;
+        return authorization.split(' ')[1];
     }
 }

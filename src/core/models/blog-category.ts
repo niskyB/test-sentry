@@ -1,4 +1,5 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { SystemType } from './../interface';
+import { Column, Entity, Generated, PrimaryGeneratedColumn } from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
 
 @Entity()
@@ -8,16 +9,17 @@ export class BlogCategory {
     id: string;
 
     @ApiProperty({ description: 'Type' })
-    @Column({ default: null })
+    @Column({ default: SystemType.BLOG_CATEGORY })
     type: string;
 
     @ApiProperty({ description: 'Value' })
-    @Column({ default: null })
+    @Column()
+    @Generated('uuid')
     value: string;
 
     @ApiProperty({ description: 'Order' })
-    @Column({ default: null, unique: true })
-    order: string;
+    @Column()
+    order: number;
 
     @ApiProperty({ description: 'Description' })
     @Column({ default: null })
