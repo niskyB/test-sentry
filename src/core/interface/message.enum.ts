@@ -25,6 +25,7 @@ export enum ResponseMessage {
     INVALID_EXAM_LEVEL = 'Invalid exam level',
     INVALID_STATUS = 'Invalid status',
     DUPLICATED_CATEGORY = 'This category has already existed',
+    DUPLICATED_ORDER = 'Order has already existed',
     QUESTION_ANSWER_CORRECT_ERROR = 'Question should have one correct answer',
     SINGLE_CHOICE_ERROR = 'Single choice question should have only one correct answer',
     MULTIPLE_CHOICE_ERROR = 'Multiple choice question should have at least two correct answer',
