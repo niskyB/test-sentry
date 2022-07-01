@@ -26,10 +26,10 @@ export class SubjectCategoryService {
     }
 
     async filterSubjectCategories(status: boolean, value: string, order: SortOrder, orderBy: string, currentPage: number, pageSize: number): Promise<{ data: SubjectCategory[]; count: number }> {
-        let blogCategories, count;
+        let subjectCategories, count;
         const isActiveValue = this.filterService.getMinMaxValue(status);
         try {
-            blogCategories = await this.subjectCategoryRepository
+            subjectCategories = await this.subjectCategoryRepository
                 .createQueryBuilder('SubjectCategory')
                 .where('SubjectCategory.value LIKE (:value)', { value: `%${value}%` })
                 .andWhere(
@@ -59,6 +59,6 @@ export class SubjectCategoryService {
             console.log(err);
             return { data: [], count: 0 };
         }
-        return { data: blogCategories, count };
+        return { data: subjectCategories, count };
     }
 }
