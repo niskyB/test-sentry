@@ -5,7 +5,7 @@ import { SubjectCategory } from './../core/models';
 import { JoiValidatorPipe } from './../core/pipe';
 import { Body, Controller, Post, Put, Res, UseGuards, UsePipes, Param, HttpException, Get } from '@nestjs/common';
 import { Response } from 'express';
-import { CreateSubjectCategoryDTO, UpdateSubjectCategoryDTO, vCreateSubjectCategoryDTO, vUpdateSubjectCategoryDTO } from './dto';
+import { CreateSubjectCategoryDTO, UpdateSubjectCategoryDTO, UpdateSubjectCategoryStatusDTO, vCreateSubjectCategoryDTO, vUpdateSubjectCategoryDTO, vUpdateSubjectCategoryStatusDTO } from './dto';
 import { ApiBearerAuth, ApiParam, ApiTags } from '@nestjs/swagger';
 import { SubjectCategoryService } from './subject-category.service';
 
@@ -59,6 +59,23 @@ export class SubjectCategoryController {
         }
 
         subjectCategory.order = body.order;
+
+        try {
+            await this.subjectCategoryService.saveSubjectCategory(subjectCategory);
+        } catch (err) {
+            throw new HttpException({ errorMessage: ResponseMessage.DUPLICATED_CATEGORY }, StatusCodes.BAD_REQUEST);
+        }
+
+        return res.send(subjectCategory);
+    }
+
+    @UseGuards(AdminGuard)
+    @Put('/isActive/:id')
+    @ApiParam({ name: 'id', example: 'TVgJIjsRFmIvyjUeBOLv4gOD3eQZY' })
+    @UsePipes(new JoiValidatorPipe(vUpdateSubjectCategoryStatusDTO))
+    async cUpdateSubjectCategoryStatus(@Res() res: Response, @Body() body: UpdateSubjectCategoryStatusDTO, @Param('id') id: string) {
+        const subjectCategory = await this.subjectCategoryService.getSubjectCategoryByField('id', id);
+        subjectCategory.isActive = body.isActive === null || body.isActive === undefined ? subjectCategory.isActive : body.isActive;
 
         try {
             await this.subjectCategoryService.saveSubjectCategory(subjectCategory);
