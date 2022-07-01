@@ -30,7 +30,7 @@ export class FilterRegistrationsDTO {
     @ApiProperty({ description: 'Order', example: 'ASC', nullable: true })
     order: SortOrder;
 
-    @ApiProperty({ description: 'Order by', example: 'name', nullable: true })
+    @ApiProperty({ description: 'Order By', example: 'name', nullable: true })
     orderBy: string;
 }
 
