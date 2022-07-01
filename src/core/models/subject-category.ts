@@ -1,5 +1,6 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, Generated, PrimaryGeneratedColumn } from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
+import { SystemType } from '../interface';
 
 @Entity()
 export class SubjectCategory {
@@ -8,16 +9,17 @@ export class SubjectCategory {
     id: string;
 
     @ApiProperty({ description: 'Type' })
-    @Column({ default: null })
+    @Column({ default: SystemType.SUBJECT_CATEGORY })
     type: string;
 
     @ApiProperty({ description: 'Value' })
-    @Column({ default: null })
+    @Column()
+    @Generated('uuid')
     value: string;
 
     @ApiProperty({ description: 'Order' })
     @Column({ default: null, unique: true })
-    order: string;
+    order: number;
 
     @ApiProperty({ description: 'Description' })
     @Column({ default: null })

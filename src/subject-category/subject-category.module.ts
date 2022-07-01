@@ -1,3 +1,4 @@
+import { FilterModule } from './../core/providers/filter/filter.module';
 import { SubjectCategory } from './../core/models';
 import { UserModule } from './../user/user.module';
 import { AuthModule } from './../auth/auth.module';
@@ -10,7 +11,7 @@ import { SubjectCategoriesController } from './subject-categories.controller';
 import { Connection } from 'typeorm';
 
 @Module({
-    imports: [TypeOrmModule.forFeature([SubjectCategory]), AuthModule, UserModule],
+    imports: [TypeOrmModule.forFeature([SubjectCategory]), AuthModule, UserModule, FilterModule],
     controllers: [SubjectCategoryController, SubjectCategoriesController],
     providers: [
         SubjectCategoryService,

@@ -18,7 +18,7 @@ export class BlogCategory {
     value: string;
 
     @ApiProperty({ description: 'Order' })
-    @Column()
+    @Column({ default: null, unique: true })
     order: number;
 
     @ApiProperty({ description: 'Description' })

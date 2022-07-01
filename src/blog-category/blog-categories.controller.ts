@@ -4,7 +4,7 @@ import { ApiTags, ApiBearerAuth } from '@nestjs/swagger';
 import { BlogCategoryService } from './blog-category.service';
 import { Controller, Get, Query, Res, UseGuards, UsePipes } from '@nestjs/common';
 import { Response } from 'express';
-import { FilterBlogCategoriesDTO, vFilterBlogCategoriesDTO } from './dto';
+import { FilterSystemSettingsDTO, vFilterSystemSettingsDTO } from '../core/dto';
 
 @ApiTags('blog-categories')
 @ApiBearerAuth()
@@ -14,8 +14,8 @@ export class BlogCategoriesController {
 
     @Get('/admin')
     @UseGuards(AdminGuard)
-    @UsePipes(new QueryJoiValidatorPipe(vFilterBlogCategoriesDTO))
-    async cFilterBlogCategories(@Res() res: Response, @Query() queries: FilterBlogCategoriesDTO) {
+    @UsePipes(new QueryJoiValidatorPipe(vFilterSystemSettingsDTO))
+    async cFilterBlogCategories(@Res() res: Response, @Query() queries: FilterSystemSettingsDTO) {
         const { value, status, currentPage, pageSize, order, orderBy } = queries;
         const result = await this.blogCategoryService.filterBlogCategories(status, value, order, orderBy, currentPage, pageSize);
         return res.send(result);
