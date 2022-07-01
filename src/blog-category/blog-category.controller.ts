@@ -4,10 +4,10 @@ import { JoiValidatorPipe } from './../core/pipe';
 import { BlogCategoryService } from './blog-category.service';
 import { Body, Controller, Post, Put, Res, UseGuards, UsePipes, Param, HttpException, Get } from '@nestjs/common';
 import { Response } from 'express';
-import { CreateBlogCategoryDTO, UpdateBlogCategoryDTO, UpdateBlogCategoryStatusDTO, vCreateBlogCategoryDTO, vUpdateBlogCategoryDTO, vUpdateBlogCategoryStatusDTO } from './dto';
 import { ApiBearerAuth, ApiParam, ApiTags } from '@nestjs/swagger';
 import { StatusCodes } from 'http-status-codes';
 import { ResponseMessage } from '../core/interface';
+import { CreateSystemSettingDTO, UpdateSystemSettingDTO, UpdateSystemSettingStatusDTO, vCreateSystemSettingDTO, vUpdateSystemSettingDTO, vUpdateSystemSettingStatusDTO } from '../core/dto';
 
 @ApiTags('blog-category')
 @ApiBearerAuth()
@@ -17,8 +17,8 @@ export class BlogCategoryController {
 
     @UseGuards(AdminGuard)
     @Post('')
-    @UsePipes(new JoiValidatorPipe(vCreateBlogCategoryDTO))
-    async cCreateBlogCategory(@Res() res: Response, @Body() body: CreateBlogCategoryDTO) {
+    @UsePipes(new JoiValidatorPipe(vCreateSystemSettingDTO))
+    async cCreateBlogCategory(@Res() res: Response, @Body() body: CreateSystemSettingDTO) {
         const blogCategory = new BlogCategory();
         blogCategory.description = body.name;
         const lastCategory = await this.blogCategoryService.getLastBlogCategory();
@@ -37,8 +37,8 @@ export class BlogCategoryController {
     @UseGuards(AdminGuard)
     @Put('/:id')
     @ApiParam({ name: 'id', example: 'TVgJIjsRFmIvyjUeBOLv4gOD3eQZY' })
-    @UsePipes(new JoiValidatorPipe(vUpdateBlogCategoryDTO))
-    async cUpdateBlogCategory(@Res() res: Response, @Body() body: UpdateBlogCategoryDTO, @Param('id') id: string) {
+    @UsePipes(new JoiValidatorPipe(vUpdateSystemSettingDTO))
+    async cUpdateBlogCategory(@Res() res: Response, @Body() body: UpdateSystemSettingDTO, @Param('id') id: string) {
         const blogCategory = await this.blogCategoryService.getBlogCategoryByField('id', id);
         blogCategory.description = body.name;
 
@@ -61,8 +61,8 @@ export class BlogCategoryController {
     @UseGuards(AdminGuard)
     @Put('/isActive/:id')
     @ApiParam({ name: 'id', example: 'TVgJIjsRFmIvyjUeBOLv4gOD3eQZY' })
-    @UsePipes(new JoiValidatorPipe(vUpdateBlogCategoryStatusDTO))
-    async cUpdateBlogCategoryStatus(@Res() res: Response, @Body() body: UpdateBlogCategoryStatusDTO, @Param('id') id: string) {
+    @UsePipes(new JoiValidatorPipe(vUpdateSystemSettingStatusDTO))
+    async cUpdateBlogCategoryStatus(@Res() res: Response, @Body() body: UpdateSystemSettingStatusDTO, @Param('id') id: string) {
         const blogCategory = await this.blogCategoryService.getBlogCategoryByField('id', id);
         blogCategory.isActive = body.isActive === null || body.isActive === undefined ? blogCategory.isActive : body.isActive;
 

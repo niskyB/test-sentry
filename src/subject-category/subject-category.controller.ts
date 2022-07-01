@@ -5,9 +5,9 @@ import { SubjectCategory } from './../core/models';
 import { JoiValidatorPipe } from './../core/pipe';
 import { Body, Controller, Post, Put, Res, UseGuards, UsePipes, Param, HttpException, Get } from '@nestjs/common';
 import { Response } from 'express';
-import { CreateSubjectCategoryDTO, UpdateSubjectCategoryDTO, UpdateSubjectCategoryStatusDTO, vCreateSubjectCategoryDTO, vUpdateSubjectCategoryDTO, vUpdateSubjectCategoryStatusDTO } from './dto';
 import { ApiBearerAuth, ApiParam, ApiTags } from '@nestjs/swagger';
 import { SubjectCategoryService } from './subject-category.service';
+import { CreateSystemSettingDTO, UpdateSystemSettingDTO, UpdateSystemSettingStatusDTO, vCreateSystemSettingDTO, vUpdateSystemSettingDTO, vUpdateSystemSettingStatusDTO } from '../core/dto';
 
 @ApiTags('subject-category')
 @ApiBearerAuth()
@@ -27,8 +27,8 @@ export class SubjectCategoryController {
 
     @Post('')
     @UseGuards(AdminGuard)
-    @UsePipes(new JoiValidatorPipe(vCreateSubjectCategoryDTO))
-    async cCreateSubjectCategory(@Res() res: Response, @Body() body: CreateSubjectCategoryDTO) {
+    @UsePipes(new JoiValidatorPipe(vCreateSystemSettingDTO))
+    async cCreateSubjectCategory(@Res() res: Response, @Body() body: CreateSystemSettingDTO) {
         const subjectCategory = new SubjectCategory();
         subjectCategory.description = body.name;
 
@@ -48,8 +48,8 @@ export class SubjectCategoryController {
     @Put('/:id')
     @UseGuards(AdminGuard)
     @ApiParam({ name: 'id', example: 'TVgJIjsRFmIvyjUeBOLv4gOD3eQZY' })
-    @UsePipes(new JoiValidatorPipe(vUpdateSubjectCategoryDTO))
-    async cUpdateSubjectCategory(@Res() res: Response, @Body() body: UpdateSubjectCategoryDTO, @Param('id') id: string) {
+    @UsePipes(new JoiValidatorPipe(vUpdateSystemSettingDTO))
+    async cUpdateSubjectCategory(@Res() res: Response, @Body() body: UpdateSystemSettingDTO, @Param('id') id: string) {
         const subjectCategory = await this.subjectCategoryService.getSubjectCategoryByField('id', id);
         subjectCategory.description = body.name;
 
@@ -72,8 +72,8 @@ export class SubjectCategoryController {
     @UseGuards(AdminGuard)
     @Put('/isActive/:id')
     @ApiParam({ name: 'id', example: 'TVgJIjsRFmIvyjUeBOLv4gOD3eQZY' })
-    @UsePipes(new JoiValidatorPipe(vUpdateSubjectCategoryStatusDTO))
-    async cUpdateSubjectCategoryStatus(@Res() res: Response, @Body() body: UpdateSubjectCategoryStatusDTO, @Param('id') id: string) {
+    @UsePipes(new JoiValidatorPipe(vUpdateSystemSettingStatusDTO))
+    async cUpdateSubjectCategoryStatus(@Res() res: Response, @Body() body: UpdateSystemSettingStatusDTO, @Param('id') id: string) {
         const subjectCategory = await this.subjectCategoryService.getSubjectCategoryByField('id', id);
         subjectCategory.isActive = body.isActive === null || body.isActive === undefined ? subjectCategory.isActive : body.isActive;
 

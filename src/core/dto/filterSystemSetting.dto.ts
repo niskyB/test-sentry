@@ -5,7 +5,7 @@ import * as joi from 'joi';
 
 const { currentPage, pageSize, orderBy } = constant.default;
 
-export class FilterBlogCategoriesDTO {
+export class FilterSystemSettingsDTO {
     @ApiProperty({ description: 'Value', example: 'asdf-asds-aaasdf' })
     value: string;
 
@@ -25,7 +25,7 @@ export class FilterBlogCategoriesDTO {
     orderBy: string;
 }
 
-export const vFilterBlogCategoriesDTO = joi.object<FilterBlogCategoriesDTO>({
+export const vFilterSystemSettingsDTO = joi.object<FilterSystemSettingsDTO>({
     value: joi.string().required().failover(''),
     status: joi.boolean().required().failover(null),
     currentPage: joi.number().min(0).required().failover(currentPage),
