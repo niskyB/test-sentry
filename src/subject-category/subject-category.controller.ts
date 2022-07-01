@@ -5,7 +5,7 @@ import { SubjectCategory } from './../core/models';
 import { JoiValidatorPipe } from './../core/pipe';
 import { Body, Controller, Post, Put, Res, UseGuards, UsePipes, Param, HttpException, Get } from '@nestjs/common';
 import { Response } from 'express';
-import { SubjectCategoryDTO, vSubjectCategoryDTO } from './dto';
+import { CreateSubjectCategoryDTO, UpdateSubjectCategoryDTO, vCreateSubjectCategoryDTO, vUpdateSubjectCategoryDTO } from './dto';
 import { ApiBearerAuth, ApiParam, ApiTags } from '@nestjs/swagger';
 import { SubjectCategoryService } from './subject-category.service';
 
@@ -27,8 +27,8 @@ export class SubjectCategoryController {
 
     @Post('')
     @UseGuards(AdminGuard)
-    @UsePipes(new JoiValidatorPipe(vSubjectCategoryDTO))
-    async cCreateSubjectCategory(@Res() res: Response, @Body() body: SubjectCategoryDTO) {
+    @UsePipes(new JoiValidatorPipe(vCreateSubjectCategoryDTO))
+    async cCreateSubjectCategory(@Res() res: Response, @Body() body: CreateSubjectCategoryDTO) {
         const subjectCategory = new SubjectCategory();
         subjectCategory.description = body.name;
 
@@ -48,10 +48,17 @@ export class SubjectCategoryController {
     @Put('/:id')
     @UseGuards(AdminGuard)
     @ApiParam({ name: 'id', example: 'TVgJIjsRFmIvyjUeBOLv4gOD3eQZY' })
-    @UsePipes(new JoiValidatorPipe(vSubjectCategoryDTO))
-    async cUpdateSubjectCategory(@Res() res: Response, @Body() body: SubjectCategoryDTO, @Param('id') id: string) {
+    @UsePipes(new JoiValidatorPipe(vUpdateSubjectCategoryDTO))
+    async cUpdateSubjectCategory(@Res() res: Response, @Body() body: UpdateSubjectCategoryDTO, @Param('id') id: string) {
         const subjectCategory = await this.subjectCategoryService.getSubjectCategoryByField('id', id);
         subjectCategory.description = body.name;
+
+        if (subjectCategory.order !== body.order && body.order) {
+            const existedOrder = await this.subjectCategoryService.getSubjectCategoryByField('order', body.order);
+            if (existedOrder) throw new HttpException({ order: ResponseMessage.DUPLICATED_ORDER }, StatusCodes.BAD_REQUEST);
+        }
+
+        subjectCategory.order = body.order;
 
         try {
             await this.subjectCategoryService.saveSubjectCategory(subjectCategory);

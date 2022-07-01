@@ -1,12 +1,12 @@
 import * as joi from 'joi';
 import { ApiProperty } from '@nestjs/swagger';
 import JoiMessage from 'joi-message';
-export class SubjectCategoryDTO {
+export class CreateSubjectCategoryDTO {
     @ApiProperty({ description: 'Name', example: 'Subject category 1' })
     name: string;
 }
 
-export const vSubjectCategoryDTO = joi.object<SubjectCategoryDTO>({
+export const vCreateSubjectCategoryDTO = joi.object<CreateSubjectCategoryDTO>({
     name: joi
         .string()
         .min(1)
