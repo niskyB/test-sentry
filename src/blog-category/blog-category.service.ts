@@ -17,4 +17,8 @@ export class BlogCategoryService {
     async getAllBlogCategories(): Promise<BlogCategory[]> {
         return await this.blogCategoryRepository.createQueryBuilder('BlogCategory').getMany();
     }
+
+    async getLastBlogCategory(): Promise<BlogCategory> {
+        return await this.blogCategoryRepository.createQueryBuilder('BlogCategory').orderBy('BlogCategory.order', 'DESC').getOne();
+    }
 }

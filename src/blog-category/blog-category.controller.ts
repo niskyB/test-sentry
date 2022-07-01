@@ -21,6 +21,9 @@ export class BlogCategoryController {
     async cCreateBlogCategory(@Res() res: Response, @Body() body: BlogCategoryDTO) {
         const blogCategory = new BlogCategory();
         blogCategory.description = body.name;
+        const lastCategory = await this.blogCategoryService.getLastBlogCategory();
+        if (!lastCategory) blogCategory.order = 1;
+        else blogCategory.order = lastCategory.order + 1;
 
         try {
             await this.blogCategoryService.saveBlogCategory(blogCategory);

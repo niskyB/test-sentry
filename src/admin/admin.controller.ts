@@ -152,8 +152,8 @@ export class AdminController {
                 else {
                     const newAdmin = new Admin();
                     newAdmin.user = user;
-                    const res = await this.adminService.saveAdmin(newAdmin);
-                    user.typeId = res.id;
+                    const result = await this.adminService.saveAdmin(newAdmin);
+                    user.typeId = result.id;
                 }
                 break;
             case UserRole.CUSTOMER:
@@ -162,8 +162,8 @@ export class AdminController {
                 else {
                     const newCustomer = new Customer();
                     newCustomer.user = user;
-                    const res = await this.customerService.saveCustomer(newCustomer);
-                    user.typeId = res.id;
+                    const result = await this.customerService.saveCustomer(newCustomer);
+                    user.typeId = result.id;
                 }
                 break;
             case UserRole.EXPERT:
@@ -172,8 +172,8 @@ export class AdminController {
                 else {
                     const newExpert = new Expert();
                     newExpert.user = user;
-                    const res = await this.expertService.saveExpert(newExpert);
-                    user.typeId = res.id;
+                    const result = await this.expertService.saveExpert(newExpert);
+                    user.typeId = result.id;
                 }
                 break;
             case UserRole.MARKETING:
@@ -182,8 +182,8 @@ export class AdminController {
                 else {
                     const newMarketing = new Marketing();
                     newMarketing.user = user;
-                    const res = await this.marketingService.saveMarketing(newMarketing);
-                    user.typeId = res.id;
+                    const result = await this.marketingService.saveMarketing(newMarketing);
+                    user.typeId = result.id;
                 }
                 break;
             case UserRole.SALE:
@@ -192,8 +192,8 @@ export class AdminController {
                 else {
                     const newSale = new Sale();
                     newSale.user = user;
-                    const res = await this.saleService.saveSale(newSale);
-                    user.typeId = res.id;
+                    const result = await this.saleService.saveSale(newSale);
+                    user.typeId = result.id;
                 }
                 break;
         }
