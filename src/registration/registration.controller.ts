@@ -1,4 +1,4 @@
-import { RegistrationGuard, SaleGuard } from './../auth/guard';
+import { CommonGuard, RegistrationGuard, SaleGuard } from './../auth/guard';
 import { EmailAction, ResponseMessage } from './../core/interface';
 import { SaleService } from './../sale/sale.service';
 import { DataService } from './../core/providers/fake-data/data.service';
@@ -31,6 +31,7 @@ export class RegistrationController {
     ) {}
 
     @Get('/:id')
+    @UseGuards(CommonGuard)
     @ApiParam({ name: 'id', example: 'TVgJIjsRFmIvyjUeBOLv4gOD3eQZY' })
     async cGetRegistration(@Res() res: Response, @Param('id') id: string) {
         const registration = await this.registrationService.getRegistrationByField('id', id);
@@ -48,10 +49,6 @@ export class RegistrationController {
         let user;
         if (req.user && req.user.role.description !== UserRole.ADMIN && req.user.role.description !== UserRole.SALE) {
             user = req.user;
-            const existedRegistration = (await this.registrationService.getExistedRegistration(pricePackage.subject.id, user.email)).map((item) => {
-                return item.status !== RegistrationStatus.INACTIVE;
-            });
-            if (existedRegistration.length > 0) throw new HttpException({ errorMessage: ResponseMessage.DUPLICATED_REGISTRATION }, StatusCodes.BAD_REQUEST);
         } else {
             user = await this.userService.findUser('email', body.email);
             if (!user) {
@@ -72,7 +69,7 @@ export class RegistrationController {
                 customer = await this.customerService.getCustomerByUserId(user.id);
                 user.typeId = customer.id;
                 await this.userService.saveUser(user);
-            } else throw new HttpException({ email: ResponseMessage.EMAIL_TAKEN }, StatusCodes.BAD_REQUEST);
+            }
         }
 
         let customer = await this.customerService.getCustomerByUserId(user.id);
@@ -114,13 +111,13 @@ export class RegistrationController {
     async cUpdateGeneralInformationRegistration(@Req() req: Request, @Res() res: Response, @Param('id') id: string, @Body() body: UpdateGeneralInformationDTO) {
         const registration = await this.registrationService.getRegistrationByField('id', id);
 
-        if (
-            (registration.status === RegistrationStatus.PAID && body.status === RegistrationStatus.SUBMITTED) ||
-            (registration.status === RegistrationStatus.INACTIVE && (body.status === RegistrationStatus.PAID || body.status === RegistrationStatus.SUBMITTED))
-        )
+        if (registration.status === RegistrationStatus.PAID || registration.status === RegistrationStatus.INACTIVE)
             throw new HttpException({ status: ResponseMessage.INVALID_STATUS }, StatusCodes.BAD_REQUEST);
 
-        if (body.status === RegistrationStatus.PAID && registration.status !== RegistrationStatus.PAID && !registration.customer.user.isActive) {
+        if ((registration.status === RegistrationStatus.APPROVED || registration.status === RegistrationStatus.REJECTED) && body.status === RegistrationStatus.SUBMITTED)
+            throw new HttpException({ status: ResponseMessage.INVALID_STATUS }, StatusCodes.BAD_REQUEST);
+
+        if (body.status === RegistrationStatus.APPROVED && registration.status !== RegistrationStatus.APPROVED && !registration.customer.user.isActive) {
             const password = this.dataService.generateData(8, 'lettersAndNumbers');
             registration.customer.user.password = await this.authService.encryptPassword(password, constant.default.hashingSalt);
             const hashPassword = registration.customer.user.password;
@@ -194,7 +191,34 @@ export class RegistrationController {
         return res.send();
     }
 
+    @Put('/activate/:id')
+    @UseGuards(CommonGuard)
+    @ApiParam({ name: 'id', example: 'TVgJIjsRFmIvyjUeBOLv4gOD3eQZY' })
+    async cActivateRegistration(@Req() req: Request, @Res() res: Response, @Param('id') id: string) {
+        const registration = await this.registrationService.getRegistrationByField('id', id);
+        if (!registration) throw new HttpException({ errorMessage: ResponseMessage.NOT_FOUND }, StatusCodes.NOT_FOUND);
+        if (registration.status !== RegistrationStatus.APPROVED) throw new HttpException({ status: ResponseMessage.INVALID_STATUS }, StatusCodes.BAD_REQUEST);
+
+        const user = req.user;
+
+        const existedRegistration = (await this.registrationService.getExistedRegistration(registration.pricePackage.subject.id, user.email)).map((item) => {
+            return item.status === RegistrationStatus.PAID;
+        });
+        if (existedRegistration.length > 0) throw new HttpException({ errorMessage: ResponseMessage.DUPLICATED_REGISTRATION }, StatusCodes.BAD_REQUEST);
+
+        const customer = await this.customerService.getCustomerByUserId(user.id);
+        if (!customer) throw new HttpException({ errorMessage: ResponseMessage.UNAUTHORIZED }, StatusCodes.UNAUTHORIZED);
+        if (customer.balance < registration.totalCost) throw new HttpException({ balance: ResponseMessage.BALANCE_NOT_ENOUGH }, StatusCodes.BAD_REQUEST);
+        customer.balance = customer.balance - registration.totalCost;
+        await this.customerService.saveCustomer(customer);
+
+        registration.status = RegistrationStatus.PAID;
+        await this.registrationService.saveRegistration(registration);
+        return res.send();
+    }
+
     @Put('/cancel/:id')
+    @UseGuards(CommonGuard)
     @ApiParam({ name: 'id', example: 'TVgJIjsRFmIvyjUeBOLv4gOD3eQZY' })
     async cCancelRegistration(@Res() res: Response, @Param('id') id: string) {
         const registration = await this.registrationService.getRegistrationByField('id', id);

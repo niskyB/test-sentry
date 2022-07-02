@@ -8,6 +8,8 @@ import { PricePackage } from './price-package';
 
 export enum RegistrationStatus {
     SUBMITTED = 'submitted',
+    APPROVED = 'approved',
+    REJECTED = 'rejected',
     PAID = 'paid',
     INACTIVE = 'inactive',
 }
