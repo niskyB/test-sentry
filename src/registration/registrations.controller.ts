@@ -5,7 +5,16 @@ import { Controller, Res, Get, UsePipes, Query, Req, UseGuards } from '@nestjs/c
 import { ApiTags, ApiBearerAuth } from '@nestjs/swagger';
 import { Response, Request } from 'express';
 import { RegistrationService } from './registration.service';
-import { FilterMyRegistrationsDTO, FilterRegistrationsDTO, StatisticRegistrationsDTO, vFilterMyRegistrationsDTO, vFilterRegistrationsDTO, vStatisticRegistrationsDTO } from './dto';
+import {
+    FilterMyRegistrationsDTO,
+    FilterRegistrationsDTO,
+    StatisticRegistrationsDTO,
+    StatisticRevenuesDTO,
+    vFilterMyRegistrationsDTO,
+    vFilterRegistrationsDTO,
+    vStatisticRegistrationsDTO,
+    vStatisticRevenuesDTO,
+} from './dto';
 
 @ApiTags('registrations')
 @ApiBearerAuth()
@@ -28,6 +37,23 @@ export class RegistrationsController {
     async cGetRegistrationsStatistics(@Res() res: Response, @Query() queries: StatisticRegistrationsDTO) {
         const days = this.dateService.calculateNDaysBack(7);
         const result = await Promise.all(days.map(async (day) => await this.registrationService.getCountByDay(day, queries.status)));
+
+        return res.send(result);
+    }
+
+    @Get('/revenues/statistics')
+    @UseGuards(MarketingGuard)
+    @UsePipes(new QueryJoiValidatorPipe(vStatisticRevenuesDTO))
+    @UsePipes()
+    async cGetRevenuesStatistics(@Res() res: Response, @Query() queries: StatisticRevenuesDTO) {
+        const days = this.dateService.calculateNDaysBack(7);
+        const result = await Promise.all(
+            days.map(async (day) => {
+                const registrations = await this.registrationService.getCountByDayAndSubject(day, queries.subject);
+                const total = registrations.data.reduce((total, item) => (total += item.totalCost), 0);
+                return { value: total, date: registrations.date };
+            }),
+        );
 
         return res.send(result);
     }

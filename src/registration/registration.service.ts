@@ -55,6 +55,24 @@ export class RegistrationService {
         return { value, date: day };
     }
 
+    async getCountByDayAndSubject(day: string, subject: string): Promise<{ data: Registration[]; date: string }> {
+        let data;
+        try {
+            data = await this.registrationRepository
+                .createQueryBuilder('registration')
+                .where('registration.registrationTime LIKE (:day)', { day: `%${day}%` })
+                .andWhere('registration.status LIKE (:status)', { status: 'paid' })
+                .leftJoinAndSelect('registration.pricePackage', 'pricePackage')
+                .leftJoinAndSelect('pricePackage.subject', 'subject')
+                .andWhere('subject.id LIKE (:id)', { id: `%${subject}%` })
+                .getMany();
+        } catch (err) {
+            console.log(err);
+            return { data, date: day };
+        }
+        return { data, date: day };
+    }
+
     async filterRegistrations(
         subject: string,
         validFrom: string,
