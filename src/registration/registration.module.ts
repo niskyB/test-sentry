@@ -16,7 +16,7 @@ import { RegistrationsController } from './registrations.controller';
 import { DateModule } from '../core/providers/date/date.module';
 
 @Module({
-    imports: [AuthModule, UserModule, PricePackageModule, TypeOrmModule.forFeature([Registration]), CustomerModule, DataModule, SaleModule, FilterModule, DateModule],
+    imports: [AuthModule, UserModule, PricePackageModule, TypeOrmModule.forFeature([Registration]), CustomerModule, DataModule, SaleModule, FilterModule, DateModule, DateModule],
     controllers: [RegistrationController, RegistrationsController],
     providers: [RegistrationService, { provide: RegistrationRepository, useFactory: (connection: Connection) => connection.getCustomRepository(RegistrationRepository), inject: [Connection] }],
     exports: [],
