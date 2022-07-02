@@ -17,7 +17,7 @@ export class SystemMenuController {
 
     @Get('/:id')
     @ApiParam({ name: 'id', example: 'TVgJIjsRFmIvyjUeBOLv4gOD3eQZY' })
-    async cGetRoleById(@Res() res: Response, @Param('id') id: string) {
+    async cGetSystemMenuById(@Res() res: Response, @Param('id') id: string) {
         const systemMenu = await this.systemMenuService.getSystemMenuByField('id', id);
         return res.send(systemMenu);
     }
