@@ -5,3 +5,4 @@ export * from './filterMyRegistrations.dto';
 export * from './updateSpecificInformation.dto';
 export * from './statisticRegistration.dto';
 export * from './statisticRevenues.dto';
+export * from './statisticOrderTrend.dto';

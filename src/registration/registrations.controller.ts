@@ -8,10 +8,12 @@ import { RegistrationService } from './registration.service';
 import {
     FilterMyRegistrationsDTO,
     FilterRegistrationsDTO,
+    StatisticOrderTrendDTO,
     StatisticRegistrationsDTO,
     StatisticRevenuesDTO,
     vFilterMyRegistrationsDTO,
     vFilterRegistrationsDTO,
+    vStatisticOrderTrendDTO,
     vStatisticRegistrationsDTO,
     vStatisticRevenuesDTO,
 } from './dto';
@@ -51,6 +53,24 @@ export class RegistrationsController {
             days.map(async (day) => {
                 const registrations = await this.registrationService.getCountByDayAndSubject(day, queries.subject);
                 const total = registrations.data.reduce((total, item) => (total += item.totalCost), 0);
+                return { value: total, date: registrations.date };
+            }),
+        );
+
+        return res.send(result);
+    }
+
+    @Get('/order-trend/statistics')
+    @UseGuards(MarketingGuard)
+    @UsePipes(new QueryJoiValidatorPipe(vStatisticOrderTrendDTO))
+    @UsePipes()
+    async cGetOrderTrendStatistics(@Res() res: Response, @Query() queries: StatisticOrderTrendDTO) {
+        const { from, to } = queries;
+        const days = this.dateService.calculateDaysBetween(from, to);
+        const result = await Promise.all(
+            days.map(async (day) => {
+                const registrations = await this.registrationService.getCountByDayAndSubject(day, '');
+                const total = registrations.data.length;
                 return { value: total, date: registrations.date };
             }),
         );
