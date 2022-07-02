@@ -18,10 +18,10 @@ export class SystemMenuService {
     }
 
     async filterSystemMenus(status: boolean, value: string, order: SortOrder, orderBy: string, currentPage: number, pageSize: number): Promise<{ data: SystemMenu[]; count: number }> {
-        let roles, count;
+        let systemMenus, count;
         const isActiveValue = this.filterService.getMinMaxValue(status);
         try {
-            roles = await this.systemMenuRepository
+            systemMenus = await this.systemMenuRepository
                 .createQueryBuilder('SystemMenu')
                 .where('SystemMenu.value LIKE (:value)', { value: `%${value}%` })
                 .andWhere(
@@ -51,6 +51,6 @@ export class SystemMenuService {
             console.log(err);
             return { data: [], count: 0 };
         }
-        return { data: roles, count };
+        return { data: systemMenus, count };
     }
 }

@@ -1,3 +1,6 @@
+import { FilterModule } from '../core/providers/filter/filter.module';
+import { UserModule } from '../user/user.module';
+import { AuthModule } from '../auth/auth.module';
 import { DimensionType } from './../core/models';
 import { DimensionTypeRepository } from './../core/repositories';
 import { TypeOrmModule } from '@nestjs/typeorm';
@@ -8,7 +11,7 @@ import { DimensionTypesController } from './dimension-types.controller';
 import { Connection } from 'typeorm';
 
 @Module({
-    imports: [TypeOrmModule.forFeature([DimensionType])],
+    imports: [TypeOrmModule.forFeature([DimensionType]), AuthModule, UserModule, FilterModule],
     providers: [DimensionTypeService, { provide: DimensionTypeRepository, useFactory: (connection: Connection) => connection.getCustomRepository(DimensionTypeRepository), inject: [Connection] }],
     controllers: [DimensionTypeController, DimensionTypesController],
     exports: [DimensionTypeService],
