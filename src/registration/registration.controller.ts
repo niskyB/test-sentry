@@ -44,7 +44,7 @@ export class RegistrationController {
     @Post('')
     @UseGuards(RegistrationGuard)
     @UsePipes(new JoiValidatorPipe(vCreateRegistrationDTO))
-    async cCreateLesson(@Req() req: Request, @Res() res: Response, @Body() body: CreateRegistrationDTO) {
+    async cCreateRegistration(@Req() req: Request, @Res() res: Response, @Body() body: CreateRegistrationDTO) {
         const pricePackage = await this.pricePackageService.getPricePackageByField('id', body.pricePackage);
         if (!pricePackage) throw new HttpException({ errorMessage: ResponseMessage.INVALID_TYPE }, StatusCodes.BAD_REQUEST);
 
