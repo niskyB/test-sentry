@@ -21,7 +21,7 @@ export class LessonTypeService {
         return await this.lessonTypeRepository.createQueryBuilder('LessonType').getMany();
     }
 
-    async filterRoles(status: boolean, value: string, order: SortOrder, orderBy: string, currentPage: number, pageSize: number): Promise<{ data: LessonType[]; count: number }> {
+    async filterLessonTypes(status: boolean, value: string, order: SortOrder, orderBy: string, currentPage: number, pageSize: number): Promise<{ data: LessonType[]; count: number }> {
         let lessonTypes, count;
         const isActiveValue = this.filterService.getMinMaxValue(status);
         try {
