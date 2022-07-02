@@ -1,3 +1,5 @@
+import { RegistrationModule } from './../registration/registration.module';
+import { DateModule } from './../core/providers/date/date.module';
 import { FilterModule } from './../core/providers/filter/filter.module';
 import { Role, User } from './../core/models';
 import { forwardRef, Module } from '@nestjs/common';
@@ -11,7 +13,7 @@ import { S3Module } from 'src/core/providers/s3/s3.module';
 import { Connection } from 'typeorm';
 
 @Module({
-    imports: [forwardRef(() => AuthModule), S3Module, TypeOrmModule.forFeature([User]), TypeOrmModule.forFeature([Role]), FilterModule],
+    imports: [forwardRef(() => AuthModule), S3Module, TypeOrmModule.forFeature([User]), TypeOrmModule.forFeature([Role]), FilterModule, DateModule, RegistrationModule, FilterModule],
     controllers: [UserController, UsersController],
     providers: [
         UserService,

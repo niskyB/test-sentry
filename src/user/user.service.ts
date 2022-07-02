@@ -24,6 +24,21 @@ export class UserService {
         return user;
     }
 
+    async getNewUserByDay(day: string): Promise<{ value: number; date: string }> {
+        let value;
+        try {
+            value = await this.userRepository
+                .createQueryBuilder('user')
+                .where('user.createdAt LIKE (:day)', { day: `%${day}%` })
+                .andWhere('user.isActive = (:isActive)', { isActive: true })
+                .getCount();
+        } catch (err) {
+            console.log(err);
+            return { value: 0, date: day };
+        }
+        return { value, date: day };
+    }
+
     async findUsers(field: keyof User, value: any): Promise<User[]> {
         return await this.userRepository.findManyByField(field, value);
     }
