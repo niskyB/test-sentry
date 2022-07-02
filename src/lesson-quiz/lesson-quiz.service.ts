@@ -15,6 +15,8 @@ export class LessonQuizService {
             .createQueryBuilder('lesson_quiz')
             .leftJoin('lesson_quiz.lesson', 'lesson')
             .leftJoinAndSelect('lesson_quiz.quizzes', 'quizzes')
+            .leftJoinAndSelect('quizzes.type', 'type')
+            .leftJoinAndSelect('quizzes.level', 'level')
             .where('lesson.id = (:id)', { id })
             .getOne();
     }
