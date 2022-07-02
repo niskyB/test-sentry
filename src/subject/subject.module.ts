@@ -1,3 +1,4 @@
+import { DateModule } from './../core/providers/date/date.module';
 import { FilterModule } from './../core/providers/filter/filter.module';
 import { Subject } from './../core/models';
 import { SubjectCategoryModule } from './../subject-category/subject-category.module';
@@ -14,7 +15,7 @@ import { SubjectsController } from './subjects.controller';
 import { Connection } from 'typeorm';
 
 @Module({
-    imports: [ExpertModule, TypeOrmModule.forFeature([Subject]), S3Module, AuthModule, UserModule, SubjectCategoryModule, FilterModule],
+    imports: [ExpertModule, TypeOrmModule.forFeature([Subject]), S3Module, AuthModule, UserModule, SubjectCategoryModule, FilterModule, DateModule],
     controllers: [SubjectController, SubjectsController],
     providers: [SubjectService, { provide: SubjectRepository, useFactory: (connection: Connection) => connection.getCustomRepository(SubjectRepository), inject: [Connection] }],
     exports: [SubjectService],

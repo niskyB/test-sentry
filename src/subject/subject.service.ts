@@ -50,6 +50,20 @@ export class SubjectService {
         return subjects;
     }
 
+    async getCountByDay(day: string): Promise<{ value: number; date: string }> {
+        let value;
+        try {
+            value = await this.subjectRepository
+                .createQueryBuilder('subject')
+                .where('subject.createdAt LIKE (:day)', { day: `%${day}%` })
+                .getCount();
+        } catch (err) {
+            console.log(err);
+            return { value: 0, date: day };
+        }
+        return { value, date: day };
+    }
+
     async filterSubjects(
         name: string,
         createdAt: string,
