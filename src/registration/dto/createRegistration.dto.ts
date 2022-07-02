@@ -25,12 +25,6 @@ export class CreateRegistrationDTO {
     @ApiProperty({ description: 'status', example: RegistrationStatus.SUBMITTED })
     status: RegistrationStatus;
 
-    @ApiProperty({ description: 'Valid from', example: 'cc' })
-    validFrom: string;
-
-    @ApiProperty({ description: 'Valid to', example: 'cc' })
-    validTo: string;
-
     @ApiProperty({ description: 'Note', example: 'cc' })
     notes: string;
 
@@ -61,8 +55,6 @@ export const vCreateRegistrationDTO = joi.object<CreateRegistrationDTO>({
         .messages(JoiMessage.createStringMessages({ field: 'gender' })),
     status: registrationValidateSchema.status,
     registrationTime: registrationValidateSchema.registrationTime,
-    validFrom: registrationValidateSchema.validFrom.failover(''),
-    validTo: registrationValidateSchema.validTo.failover(''),
     notes: joi
         .string()
         .required()

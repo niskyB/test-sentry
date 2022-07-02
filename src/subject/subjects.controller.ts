@@ -1,4 +1,4 @@
-import { ExpertGuard } from './../auth/guard';
+import { ExpertGuard, MarketingGuard } from './../auth/guard';
 import { UserRole } from './../core/models';
 import { QueryJoiValidatorPipe } from './../core/pipe';
 import { FilterSubjectsDTO, vFilterSubjectsDTO } from './dto';
@@ -17,6 +17,25 @@ export class SubjectsController {
     @UseGuards(ExpertGuard)
     @UsePipes()
     async cGetSubjectsByRole(@Req() req: Request, @Res() res: Response) {
+        let result;
+        if (req.user.role.description === UserRole.ADMIN) {
+            result = await this.subjectService.getAllSubjects();
+        } else {
+            result = await this.subjectService.getSubjectByUserId(req.user.id);
+        }
+
+        result = result.map((item) => {
+            item.assignTo.user.password = '';
+            item.assignTo.user.token = '';
+            return item;
+        }, []);
+        return res.send(result);
+    }
+
+    @Get('/statistics')
+    @UseGuards(MarketingGuard)
+    @UsePipes()
+    async cGetSubjectsStatistics(@Req() req: Request, @Res() res: Response) {
         let result;
         if (req.user.role.description === UserRole.ADMIN) {
             result = await this.subjectService.getAllSubjects();
