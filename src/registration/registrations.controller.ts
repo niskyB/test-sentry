@@ -15,10 +15,8 @@ export class RegistrationsController {
     @Get('')
     @UsePipes(new QueryJoiValidatorPipe(vFilterRegistrationsDTO))
     async cFilterRegistrations(@Res() res: Response, @Query() queries: FilterRegistrationsDTO) {
-        console.log(queries);
         const { subject, validFrom, validTo, email, status, currentPage, pageSize, order, orderBy } = queries;
         const result = await this.registrationService.filterRegistrations(subject, validFrom, validTo, status, email, currentPage, pageSize, order, orderBy);
-        console.log(result);
         return res.send(result);
     }
 
