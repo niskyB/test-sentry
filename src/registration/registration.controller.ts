@@ -114,7 +114,7 @@ export class RegistrationController {
         if (registration.status === RegistrationStatus.PAID || registration.status === RegistrationStatus.INACTIVE)
             throw new HttpException({ status: ResponseMessage.INVALID_STATUS }, StatusCodes.BAD_REQUEST);
 
-        if ((registration.status === RegistrationStatus.APPROVED || registration.status === RegistrationStatus.REJECTED) && body.status === RegistrationStatus.SUBMITTED)
+        if (registration.status === RegistrationStatus.APPROVED && body.status === RegistrationStatus.SUBMITTED)
             throw new HttpException({ status: ResponseMessage.INVALID_STATUS }, StatusCodes.BAD_REQUEST);
 
         if (body.status === RegistrationStatus.APPROVED && registration.status !== RegistrationStatus.APPROVED && !registration.customer.user.isActive) {
