@@ -15,7 +15,7 @@ export class SystemMenusController {
 
     @Get('/admin')
     @UsePipes(new QueryJoiValidatorPipe(vFilterSystemSettingsDTO))
-    async cFilterRole(@Res() res: Response, @Query() queries: FilterSystemSettingsDTO) {
+    async cFilterSystemMenus(@Res() res: Response, @Query() queries: FilterSystemSettingsDTO) {
         const { value, status, order, orderBy, currentPage, pageSize } = queries;
         const result = await this.systemMenuService.filterSystemMenus(status, value, order, orderBy, currentPage, pageSize);
         return res.send(result);
