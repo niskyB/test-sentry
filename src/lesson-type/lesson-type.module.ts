@@ -1,3 +1,6 @@
+import { FilterModule } from '../core/providers/filter/filter.module';
+import { UserModule } from '../user/user.module';
+import { AuthModule } from '../auth/auth.module';
 import { LessonType } from './../core/models';
 import { LessonTypeRepository } from './../core/repositories';
 import { TypeOrmModule } from '@nestjs/typeorm';
@@ -8,7 +11,7 @@ import { LessonTypesController } from './lesson-types.controller';
 import { Connection } from 'typeorm';
 
 @Module({
-    imports: [TypeOrmModule.forFeature([LessonType])],
+    imports: [TypeOrmModule.forFeature([LessonType]), AuthModule, UserModule, FilterModule],
     providers: [LessonTypeService, { provide: LessonTypeRepository, useFactory: (connection: Connection) => connection.getCustomRepository(LessonTypeRepository), inject: [Connection] }],
     controllers: [LessonTypeController, LessonTypesController],
     exports: [LessonTypeService],
