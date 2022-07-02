@@ -1,22 +1,80 @@
-import { CommonGuard } from './../auth/guard';
+import { DateService } from './../core/providers/date/date.service';
+import { CommonGuard, MarketingGuard } from './../auth/guard';
 import { QueryJoiValidatorPipe } from './../core/pipe';
 import { Controller, Res, Get, UsePipes, Query, Req, UseGuards } from '@nestjs/common';
 import { ApiTags, ApiBearerAuth } from '@nestjs/swagger';
 import { Response, Request } from 'express';
 import { RegistrationService } from './registration.service';
-import { FilterMyRegistrationsDTO, FilterRegistrationsDTO, vFilterMyRegistrationsDTO, vFilterRegistrationsDTO } from './dto';
+import {
+    FilterMyRegistrationsDTO,
+    FilterRegistrationsDTO,
+    StatisticOrderTrendDTO,
+    StatisticRegistrationsDTO,
+    StatisticRevenuesDTO,
+    vFilterMyRegistrationsDTO,
+    vFilterRegistrationsDTO,
+    vStatisticOrderTrendDTO,
+    vStatisticRegistrationsDTO,
+    vStatisticRevenuesDTO,
+} from './dto';
 
 @ApiTags('registrations')
 @ApiBearerAuth()
 @Controller('registrations')
 export class RegistrationsController {
-    constructor(private readonly registrationService: RegistrationService) {}
+    constructor(private readonly registrationService: RegistrationService, private readonly dateService: DateService) {}
 
     @Get('')
     @UsePipes(new QueryJoiValidatorPipe(vFilterRegistrationsDTO))
     async cFilterRegistrations(@Res() res: Response, @Query() queries: FilterRegistrationsDTO) {
         const { subject, validFrom, validTo, email, status, currentPage, pageSize, order, orderBy } = queries;
         const result = await this.registrationService.filterRegistrations(subject, validFrom, validTo, status, email, currentPage, pageSize, order, orderBy);
+        return res.send(result);
+    }
+
+    @Get('/statistics')
+    @UseGuards(MarketingGuard)
+    @UsePipes(new QueryJoiValidatorPipe(vStatisticRegistrationsDTO))
+    @UsePipes()
+    async cGetRegistrationsStatistics(@Res() res: Response, @Query() queries: StatisticRegistrationsDTO) {
+        const days = this.dateService.calculateNDaysBack(7);
+        const result = await Promise.all(days.map(async (day) => await this.registrationService.getCountByDay(day, queries.status)));
+
+        return res.send(result);
+    }
+
+    @Get('/revenues/statistics')
+    @UseGuards(MarketingGuard)
+    @UsePipes(new QueryJoiValidatorPipe(vStatisticRevenuesDTO))
+    @UsePipes()
+    async cGetRevenuesStatistics(@Res() res: Response, @Query() queries: StatisticRevenuesDTO) {
+        const days = this.dateService.calculateNDaysBack(7);
+        const result = await Promise.all(
+            days.map(async (day) => {
+                const registrations = await this.registrationService.getCountByDayAndSubject(day, queries.subject);
+                const total = registrations.data.reduce((total, item) => (total += item.totalCost), 0);
+                return { value: total, date: registrations.date };
+            }),
+        );
+
+        return res.send(result);
+    }
+
+    @Get('/order-trend/statistics')
+    @UseGuards(MarketingGuard)
+    @UsePipes(new QueryJoiValidatorPipe(vStatisticOrderTrendDTO))
+    @UsePipes()
+    async cGetOrderTrendStatistics(@Res() res: Response, @Query() queries: StatisticOrderTrendDTO) {
+        const { from, to } = queries;
+        const days = this.dateService.calculateDaysBetween(from, to);
+        const result = await Promise.all(
+            days.map(async (day) => {
+                const registrations = await this.registrationService.getCountByDayAndSubject(day, '');
+                const total = registrations.data.length;
+                return { value: total, date: registrations.date };
+            }),
+        );
+
         return res.send(result);
     }
 
