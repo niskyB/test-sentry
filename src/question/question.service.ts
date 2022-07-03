@@ -1,4 +1,4 @@
-import { FilterService } from './../core/providers/filter/filter.service';
+import { FilterService } from './../core/providers';
 import { Question } from './../core/models';
 import { QuestionRepository } from './../core/repositories';
 import { Injectable } from '@nestjs/common';

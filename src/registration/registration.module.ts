@@ -1,19 +1,17 @@
-import { FilterModule } from '../core/providers/filter/filter.module';
+import { FilterModule, DataModule, DateModule } from '../core/providers';
 import { SaleModule } from './../sale/sale.module';
-import { DataModule } from './../core/providers/fake-data/data.module';
 import { CustomerModule } from './../customer/customer.module';
 import { RegistrationRepository } from '../core/repositories';
 import { Registration } from '../core/models';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Module, forwardRef } from '@nestjs/common';
-import { AuthModule } from 'src/auth/auth.module';
-import { PricePackageModule } from 'src/price-package/price-package.module';
-import { UserModule } from 'src/user/user.module';
+import { AuthModule } from '../auth/auth.module';
+import { PricePackageModule } from '../price-package/price-package.module';
+import { UserModule } from '../user/user.module';
 import { RegistrationController } from './registration.controller';
 import { RegistrationService } from './registration.service';
 import { Connection } from 'typeorm';
 import { RegistrationsController } from './registrations.controller';
-import { DateModule } from '../core/providers/date/date.module';
 
 @Module({
     imports: [

@@ -1,12 +1,12 @@
 import { BlogCategoryService } from './../blog-category/blog-category.service';
 import { UserService } from './../user/user.service';
 import { MarketingGuard } from './../auth/guard';
-import { S3Service } from 'src/core/providers/s3/s3.service';
+import { S3Service } from '../core/providers';
 import { Blog, UserRole } from './../core/models';
 import { StatusCodes } from 'http-status-codes';
 import { ResponseMessage } from './../core/interface';
 import { vCreateBlogDTO, CreateBlogDTO, vUpdateBlogDTO, UpdateBlogDTO } from './dto';
-import { JoiValidatorPipe } from './../core/pipe/validator.pipe';
+import { JoiValidatorPipe } from './../core/pipe';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { BlogService } from './blog.service';
 import { ApiTags, ApiBearerAuth, ApiParam } from '@nestjs/swagger';

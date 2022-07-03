@@ -1,4 +1,4 @@
-import { QueryJoiValidatorPipe } from './../core/pipe/queryValidator.pipe';
+import { QueryJoiValidatorPipe } from './../core/pipe';
 import { vFilterSlidersDTO, FilterSlidersDTO } from './dto';
 import { Controller, Res, UsePipes, Get, Query } from '@nestjs/common';
 import { ApiTags, ApiBearerAuth } from '@nestjs/swagger';

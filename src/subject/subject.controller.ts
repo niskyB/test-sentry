@@ -1,7 +1,7 @@
 import { UserService } from './../user/user.service';
 import { AdminGuard, ExpertGuard } from './../auth/guard';
 import { SubjectCategoryService } from './../subject-category/subject-category.service';
-import { S3Service } from './../core/providers/s3/s3.service';
+import { S3Service } from './../core/providers';
 import { Subject, UserRole } from './../core/models';
 import { ExpertService } from './../expert/expert.service';
 import { StatusCodes } from 'http-status-codes';

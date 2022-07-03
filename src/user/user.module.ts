@@ -1,6 +1,5 @@
 import { RegistrationModule } from './../registration/registration.module';
-import { DateModule } from './../core/providers/date/date.module';
-import { FilterModule } from './../core/providers/filter/filter.module';
+import { DateModule, FilterModule, S3Module } from './../core/providers';
 import { Role, User } from './../core/models';
 import { forwardRef, Module } from '@nestjs/common';
 import { UserService } from './user.service';
@@ -9,7 +8,6 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { UserRepository, RoleRepository } from '../core/repositories';
 import { AuthModule } from '../auth/auth.module';
 import { UsersController } from './users.controller';
-import { S3Module } from 'src/core/providers/s3/s3.module';
 import { Connection } from 'typeorm';
 
 @Module({

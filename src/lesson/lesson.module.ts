@@ -14,7 +14,7 @@ import { LessonController } from './lesson.controller';
 import { LessonService } from './lesson.service';
 import { LessonsController } from './lessons.controller';
 import { Connection } from 'typeorm';
-import { FilterModule } from 'src/core/providers/filter/filter.module';
+import { FilterModule } from '../core/providers';
 
 @Module({
     imports: [

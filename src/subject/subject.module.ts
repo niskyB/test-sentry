@@ -1,10 +1,8 @@
-import { DateModule } from './../core/providers/date/date.module';
-import { FilterModule } from './../core/providers/filter/filter.module';
+import { DateModule, FilterModule, S3Module } from './../core/providers';
 import { Subject } from './../core/models';
 import { SubjectCategoryModule } from './../subject-category/subject-category.module';
 import { UserModule } from './../user/user.module';
 import { AuthModule } from './../auth/auth.module';
-import { S3Module } from './../core/providers/s3/s3.module';
 import { SubjectRepository } from './../core/repositories';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ExpertModule } from './../expert/expert.module';

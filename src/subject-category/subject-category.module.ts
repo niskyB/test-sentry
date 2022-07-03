@@ -3,7 +3,7 @@ import { UserModule } from './../user/user.module';
 import { AuthModule } from './../auth/auth.module';
 import { SubjectCategoryService } from './subject-category.service';
 import { SubjectCategoryController } from './subject-category.controller';
-import { SubjectCategoryRepository } from './../core/repositories/subjectCategory.repository';
+import { SubjectCategoryRepository } from './../core/repositories';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Module, forwardRef } from '@nestjs/common';
 import { SubjectCategoriesController } from './subject-categories.controller';

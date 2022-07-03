@@ -10,7 +10,7 @@ import { JoiValidatorPipe } from '../core/pipe';
 import { ChangePasswordDTO, vChangePasswordDTO, UpdateUserDTO, vUpdateUserDTO } from './dto';
 import { constant } from '../core';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { S3Service } from '../core/providers/s3/s3.service';
+import { S3Service } from '../core/providers';
 
 @ApiTags('user')
 @ApiBearerAuth()

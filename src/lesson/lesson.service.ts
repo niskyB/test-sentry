@@ -1,7 +1,7 @@
 import { Lesson } from './../core/models';
 import { LessonRepository } from './../core/repositories';
 import { Injectable } from '@nestjs/common';
-import { FilterService } from '../core/providers/filter/filter.service';
+import { FilterService } from '../core/providers';
 import { Brackets } from 'typeorm';
 
 @Injectable()

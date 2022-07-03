@@ -1,4 +1,4 @@
-import { S3Service } from '../core/providers/s3/s3.service';
+import { S3Service } from '../core/providers';
 import { ResponseMessage } from './../core/interface';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { Slider, UserRole } from './../core/models';
