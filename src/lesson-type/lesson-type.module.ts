@@ -1,4 +1,3 @@
-import { FilterModule } from '../core/providers/filter/filter.module';
 import { UserModule } from '../user/user.module';
 import { AuthModule } from '../auth/auth.module';
 import { LessonType } from './../core/models';
@@ -11,7 +10,7 @@ import { LessonTypesController } from './lesson-types.controller';
 import { Connection } from 'typeorm';
 
 @Module({
-    imports: [TypeOrmModule.forFeature([LessonType]), AuthModule, UserModule, FilterModule],
+    imports: [TypeOrmModule.forFeature([LessonType]), AuthModule, UserModule],
     providers: [LessonTypeService, { provide: LessonTypeRepository, useFactory: (connection: Connection) => connection.getCustomRepository(LessonTypeRepository), inject: [Connection] }],
     controllers: [LessonTypeController, LessonTypesController],
     exports: [LessonTypeService],

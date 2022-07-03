@@ -34,5 +34,6 @@ export enum ResponseMessage {
     QUIZ_TAKEN = 'This quiz is taken, cannot edit or delete',
     DUPLICATED_REGISTRATION = 'You should cancel this registration to do this action',
     NO_QUESTION_FOUND = 'No question is found',
+    REGISTRATION_NOT_FOUND = 'Registration not found',
     BALANCE_NOT_ENOUGH = 'Your balance is not enough',
 }

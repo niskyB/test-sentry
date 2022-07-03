@@ -1,6 +1,6 @@
 import { LessonType } from './../models';
 import { EntityRepository } from 'typeorm';
-import { RepositoryService } from '../providers';
+import { SystemSettingRepositoryService } from '../providers';
 
 @EntityRepository(LessonType)
-export class LessonTypeRepository extends RepositoryService<LessonType> {}
+export class LessonTypeRepository extends SystemSettingRepositoryService<LessonType> {}

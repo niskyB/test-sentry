@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 
 @Injectable()
 export class FilterService {
-    getMinMaxValue(value: boolean) {
+    public getMinMaxValue(value: boolean) {
         if (value === false)
             return {
                 minValue: 0,

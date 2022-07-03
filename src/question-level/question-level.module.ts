@@ -1,4 +1,3 @@
-import { FilterModule } from '../core/providers/filter/filter.module';
 import { UserModule } from '../user/user.module';
 import { AuthModule } from '../auth/auth.module';
 import { QuestionLevelsController } from './question-levels.controller';
@@ -11,7 +10,7 @@ import { QuestionLevelService } from './question-level.service';
 import { Connection } from 'typeorm';
 
 @Module({
-    imports: [TypeOrmModule.forFeature([QuestionLevel]), AuthModule, UserModule, FilterModule],
+    imports: [TypeOrmModule.forFeature([QuestionLevel]), AuthModule, UserModule],
     controllers: [QuestionLevelController, QuestionLevelsController],
     providers: [QuestionLevelService, { provide: QuestionLevelRepository, useFactory: (connection: Connection) => connection.getCustomRepository(QuestionLevelRepository), inject: [Connection] }],
     exports: [QuestionLevelService],
