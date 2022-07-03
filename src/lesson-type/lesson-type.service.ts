@@ -1,13 +1,11 @@
-import { FilterService } from './../core/providers/filter/filter.service';
 import { SortOrder } from './../core/interface';
 import { LessonType } from './../core/models';
 import { LessonTypeRepository } from './../core/repositories';
 import { Injectable } from '@nestjs/common';
-import { Brackets } from 'typeorm';
 
 @Injectable()
 export class LessonTypeService {
-    constructor(private readonly lessonTypeRepository: LessonTypeRepository, private readonly filterService: FilterService) {}
+    constructor(private readonly lessonTypeRepository: LessonTypeRepository) {}
 
     async saveLessonType(lessonType: LessonType): Promise<LessonType> {
         return await this.lessonTypeRepository.save(lessonType);
@@ -22,39 +20,6 @@ export class LessonTypeService {
     }
 
     async filterLessonTypes(status: boolean, value: string, order: SortOrder, orderBy: string, currentPage: number, pageSize: number): Promise<{ data: LessonType[]; count: number }> {
-        let lessonTypes, count;
-        const isActiveValue = this.filterService.getMinMaxValue(status);
-        try {
-            lessonTypes = await this.lessonTypeRepository
-                .createQueryBuilder('LessonType')
-                .where('LessonType.value LIKE (:value)', { value: `%${value}%` })
-                .andWhere(
-                    new Brackets((qb) => {
-                        qb.where('LessonType.isActive = :isActiveMinValue', {
-                            isActiveMinValue: isActiveValue.minValue,
-                        }).orWhere('LessonType.isActive = :isActiveMaxValue', { isActiveMaxValue: isActiveValue.maxValue });
-                    }),
-                )
-                .orderBy(`LessonType.${orderBy}`, order)
-                .skip(currentPage * pageSize)
-                .take(pageSize)
-                .getMany();
-
-            count = await this.lessonTypeRepository
-                .createQueryBuilder('LessonType')
-                .where('LessonType.value LIKE (:value)', { value: `%${value}%` })
-                .andWhere(
-                    new Brackets((qb) => {
-                        qb.where('LessonType.isActive = :isActiveMinValue', {
-                            isActiveMinValue: isActiveValue.minValue,
-                        }).orWhere('LessonType.isActive = :isActiveMaxValue', { isActiveMaxValue: isActiveValue.maxValue });
-                    }),
-                )
-                .getCount();
-        } catch (err) {
-            console.log(err);
-            return { data: [], count: 0 };
-        }
-        return { data: lessonTypes, count };
+        return await this.lessonTypeRepository.filterSetting(status, value, order, orderBy, currentPage, pageSize);
     }
 }

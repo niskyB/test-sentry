@@ -1,6 +1,6 @@
 import { QuizType } from './../models';
 import { EntityRepository } from 'typeorm';
-import { RepositoryService } from '../providers';
+import { SystemSettingRepositoryService } from '../providers';
 
 @EntityRepository(QuizType)
-export class QuizTypeRepository extends RepositoryService<QuizType> {}
+export class QuizTypeRepository extends SystemSettingRepositoryService<QuizType> {}
