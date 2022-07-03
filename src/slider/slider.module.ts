@@ -1,7 +1,6 @@
-import { FilterModule } from './../core/providers/filter/filter.module';
+import { FilterModule, S3Module } from './../core/providers';
 import { Slider } from './../core/models';
 import { MarketingModule } from './../marketing/marketing.module';
-import { S3Module } from './../core/providers/s3/s3.module';
 import { UserModule } from '../user/user.module';
 import { AuthModule } from './../auth/auth.module';
 import { TypeOrmModule } from '@nestjs/typeorm';

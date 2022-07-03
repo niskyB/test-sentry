@@ -3,7 +3,7 @@ import { AnswerService } from './../answer/answer.service';
 import { LessonService } from './../lesson/lesson.service';
 import { ExpertGuard } from './../auth/guard';
 import { DimensionService } from './../dimension/dimension.service';
-import { S3Service } from '../core/providers/s3/s3.service';
+import { S3Service } from '../core/providers';
 import { Answer, Question } from './../core/models';
 import { JoiValidatorPipe } from './../core/pipe';
 import { FileInterceptor } from '@nestjs/platform-express';

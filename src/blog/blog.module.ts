@@ -1,7 +1,6 @@
-import { FilterModule } from './../core/providers/filter/filter.module';
+import { FilterModule, S3Module } from './../core/providers';
 import { Blog } from './../core/models';
 import { BlogCategoryModule } from './../blog-category/blog-category.module';
-import { S3Module } from '../core/providers/s3/s3.module';
 import { MarketingModule } from './../marketing/marketing.module';
 import { UserModule } from './../user/user.module';
 import { AuthModule } from './../auth/auth.module';

@@ -1,8 +1,7 @@
-import { DateService } from './../core/providers/date/date.service';
+import { DateService, DataService } from './../core/providers';
 import { CommonGuard, RegistrationGuard, SaleGuard } from './../auth/guard';
 import { EmailAction, ResponseMessage } from './../core/interface';
 import { SaleService } from './../sale/sale.service';
-import { DataService } from './../core/providers/fake-data/data.service';
 import { CustomerService } from './../customer/customer.service';
 import { Customer, RegistrationStatus, User, UserRole, Registration } from './../core/models';
 import { Body, Controller, Get, HttpException, Param, Post, Put, Req, Res, UseGuards, UsePipes } from '@nestjs/common';

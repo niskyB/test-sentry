@@ -2,7 +2,7 @@ import { CustomerModule } from './../customer/customer.module';
 import { AdminRepository } from './../core/repositories';
 import { Admin } from './../core/models';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { DataModule } from './../core/providers/fake-data/data.module';
+import { DataModule } from './../core/providers';
 import { ExpertModule } from './../expert/expert.module';
 import { SaleModule } from './../sale/sale.module';
 import { AuthModule } from './../auth/auth.module';

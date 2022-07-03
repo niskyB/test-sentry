@@ -1,4 +1,4 @@
-import { DateService } from './../core/providers/date/date.service';
+import { DateService } from './../core/providers';
 import { ExpertGuard, MarketingGuard } from './../auth/guard';
 import { UserRole } from './../core/models';
 import { QueryJoiValidatorPipe } from './../core/pipe';

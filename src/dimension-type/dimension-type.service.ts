@@ -1,4 +1,4 @@
-import { SortOrder } from './../core/interface/repositories.interface';
+import { SortOrder } from './../core/interface';
 import { DimensionType } from './../core/models';
 import { DimensionTypeRepository } from './../core/repositories';
 import { Injectable } from '@nestjs/common';

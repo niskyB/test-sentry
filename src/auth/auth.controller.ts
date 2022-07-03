@@ -1,4 +1,3 @@
-import { ResponseMessage } from './../core/interface';
 import { CustomerService } from './../customer/customer.service';
 import { Body, Controller, Get, HttpException, Param, Post, Res, UsePipes } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiCreatedResponse } from '@nestjs/swagger';
@@ -9,8 +8,8 @@ import { StatusCodes } from 'http-status-codes';
 import { LoginDTO, vLoginDTO, RegisterDTO, vRegisterDTO, vRequestVerifyEmailDTO, RequestVerifyEmailDTO, vRequestResetPasswordDTO, RequestResetPasswordDTO } from './dto';
 import { constant } from '../core/constant';
 import { UserRole, Customer, User } from '../core/models';
-import { JoiValidatorPipe } from '../core/pipe/validator.pipe';
-import { JwtToken, EmailAction } from '../core/interface';
+import { JoiValidatorPipe } from '../core/pipe';
+import { JwtToken, EmailAction, ResponseMessage } from '../core/interface';
 
 @ApiTags('auth')
 @Controller('auth')

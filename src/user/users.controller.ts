@@ -1,5 +1,5 @@
 import { RegistrationService } from './../registration/registration.service';
-import { DateService } from './../core/providers/date/date.service';
+import { DateService } from './../core/providers';
 import { Controller, Get, Query, Res, UseGuards, UsePipes } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { QueryJoiValidatorPipe } from '../core/pipe';

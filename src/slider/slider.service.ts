@@ -2,7 +2,7 @@ import { SliderRepository } from './../core/repositories';
 import { Slider } from './../core/models';
 import { Injectable } from '@nestjs/common';
 import { Brackets } from 'typeorm';
-import { FilterService } from '../core/providers/filter/filter.service';
+import { FilterService } from '../core/providers';
 
 @Injectable()
 export class SliderService {

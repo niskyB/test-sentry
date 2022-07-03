@@ -1,4 +1,4 @@
-import { DateService } from './../core/providers/date/date.service';
+import { DateService } from './../core/providers';
 import { CommonGuard, MarketingGuard } from './../auth/guard';
 import { QueryJoiValidatorPipe } from './../core/pipe';
 import { Controller, Res, Get, UsePipes, Query, Req, UseGuards } from '@nestjs/common';

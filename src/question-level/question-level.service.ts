@@ -1,4 +1,4 @@
-import { SortOrder } from './../core/interface/repositories.interface';
+import { SortOrder } from './../core/interface';
 import { QuestionLevel } from './../core/models';
 import { QuestionLevelRepository } from './../core/repositories';
 import { Injectable } from '@nestjs/common';

@@ -1,4 +1,4 @@
-import { FilterService } from './../core/providers/filter/filter.service';
+import { FilterService } from './../core/providers';
 import { SortOrder } from './../core/interface';
 import { Blog } from './../core/models';
 import { BlogRepository } from './../core/repositories';
