@@ -194,15 +194,15 @@ export class RegistrationController {
     @ApiParam({ name: 'id', example: 'TVgJIjsRFmIvyjUeBOLv4gOD3eQZY' })
     async cActivateRegistration(@Req() req: Request, @Res() res: Response, @Param('id') id: string) {
         const registration = await this.registrationService.getRegistrationByField('id', id);
-        if (!registration) throw new HttpException({ errorMessage: ResponseMessage.NOT_FOUND }, StatusCodes.NOT_FOUND);
+        if (!registration) throw new HttpException({ errorMessage: 'Registration not found' }, StatusCodes.NOT_FOUND);
         if (registration.status !== RegistrationStatus.APPROVED) throw new HttpException({ status: ResponseMessage.INVALID_STATUS }, StatusCodes.BAD_REQUEST);
 
         const user = req.user;
 
-        const existedRegistration = (await this.registrationService.getExistedRegistration(registration.pricePackage.subject.id, user.email)).map((item) => {
-            return item.status === RegistrationStatus.PAID;
-        });
-        if (existedRegistration.length > 0) throw new HttpException({ errorMessage: ResponseMessage.DUPLICATED_REGISTRATION }, StatusCodes.BAD_REQUEST);
+        // const existedRegistration = (await this.registrationService.getExistedRegistration(registration.pricePackage.subject.id, user.email)).map((item) => {
+        //     return item.status === RegistrationStatus.PAID;
+        // });
+        // if (existedRegistration.length > 0) throw new HttpException({ errorMessage: ResponseMessage.DUPLICATED_REGISTRATION }, StatusCodes.BAD_REQUEST);
 
         const customer = await this.customerService.getCustomerByUserId(user.id);
         if (!customer) throw new HttpException({ errorMessage: ResponseMessage.UNAUTHORIZED }, StatusCodes.UNAUTHORIZED);
