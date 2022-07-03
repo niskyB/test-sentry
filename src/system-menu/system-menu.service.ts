@@ -36,14 +36,14 @@ export class SystemMenuService {
                 .take(pageSize)
                 .getMany();
 
-            count = this.systemMenuRepository
+            count = await this.systemMenuRepository
                 .createQueryBuilder('SystemMenu')
                 .where('SystemMenu.value LIKE (:value)', { value: `%${value}%` })
                 .andWhere(
                     new Brackets((qb) => {
-                        qb.where('SystemMenu.status = :statusMinValue', {
-                            statusMinValue: isActiveValue.minValue,
-                        }).orWhere('SystemMenu.status = :statusMaxValue', { statusMaxValue: isActiveValue.maxValue });
+                        qb.where('SystemMenu.isActive = :isActiveMinValue', {
+                            isActiveMinValue: isActiveValue.minValue,
+                        }).orWhere('SystemMenu.isActive = :isActiveMaxValue', { isActiveMaxValue: isActiveValue.maxValue });
                     }),
                 )
                 .getCount();

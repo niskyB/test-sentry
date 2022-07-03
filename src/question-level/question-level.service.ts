@@ -40,14 +40,14 @@ export class QuestionLevelService {
                 .take(pageSize)
                 .getMany();
 
-            count = this.questionLevelRepository
+            count = await this.questionLevelRepository
                 .createQueryBuilder('question_level')
                 .where('question_level.value LIKE (:value)', { value: `%${value}%` })
                 .andWhere(
                     new Brackets((qb) => {
-                        qb.where('question_level.status = :statusMinValue', {
-                            statusMinValue: isActiveValue.minValue,
-                        }).orWhere('question_level.status = :statusMaxValue', { statusMaxValue: isActiveValue.maxValue });
+                        qb.where('question_level.isActive = :isActiveMinValue', {
+                            isActiveMinValue: isActiveValue.minValue,
+                        }).orWhere('question_level.isActive = :isActiveMaxValue', { isActiveMaxValue: isActiveValue.maxValue });
                     }),
                 )
                 .getCount();

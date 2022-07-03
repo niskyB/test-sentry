@@ -44,14 +44,14 @@ export class BlogCategoryService {
                 .take(pageSize)
                 .getMany();
 
-            count = this.blogCategoryRepository
+            count = await this.blogCategoryRepository
                 .createQueryBuilder('BlogCategory')
                 .where('BlogCategory.value LIKE (:value)', { value: `%${value}%` })
                 .andWhere(
                     new Brackets((qb) => {
-                        qb.where('BlogCategory.status = :statusMinValue', {
-                            statusMinValue: isActiveValue.minValue,
-                        }).orWhere('BlogCategory.status = :statusMaxValue', { statusMaxValue: isActiveValue.maxValue });
+                        qb.where('BlogCategory.isActive = :isActiveMinValue', {
+                            isActiveMinValue: isActiveValue.minValue,
+                        }).orWhere('BlogCategory.isActive = :isActiveMaxValue', { isActiveMaxValue: isActiveValue.maxValue });
                     }),
                 )
                 .getCount();

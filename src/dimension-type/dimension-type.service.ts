@@ -40,14 +40,14 @@ export class DimensionTypeService {
                 .take(pageSize)
                 .getMany();
 
-            count = this.dimensionTypeRepository
+            count = await this.dimensionTypeRepository
                 .createQueryBuilder('DimensionType')
                 .where('DimensionType.value LIKE (:value)', { value: `%${value}%` })
                 .andWhere(
                     new Brackets((qb) => {
-                        qb.where('DimensionType.status = :statusMinValue', {
-                            statusMinValue: isActiveValue.minValue,
-                        }).orWhere('DimensionType.status = :statusMaxValue', { statusMaxValue: isActiveValue.maxValue });
+                        qb.where('DimensionType.isActive = :isActiveMinValue', {
+                            isActiveMinValue: isActiveValue.minValue,
+                        }).orWhere('DimensionType.isActive = :isActiveMaxValue', { isActiveMaxValue: isActiveValue.maxValue });
                     }),
                 )
                 .getCount();
