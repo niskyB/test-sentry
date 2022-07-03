@@ -199,9 +199,7 @@ export class RegistrationController {
 
         const user = req.user;
 
-        const existedRegistration = (await this.registrationService.getExistedRegistration(registration.pricePackage.subject.id, user.email)).map((item) => {
-            return item.status === RegistrationStatus.PAID;
-        });
+        const existedRegistration = (await this.registrationService.getExistedRegistration(registration.pricePackage.subject.id, user.email)).filter((item) => item.status === RegistrationStatus.PAID);
         if (existedRegistration.length > 0) throw new HttpException({ errorMessage: ResponseMessage.DUPLICATED_REGISTRATION }, StatusCodes.BAD_REQUEST);
 
         const customer = await this.customerService.getCustomerByUserId(user.id);
