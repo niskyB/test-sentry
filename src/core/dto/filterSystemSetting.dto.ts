@@ -6,10 +6,10 @@ import * as joi from 'joi';
 const { currentPage, pageSize, orderBy } = constant.default;
 
 export class FilterSystemSettingsDTO {
-    @ApiProperty({ description: 'Value', example: 'asdf-asds-aaasdf' })
+    @ApiProperty({ description: 'Value', example: 'asdf-asds-aaasdf', nullable: true })
     value: string;
 
-    @ApiProperty({ description: 'Name', example: 'Quiz 1' })
+    @ApiProperty({ description: 'Name', example: 'Quiz 1', nullable: true })
     status: boolean;
 
     @ApiProperty({ description: 'Current Page', example: '0', nullable: true })
