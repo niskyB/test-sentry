@@ -40,14 +40,14 @@ export class LessonTypeService {
                 .take(pageSize)
                 .getMany();
 
-            count = this.lessonTypeRepository
+            count = await this.lessonTypeRepository
                 .createQueryBuilder('LessonType')
                 .where('LessonType.value LIKE (:value)', { value: `%${value}%` })
                 .andWhere(
                     new Brackets((qb) => {
-                        qb.where('LessonType.status = :statusMinValue', {
-                            statusMinValue: isActiveValue.minValue,
-                        }).orWhere('LessonType.status = :statusMaxValue', { statusMaxValue: isActiveValue.maxValue });
+                        qb.where('LessonType.isActive = :isActiveMinValue', {
+                            isActiveMinValue: isActiveValue.minValue,
+                        }).orWhere('LessonType.isActive = :isActiveMaxValue', { isActiveMaxValue: isActiveValue.maxValue });
                     }),
                 )
                 .getCount();

@@ -40,14 +40,14 @@ export class QuizTypeService {
                 .take(pageSize)
                 .getMany();
 
-            count = this.quizTypeRepository
+            count = await this.quizTypeRepository
                 .createQueryBuilder('quiz_type')
                 .where('quiz_type.value LIKE (:value)', { value: `%${value}%` })
                 .andWhere(
                     new Brackets((qb) => {
-                        qb.where('quiz_type.status = :statusMinValue', {
-                            statusMinValue: isActiveValue.minValue,
-                        }).orWhere('quiz_type.status = :statusMaxValue', { statusMaxValue: isActiveValue.maxValue });
+                        qb.where('quiz_type.isActive = :isActiveMinValue', {
+                            isActiveMinValue: isActiveValue.minValue,
+                        }).orWhere('quiz_type.isActive = :isActiveMaxValue', { isActiveMaxValue: isActiveValue.maxValue });
                     }),
                 )
                 .getCount();

@@ -36,14 +36,14 @@ export class RoleService {
                 .take(pageSize)
                 .getMany();
 
-            count = this.roleRepository
+            count = await this.roleRepository
                 .createQueryBuilder('Role')
                 .where('Role.value LIKE (:value)', { value: `%${value}%` })
                 .andWhere(
                     new Brackets((qb) => {
-                        qb.where('Role.status = :statusMinValue', {
-                            statusMinValue: isActiveValue.minValue,
-                        }).orWhere('Role.status = :statusMaxValue', { statusMaxValue: isActiveValue.maxValue });
+                        qb.where('Role.isActive = :isActiveMinValue', {
+                            isActiveMinValue: isActiveValue.minValue,
+                        }).orWhere('Role.isActive = :isActiveMaxValue', { isActiveMaxValue: isActiveValue.maxValue });
                     }),
                 )
                 .getCount();
