@@ -51,7 +51,7 @@ export class RegistrationsController {
         const days = this.dateService.calculateNDaysBack(7);
         const result = await Promise.all(
             days.map(async (day) => {
-                const registrations = await this.registrationService.getCountByDayAndSubject(day, queries.subject);
+                const registrations = await this.registrationService.getCountByDayAndSubject(day, queries.subjectCategory);
                 const total = registrations.data.reduce((total, item) => (total += item.totalCost), 0);
                 return { value: total, date: registrations.date };
             }),

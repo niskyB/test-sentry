@@ -55,7 +55,7 @@ export class RegistrationService {
         return { value, date: day };
     }
 
-    async getCountByDayAndSubject(day: string, subject: string): Promise<{ data: Registration[]; date: string }> {
+    async getCountByDayAndSubject(day: string, subjectCategory: string): Promise<{ data: Registration[]; date: string }> {
         let data;
         try {
             data = await this.registrationRepository
@@ -64,7 +64,10 @@ export class RegistrationService {
                 .andWhere('registration.status LIKE (:status)', { status: 'paid' })
                 .leftJoinAndSelect('registration.pricePackage', 'pricePackage')
                 .leftJoinAndSelect('pricePackage.subject', 'subject')
-                .andWhere('subject.id LIKE (:id)', { id: `%${subject}%` })
+                .leftJoinAndSelect('subject.category', 'category')
+                .leftJoinAndSelect('registration.customer', 'customer')
+                .leftJoinAndSelect('customer.user', 'user')
+                .andWhere('category.id LIKE (:id)', { id: `%${subjectCategory}%` })
                 .getMany();
         } catch (err) {
             console.log(err);

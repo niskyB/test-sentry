@@ -32,11 +32,11 @@ export class Registration {
     totalCost: number;
 
     @ApiProperty({ description: 'Valid Form' })
-    @Column()
+    @Column({ default: '' })
     validFrom: string;
 
     @ApiProperty({ description: 'Valid To' })
-    @Column()
+    @Column({ default: '' })
     validTo: string;
 
     @ApiProperty({ description: 'Notes' })
