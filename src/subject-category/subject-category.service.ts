@@ -44,14 +44,14 @@ export class SubjectCategoryService {
                 .take(pageSize)
                 .getMany();
 
-            count = this.subjectCategoryRepository
+            count = await this.subjectCategoryRepository
                 .createQueryBuilder('SubjectCategory')
                 .where('SubjectCategory.value LIKE (:value)', { value: `%${value}%` })
                 .andWhere(
                     new Brackets((qb) => {
-                        qb.where('SubjectCategory.status = :statusMinValue', {
-                            statusMinValue: isActiveValue.minValue,
-                        }).orWhere('SubjectCategory.status = :statusMaxValue', { statusMaxValue: isActiveValue.maxValue });
+                        qb.where('SubjectCategory.isActive = :isActiveMinValue', {
+                            isActiveMinValue: isActiveValue.minValue,
+                        }).orWhere('SubjectCategory.isActive = :isActiveMaxValue', { isActiveMaxValue: isActiveValue.maxValue });
                     }),
                 )
                 .getCount();
