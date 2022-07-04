@@ -30,3 +30,4 @@ export * from './attended-question';
 export * from './user-answer';
 export * from './question-level';
 export * from './system-menu';
+export * from './transaction';

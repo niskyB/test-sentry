@@ -33,6 +33,7 @@ import {
     UserAnswer,
     QuestionLevel,
     SystemMenu,
+    Transaction,
 } from './core/models';
 
 export const DbModule = TypeOrmModule.forRoot({
@@ -79,6 +80,7 @@ export const DbModule = TypeOrmModule.forRoot({
         UserAnswer,
         QuestionLevel,
         SystemMenu,
+        Transaction,
     ],
     extra: { connectionLimit: 1 },
 });
