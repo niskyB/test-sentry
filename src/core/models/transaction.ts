@@ -31,9 +31,10 @@ export class Transaction {
 export const transactionValidateSchema = {
     amount: joi
         .number()
-        .min(1)
+        .min(1000)
+        .max(50000000)
         .required()
-        .messages(JoiMessage.createNumberMessages({ field: 'Amount' })),
+        .messages(JoiMessage.createNumberMessages({ field: 'Amount', min: 1000, max: 50000000 })),
     status: joi
         .string()
         .required()
