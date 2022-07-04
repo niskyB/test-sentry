@@ -65,32 +65,42 @@ export class QuestionController {
         newQuestion.isActive = body.isActive === null || body.isActive === undefined ? newQuestion.isActive : body.isActive;
         newQuestion.questionLevel = questionLevel;
         newQuestion.dimensions = [];
+
         if (file) {
             const result = await this.s3Service.uploadFile(file);
             if (result) newQuestion.imageUrl = result.Location;
             else throw new HttpException({ errorMessage: ResponseMessage.SOMETHING_WRONG }, StatusCodes.INTERNAL_SERVER_ERROR);
         }
         if (body.imageUrl) newQuestion.imageUrl = body.imageUrl;
+
         const dimensions = body.dimensions.split(',');
-        for (const item of dimensions) {
-            if (item) {
-                const dimension = await this.dimensionService.getDimensionByField('id', item);
-                if (!dimension) throw new HttpException({ dimensions: ResponseMessage.INVALID_DIMENSION }, StatusCodes.BAD_REQUEST);
-                newQuestion.dimensions.push(dimension);
-            }
-        }
+        await Promise.all(
+            dimensions.map(async (item) => {
+                if (item) {
+                    const dimension = await this.dimensionService.getDimensionByField('id', item);
+                    if (!dimension) throw new HttpException({ dimensions: ResponseMessage.INVALID_DIMENSION }, StatusCodes.BAD_REQUEST);
+                    newQuestion.dimensions.push(dimension);
+                }
+            }),
+        );
+
         if (newQuestion.dimensions.length === 0) throw new HttpException({ dimensions: ResponseMessage.INVALID_DIMENSION }, StatusCodes.BAD_REQUEST);
         const lesson = await this.lessonService.getLessonByField('id', body.lesson);
         if (!lesson) throw new HttpException({ lesson: ResponseMessage.INVALID_LESSON }, StatusCodes.BAD_REQUEST);
+
         newQuestion.lesson = lesson;
         await this.questionService.saveQuestion(newQuestion);
-        for (const item of answers) {
-            const answer = new Answer();
-            answer.detail = item.detail;
-            answer.isCorrect = item.isCorrect;
-            answer.question = newQuestion;
-            await this.answerService.saveAnswer(answer);
-        }
+
+        await Promise.all(
+            answers.map(async (item) => {
+                const answer = new Answer();
+                answer.detail = item.detail;
+                answer.isCorrect = item.isCorrect;
+                answer.question = newQuestion;
+                await this.answerService.saveAnswer(answer);
+            }),
+        );
+
         return res.send(newQuestion);
     }
 
@@ -134,13 +144,15 @@ export class QuestionController {
         } else newQuestion.imageUrl = question.imageUrl;
 
         await this.questionService.saveQuestion(newQuestion);
-        for (const item of answers) {
-            const answer = new Answer();
-            answer.detail = item.detail;
-            answer.isCorrect = item.isCorrect;
-            answer.question = newQuestion;
-            await this.answerService.saveAnswer(answer);
-        }
+        await Promise.all(
+            answers.map(async (item) => {
+                const answer = new Answer();
+                answer.detail = item.detail;
+                answer.isCorrect = item.isCorrect;
+                answer.question = newQuestion;
+                await this.answerService.saveAnswer(answer);
+            }),
+        );
 
         question.isOld = true;
         await this.questionService.saveQuestion(question);

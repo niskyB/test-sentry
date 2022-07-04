@@ -77,13 +77,15 @@ export class QuizController {
         quizResult.attendedQuestions = [];
 
         const quizDetail = await this.quizDetailService.getQuizDetailsByQuizId(id);
-        for (const item of quizDetail) {
-            let attendedQuestion = new AttendedQuestion();
-            attendedQuestion.questionInQuiz = item;
-            attendedQuestion.quizResult = quizResult;
-            attendedQuestion = await this.attendedQuestionService.saveAttendedQuestion(attendedQuestion);
-            quizResult.attendedQuestions.push(attendedQuestion);
-        }
+        await Promise.all(
+            quizDetail.map(async (item) => {
+                let attendedQuestion = new AttendedQuestion();
+                attendedQuestion.questionInQuiz = item;
+                attendedQuestion.quizResult = quizResult;
+                attendedQuestion = await this.attendedQuestionService.saveAttendedQuestion(attendedQuestion);
+                quizResult.attendedQuestions.push(attendedQuestion);
+            }),
+        );
 
         return res.send(quizResult.id);
     }
@@ -95,21 +97,27 @@ export class QuizController {
         const quizResult = await this.quizResultService.getQuizResultByAttendedQuestionId(body.data[0].attendedQuestionId);
         let correctAnswers = 0;
 
-        for (const item of body.data) {
-            let attendedQuestion = await this.attendedQuestionService.getAttendedQuestionByField('id', item.attendedQuestionId);
-            attendedQuestion.isMarked = item.isMarked;
-            attendedQuestion = await this.attendedQuestionService.saveAttendedQuestion(attendedQuestion);
-            let isCorrect = true;
-            for (const id of item.answerId) {
-                const answer = await this.answerService.getAnswerByField('id', id);
-                const userAnswer = new UserAnswer();
-                userAnswer.attendedQuestion = attendedQuestion;
-                userAnswer.answer = answer;
-                if (!answer.isCorrect) isCorrect = false;
-                await this.userAnswerService.saveUserAnswer(userAnswer);
-            }
-            if (isCorrect) correctAnswers++;
-        }
+        await Promise.all(
+            body.data.map(async (item) => {
+                let attendedQuestion = await this.attendedQuestionService.getAttendedQuestionByField('id', item.attendedQuestionId);
+                attendedQuestion.isMarked = item.isMarked;
+                attendedQuestion = await this.attendedQuestionService.saveAttendedQuestion(attendedQuestion);
+                let isCorrect = 0;
+                const numberOfCorrectAnswer = await this.answerService.getNumberOfCorrectAnswer(attendedQuestion.questionInQuiz.question.id);
+                await Promise.all(
+                    item.answerId.map(async (id) => {
+                        const answer = await this.answerService.getAnswerByField('id', id);
+                        const userAnswer = new UserAnswer();
+                        userAnswer.attendedQuestion = attendedQuestion;
+                        userAnswer.answer = answer;
+                        if (answer.isCorrect) isCorrect++;
+                        await this.userAnswerService.saveUserAnswer(userAnswer);
+                    }),
+                );
+                correctAnswers += isCorrect / numberOfCorrectAnswer;
+            }),
+        );
+
         quizResult.rate = correctAnswers / quizResult.attendedQuestions[0].questionInQuiz.quiz.numberOfQuestion;
         try {
             await this.quizResultService.updateQuizResult(quizResult);
@@ -129,7 +137,7 @@ export class QuizController {
         const subject = await this.subjectService.getSubjectByField('id', subjectId);
         if (!subject) throw new HttpException({ subject: ResponseMessage.INVALID_SUBJECT }, StatusCodes.BAD_REQUEST);
 
-        const questions = await this.questionService.getQuestionByLessonAndDimension(subjectTopicId, dimensionId);
+        const questions = await this.questionService.getQuestionByLessonAndDimension(subject.id, subjectTopicId, dimensionId);
 
         if (!questions || questions.length === 0) throw new HttpException({ errorMessage: ResponseMessage.NO_QUESTION_FOUND }, StatusCodes.BAD_REQUEST);
 
@@ -160,12 +168,14 @@ export class QuizController {
         newQuiz.numberOfQuestion = body.numberOfQuestion;
 
         newQuiz = await this.quizService.saveQuiz(newQuiz);
-        for (const item of newQuiz.questions) {
-            const quizDetail = new QuizDetail();
-            quizDetail.question = item;
-            quizDetail.quiz = newQuiz;
-            await this.quizDetailService.saveQuizDetail(quizDetail);
-        }
+        await Promise.all(
+            newQuiz.questions.map(async (item) => {
+                const quizDetail = new QuizDetail();
+                quizDetail.question = item;
+                quizDetail.quiz = newQuiz;
+                await this.quizDetailService.saveQuizDetail(quizDetail);
+            }),
+        );
 
         let quizResult = new QuizResult();
         quizResult.createdAt = new Date().toISOString();
@@ -177,13 +187,15 @@ export class QuizController {
         quizResult = await this.quizResultService.saveQuizResult(quizResult);
         quizResult.attendedQuestions = [];
         const quizDetail = await this.quizDetailService.getQuizDetailsByQuizId(newQuiz.id);
-        for (const item of quizDetail) {
-            let attendedQuestion = new AttendedQuestion();
-            attendedQuestion.questionInQuiz = item;
-            attendedQuestion.quizResult = quizResult;
-            attendedQuestion = await this.attendedQuestionService.saveAttendedQuestion(attendedQuestion);
-            quizResult.attendedQuestions.push(attendedQuestion);
-        }
+        await Promise.all(
+            quizDetail.map(async (item) => {
+                let attendedQuestion = new AttendedQuestion();
+                attendedQuestion.questionInQuiz = item;
+                attendedQuestion.quizResult = quizResult;
+                attendedQuestion = await this.attendedQuestionService.saveAttendedQuestion(attendedQuestion);
+                quizResult.attendedQuestions.push(attendedQuestion);
+            }),
+        );
 
         return res.send(quizResult.id);
     }
@@ -223,13 +235,15 @@ export class QuizController {
             newQuiz.subject.assignTo.user.token = '';
         }
 
-        for (const item of body.questions) {
-            const question = await this.questionService.getQuestionByField('id', item);
-            const quizDetail = new QuizDetail();
-            quizDetail.question = question;
-            quizDetail.quiz = newQuiz;
-            await this.quizDetailService.saveQuizDetail(quizDetail);
-        }
+        await Promise.all(
+            body.questions.map(async (item) => {
+                const question = await this.questionService.getQuestionByField('id', item);
+                const quizDetail = new QuizDetail();
+                quizDetail.question = question;
+                quizDetail.quiz = newQuiz;
+                await this.quizDetailService.saveQuizDetail(quizDetail);
+            }),
+        );
 
         return res.send(newQuiz);
     }
@@ -254,16 +268,18 @@ export class QuizController {
             if (body.numberOfQuestion !== quiz.questions.length) throw new HttpException({ questions: ResponseMessage.INVALID_NUMBER_OF_QUESTION }, StatusCodes.BAD_REQUEST);
         } else {
             if (body.numberOfQuestion !== body.questions.length) throw new HttpException({ questions: ResponseMessage.INVALID_NUMBER_OF_QUESTION }, StatusCodes.BAD_REQUEST);
-            for (const item of body.questions) {
-                const question = await this.questionService.getQuestionByField('id', item);
-                let quizDetail = await this.quizDetailService.getQuizDetailByQuizIdAndQuestionId(quiz.id, question.id);
-                if (!quizDetail) {
-                    quizDetail = new QuizDetail();
-                    quizDetail.question = question;
-                    quizDetail.quiz = quiz;
-                    await this.quizDetailService.saveQuizDetail(quizDetail);
-                }
-            }
+            await Promise.all(
+                body.questions.map(async (item) => {
+                    const question = await this.questionService.getQuestionByField('id', item);
+                    let quizDetail = await this.quizDetailService.getQuizDetailByQuizIdAndQuestionId(quiz.id, question.id);
+                    if (!quizDetail) {
+                        quizDetail = new QuizDetail();
+                        quizDetail.question = question;
+                        quizDetail.quiz = quiz;
+                        await this.quizDetailService.saveQuizDetail(quizDetail);
+                    }
+                }),
+            );
         }
 
         const type = await this.quizTypeService.getQuizTypeByField('id', body.type);
@@ -296,9 +312,11 @@ export class QuizController {
         if (user.role.description !== UserRole.ADMIN && quiz.subject.assignTo.id !== user.typeId) throw new HttpException({ errorMessage: ResponseMessage.FORBIDDEN }, StatusCodes.FORBIDDEN);
 
         const quizDetails = await this.quizDetailService.getQuizDetailsByQuizId(quiz.id);
-        for (const item of quizDetails) {
-            await this.quizDetailService.deleteQuizDetail(item);
-        }
+        await Promise.all(
+            quizDetails.map(async (item) => {
+                await this.quizDetailService.deleteQuizDetail(item);
+            }),
+        );
         await this.quizService.deleteQuiz(quiz);
 
         return res.send();

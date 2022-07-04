@@ -120,10 +120,12 @@ export class LessonController {
             const quizzes = body.quiz.split(',');
             const lessonQuiz = new LessonQuiz();
             lessonQuiz.quizzes = [];
-            for (const item of quizzes) {
-                const result = await this.quizService.getQuizByField('id', item);
-                if (result) lessonQuiz.quizzes.push(result);
-            }
+            await Promise.all(
+                quizzes.map(async (item) => {
+                    const result = await this.quizService.getQuizByField('id', item);
+                    if (result) lessonQuiz.quizzes.push(result);
+                }),
+            );
             lessonQuiz.htmlContent = body.htmlContent;
             lessonQuiz.lesson = newLesson;
 
@@ -196,10 +198,12 @@ export class LessonController {
             if (body.quiz) lessonQuiz.quizzes = [];
 
             const quiz = body.quiz.split(',');
-            for (const item of quiz) {
-                const result = await this.quizService.getQuizByField('id', item);
-                if (result) lessonQuiz.quizzes.push(result);
-            }
+            await Promise.all(
+                quiz.map(async (item) => {
+                    const result = await this.quizService.getQuizByField('id', item);
+                    if (result) lessonQuiz.quizzes.push(result);
+                }),
+            );
 
             await this.lessonQuizService.saveLessonQuiz(lessonQuiz);
         }
