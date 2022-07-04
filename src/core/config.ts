@@ -31,4 +31,15 @@ export const config = {
     AWS_ACCESS_KEY_ID: process.env.AWS_ACCESS_KEY_ID || '',
     AWS_SECRET_ACCESS_KEY: process.env.AWS_SECRET_ACCESS_KEY || '',
     AWS_BUCKET: process.env.AWS_BUCKET || '',
+
+    MOMO_SECRET_CONFIG_KEY: process.env.MOMO_SECRET_CONFIG_KEY || '',
+    MOMO_URL: process.env.MOMO_URL || '',
+    MOMO_IPN_URL: process.env.MOMO_IPN_URL || '',
+    MOMO_REDIRECT_URL: process.env.MOMO_REDIRECT_URL || '',
+    MOMO_REQUEST_PATH: process.env.MOMO_REQUEST_PATH || '',
+    MONO_PARTNER_CODE: process.env.MONO_PARTNER_CODE || '',
+    MOMO_REQUEST_CONTENT_TYPE: process.env.MOMO_REQUEST_CONTENT_TYPE || '',
+    MOMO_ACCESS_KEY: process.env.MOMO_ACCESS_KEY || '',
+    MOMO_LANG: process.env.MOMO_LANG || '',
+    MOMO_REQUEST_TYPE: process.env.MOMO_REQUEST_TYPE || '',
 };
