@@ -54,7 +54,7 @@
         "mono-utils-core": "^0.10.0",
         "morgan": "^1.10.0",
         "multer": "^1.4.4",
-        "mysql": "^2.18.1",
+        "mysql2": "^2.3.3",
         "passport": "^0.5.2",
         "passport-facebook": "^3.0.0",
         "passport-google-oauth20": "^2.0.0",

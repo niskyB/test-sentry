@@ -28,6 +28,7 @@ export class TransactionController {
         transaction.amount = body.amount;
         transaction.customer = customer;
         transaction = await this.transactionService.saveTransaction(transaction);
+
         const result = await this.transactionService.MonoDeposit(transaction);
 
         return res.send(result.payUrl);

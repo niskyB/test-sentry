@@ -19,6 +19,7 @@ export class CommonGuard implements CanActivate {
         const token = this.getTokenFromHeader(authorization);
 
         const { data, error } = await this.authService.verifyToken<JwtToken>(token);
+
         if (error) {
             throw new HttpException({}, StatusCodes.UNAUTHORIZED);
         }
