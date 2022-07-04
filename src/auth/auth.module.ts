@@ -8,7 +8,7 @@ import { config } from '../core';
 import { EmailModule } from '../core/providers';
 
 @Module({
-    imports: [forwardRef(() => UserModule), EmailModule, CustomerModule],
+    imports: [forwardRef(() => UserModule), EmailModule, forwardRef(() => CustomerModule)],
     controllers: [AuthController],
     providers: [
         AuthService,
