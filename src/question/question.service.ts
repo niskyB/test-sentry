@@ -32,12 +32,15 @@ export class QuestionService {
             .getMany();
     }
 
-    async getQuestionByLessonAndDimension(lessonId: string, dimensionId: string): Promise<Question[]> {
+    async getQuestionByLessonAndDimension(subjectId: string, lessonId: string, dimensionId: string): Promise<Question[]> {
         return await this.questionRepository
             .createQueryBuilder('question')
+            .where('question.isOld = (:isOld)', { isOld: false })
             .leftJoinAndSelect('question.dimensions', 'dimensions')
-            .where('dimensions.id LIKE (:dimensionId)', { dimensionId: `%${dimensionId}%` })
+            .andWhere('dimensions.id LIKE (:dimensionId)', { dimensionId: `%${dimensionId}%` })
             .leftJoinAndSelect('question.lesson', 'lesson')
+            .leftJoinAndSelect('lesson.subject', 'subject')
+            .andWhere('subject.id = (:subjectId)', { subjectId })
             .andWhere('lesson.id LIKE (:lessonId)', { lessonId: `%${lessonId}%` })
             .getMany();
     }
@@ -57,6 +60,7 @@ export class QuestionService {
             .createQueryBuilder('question')
             .leftJoinAndSelect('question.lesson', 'lesson')
             .where('lesson.id LIKE (:lessonId)', { lessonId: `%${lesson}%` })
+            .andWhere('question.isOld = (:isOld)', { isOld: false })
             .leftJoinAndSelect('lesson.subject', 'subject')
             .andWhere('subject.id LIKE (:subjectId)', { subjectId: `%${subject}%` })
             .leftJoinAndSelect('question.dimensions', 'dimensions')
@@ -112,6 +116,7 @@ export class QuestionService {
             .createQueryBuilder('question')
             .leftJoinAndSelect('question.lesson', 'lesson')
             .where('lesson.id LIKE (:lessonId)', { lessonId: `%${lesson}%` })
+            .andWhere('question.isOld = (:isOld)', { isOld: false })
             .leftJoinAndSelect('lesson.subject', 'subject')
             .andWhere('subject.id LIKE (:subjectId)', { subjectId: `%${subject}%` })
             .leftJoinAndSelect('subject.assignTo', 'assignTo')

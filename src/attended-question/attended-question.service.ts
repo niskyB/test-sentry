@@ -22,6 +22,7 @@ export class AttendedQuestionService {
             .leftJoinAndSelect('attended_question.questionInQuiz', 'questionInQuiz')
             .leftJoinAndSelect('attended_question.quizResult', 'quizResult')
             .leftJoinAndSelect('questionInQuiz.quiz', 'quiz')
+            .leftJoinAndSelect('questionInQuiz.question', 'question')
             .getOne();
     }
 
