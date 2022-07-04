@@ -36,6 +36,7 @@ import { ExamLevelModule } from './exam-level/exam-level.module';
 import { QuizDetailModule } from './quiz-detail/quiz-detail.module';
 import { RoleModule } from './role/role.module';
 import { SystemMenuModule } from './system-menu/system-menu.module';
+import { TransactionModule } from './transaction/transaction.module';
 @Module({
     imports: [
         DbModule,
@@ -77,6 +78,7 @@ import { SystemMenuModule } from './system-menu/system-menu.module';
         QuizDetailModule,
         RoleModule,
         SystemMenuModule,
+        TransactionModule,
     ],
 })
 export class AppModule {}
