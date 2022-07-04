@@ -19,7 +19,7 @@ import { RegistrationsController } from './registrations.controller';
         forwardRef(() => UserModule),
         forwardRef(() => PricePackageModule),
         TypeOrmModule.forFeature([Registration]),
-        CustomerModule,
+        forwardRef(() => CustomerModule),
         DataModule,
         SaleModule,
         FilterModule,
