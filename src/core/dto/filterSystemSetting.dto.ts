@@ -30,6 +30,6 @@ export const vFilterSystemSettingsDTO = joi.object<FilterSystemSettingsDTO>({
     status: joi.boolean().required().failover(null),
     currentPage: joi.number().min(0).required().failover(currentPage),
     pageSize: joi.number().min(1).required().failover(pageSize),
-    orderBy: joi.string().allow('').failover(orderBy).required(),
+    orderBy: joi.string().failover(orderBy).required(),
     order: joi.string().allow('').failover(SortOrder.ASC).valid(SortOrder.ASC, SortOrder.DESC).required(),
 });
