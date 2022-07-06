@@ -1,7 +1,8 @@
+import { ResponseMessage } from './../core/interface';
 import { DateService } from './../core/providers';
 import { CommonGuard, MarketingGuard } from './../auth/guard';
 import { QueryJoiValidatorPipe } from './../core/pipe';
-import { Controller, Res, Get, UsePipes, Query, Req, UseGuards } from '@nestjs/common';
+import { Controller, Res, Get, UsePipes, Query, Req, UseGuards, HttpException } from '@nestjs/common';
 import { ApiTags, ApiBearerAuth } from '@nestjs/swagger';
 import { Response, Request } from 'express';
 import { RegistrationService } from './registration.service';
@@ -17,6 +18,7 @@ import {
     vStatisticRegistrationsDTO,
     vStatisticRevenuesDTO,
 } from './dto';
+import { StatusCodes } from 'http-status-codes';
 
 @ApiTags('registrations')
 @ApiBearerAuth()
@@ -66,6 +68,7 @@ export class RegistrationsController {
     @UsePipes()
     async cGetOrderTrendStatistics(@Res() res: Response, @Query() queries: StatisticOrderTrendDTO) {
         const { from, to } = queries;
+        if (from > to) throw new HttpException({ orderTrend: ResponseMessage.FROM_LAGER_THAN_TO }, StatusCodes.BAD_REQUEST);
         const days = this.dateService.calculateDaysBetween(from, to);
         const result = await Promise.all(
             days.map(async (day) => {
