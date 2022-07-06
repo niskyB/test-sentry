@@ -22,7 +22,7 @@ export class LessonTypesController {
     @UseGuards(AdminGuard)
     @UsePipes(new QueryJoiValidatorPipe(vFilterSystemSettingsDTO))
     async cFilterLessonTypes(@Res() res: Response, @Query() queries: FilterSystemSettingsDTO) {
-        const { value, status, order, orderBy, currentPage, pageSize } = queries;
+        const { value, isActive: status, order, orderBy, currentPage, pageSize } = queries;
         const result = await this.lessonTypeService.filterLessonTypes(status, value, order, orderBy, currentPage, pageSize);
         return res.send(result);
     }
