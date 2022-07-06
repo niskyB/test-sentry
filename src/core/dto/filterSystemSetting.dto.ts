@@ -10,7 +10,7 @@ export class FilterSystemSettingsDTO {
     value: string;
 
     @ApiProperty({ description: 'Name', example: 'Quiz 1', nullable: true })
-    status: boolean;
+    isActive: boolean;
 
     @ApiProperty({ description: 'Current Page', example: '0', nullable: true })
     currentPage: number;
@@ -27,7 +27,7 @@ export class FilterSystemSettingsDTO {
 
 export const vFilterSystemSettingsDTO = joi.object<FilterSystemSettingsDTO>({
     value: joi.string().required().failover(''),
-    status: joi.boolean().required().failover(null),
+    isActive: joi.boolean().required().failover(null),
     currentPage: joi.number().min(0).required().failover(currentPage),
     pageSize: joi.number().min(1).required().failover(pageSize),
     orderBy: joi.string().failover(orderBy).required(),

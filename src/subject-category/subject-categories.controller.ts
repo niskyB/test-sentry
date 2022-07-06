@@ -16,7 +16,7 @@ export class SubjectCategoriesController {
     @UseGuards(AdminGuard)
     @UsePipes(new QueryJoiValidatorPipe(vFilterSystemSettingsDTO))
     async cFilterSubjectCategories(@Res() res: Response, @Query() queries: FilterSystemSettingsDTO) {
-        const { value, status, currentPage, pageSize, order, orderBy } = queries;
+        const { value, isActive: status, currentPage, pageSize, order, orderBy } = queries;
         const result = await this.subjectCategoryService.filterSubjectCategories(status, value, order, orderBy, currentPage, pageSize);
         return res.send(result);
     }

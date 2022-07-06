@@ -16,7 +16,7 @@ export class RolesController {
     @Get('/admin')
     @UsePipes(new QueryJoiValidatorPipe(vFilterSystemSettingsDTO))
     async cFilterRoles(@Res() res: Response, @Query() queries: FilterSystemSettingsDTO) {
-        const { value, status, order, orderBy, currentPage, pageSize } = queries;
+        const { value, isActive: status, order, orderBy, currentPage, pageSize } = queries;
         const result = await this.roleService.filterRoles(status, value, order, orderBy, currentPage, pageSize);
         return res.send(result);
     }

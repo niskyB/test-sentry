@@ -22,7 +22,7 @@ export class QuizTypesController {
     @UseGuards(AdminGuard)
     @UsePipes(new QueryJoiValidatorPipe(vFilterSystemSettingsDTO))
     async cFilterQuizTypes(@Res() res: Response, @Query() queries: FilterSystemSettingsDTO) {
-        const { value, status, order, orderBy, currentPage, pageSize } = queries;
+        const { value, isActive: status, order, orderBy, currentPage, pageSize } = queries;
         const result = await this.quizTypeService.filterQuizTypes(status, value, order, orderBy, currentPage, pageSize);
         return res.send(result);
     }
