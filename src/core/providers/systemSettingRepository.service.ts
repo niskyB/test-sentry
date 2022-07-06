@@ -16,7 +16,7 @@ export class SystemSettingRepositoryService<T> extends Repository<T> {
         const filterService = new FilterService();
         const isActiveValue = filterService.getMinMaxValue(status);
         try {
-            data = await this.createQueryBuilder()
+            data = await this.createQueryBuilder('Table')
                 .where('value LIKE (:value)', { value: `%${value}%` })
                 .andWhere(
                     new Brackets((qb) => {
@@ -25,7 +25,7 @@ export class SystemSettingRepositoryService<T> extends Repository<T> {
                         }).orWhere('isActive = :isActiveMaxValue', { isActiveMaxValue: isActiveValue.maxValue });
                     }),
                 )
-                .orderBy(`${orderBy}`, order)
+                .orderBy(`Table.${orderBy}`, order)
                 .skip(currentPage * pageSize)
                 .take(pageSize)
                 .getMany();
