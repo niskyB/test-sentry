@@ -36,4 +36,5 @@ export enum ResponseMessage {
     NO_QUESTION_FOUND = 'No question is found',
     REGISTRATION_NOT_FOUND = 'Registration not found',
     BALANCE_NOT_ENOUGH = 'Your balance is not enough',
+    FROM_LAGER_THAN_TO = 'From day should be less than or equal to To Day',
 }
