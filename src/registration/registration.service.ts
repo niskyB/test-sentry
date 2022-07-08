@@ -1,7 +1,7 @@
 import { FilterService } from './../core/providers';
 import { SortOrder } from './../core/interface';
 import { Injectable } from '@nestjs/common';
-import { Registration } from '../core/models';
+import { Registration, RegistrationStatus } from '../core/models';
 import { RegistrationRepository } from '../core/repositories';
 import { Brackets } from 'typeorm';
 
@@ -74,6 +74,14 @@ export class RegistrationService {
             return { data, date: day };
         }
         return { data, date: day };
+    }
+
+    async getPaidRegistrationByDay(day: string): Promise<Registration[]> {
+        return await this.registrationRepository
+            .createQueryBuilder('registration')
+            .where('registration.status = (:status)', { status: RegistrationStatus.PAID })
+            .andWhere('registration.validTo <= (:day)', { day })
+            .getMany();
     }
 
     async filterRegistrations(

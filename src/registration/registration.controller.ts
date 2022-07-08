@@ -15,6 +15,7 @@ import { UserService } from '../user/user.service';
 import { CreateRegistrationDTO, UpdateGeneralInformationDTO, UpdateSpecificInformationDTO, vCreateRegistrationDTO, vUpdateGeneralInformationDTO, vUpdateSpecificInformationDTO } from './dto';
 import { RegistrationService } from './registration.service';
 import { constant } from '../core';
+import { Cron, CronExpression } from '@nestjs/schedule';
 
 @ApiTags('registration')
 @Controller('registration')
@@ -221,10 +222,24 @@ export class RegistrationController {
         const registration = await this.registrationService.getRegistrationByField('id', id);
 
         if (!registration) throw new HttpException({ errorMessage: ResponseMessage.NOT_FOUND }, StatusCodes.NOT_FOUND);
-        if (registration.status !== RegistrationStatus.SUBMITTED) throw new HttpException({ status: ResponseMessage.INVALID_STATUS }, StatusCodes.BAD_REQUEST);
+        if (registration.status !== RegistrationStatus.SUBMITTED && registration.status !== RegistrationStatus.APPROVED)
+            throw new HttpException({ status: ResponseMessage.INVALID_STATUS }, StatusCodes.BAD_REQUEST);
 
-        registration.status = RegistrationStatus.INACTIVE;
+        registration.status = RegistrationStatus.CANCELLED;
         await this.registrationService.saveRegistration(registration);
         return res.send();
+    }
+
+    @Cron(CronExpression.EVERY_12_HOURS)
+    async cCheckValidRegistration() {
+        const today = new Date().toISOString();
+        const registrations = await this.registrationService.getPaidRegistrationByDay(today);
+
+        Promise.all(
+            registrations.map(async (item) => {
+                item.status = RegistrationStatus.INACTIVE;
+                await this.registrationService.saveRegistration(item);
+            }),
+        );
     }
 }
