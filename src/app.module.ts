@@ -37,6 +37,7 @@ import { QuizDetailModule } from './quiz-detail/quiz-detail.module';
 import { RoleModule } from './role/role.module';
 import { SystemMenuModule } from './system-menu/system-menu.module';
 import { TransactionModule } from './transaction/transaction.module';
+import { ScheduleModule } from '@nestjs/schedule';
 @Module({
     imports: [
         DbModule,
@@ -79,6 +80,7 @@ import { TransactionModule } from './transaction/transaction.module';
         RoleModule,
         SystemMenuModule,
         TransactionModule,
+        ScheduleModule.forRoot(),
     ],
 })
 export class AppModule {}

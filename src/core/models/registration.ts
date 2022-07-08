@@ -9,6 +9,7 @@ import { PricePackage } from './price-package';
 export enum RegistrationStatus {
     SUBMITTED = 'submitted',
     APPROVED = 'approved',
+    CANCELLED = 'cancelled',
     PAID = 'paid',
     INACTIVE = 'inactive',
 }
@@ -69,7 +70,7 @@ export const registrationValidateSchema = {
     status: joi
         .string()
         .required()
-        .valid(RegistrationStatus.INACTIVE, RegistrationStatus.PAID, RegistrationStatus.SUBMITTED, RegistrationStatus.APPROVED)
+        .valid(RegistrationStatus.INACTIVE, RegistrationStatus.PAID, RegistrationStatus.SUBMITTED, RegistrationStatus.APPROVED, RegistrationStatus.CANCELLED)
         .messages(JoiMessage.createStringMessages({ field: 'Status' })),
     registrationTime: joi
         .string()
