@@ -1,11 +1,13 @@
+import { CommonGuard } from './../auth/guard';
 import { QuizResultService } from './../quiz-result/quiz-result.service';
-import { Controller, Res, Param, Get } from '@nestjs/common';
+import { Controller, Res, Param, Get, UseGuards } from '@nestjs/common';
 import { ApiTags, ApiBearerAuth, ApiParam } from '@nestjs/swagger';
 import { Response } from 'express';
 import { AttendedQuestion } from '../core/models';
 
 @ApiTags('quiz result')
 @ApiBearerAuth()
+@UseGuards(CommonGuard)
 @Controller('quiz-result')
 export class QuizResultController {
     constructor(private readonly quizResultService: QuizResultService) {}

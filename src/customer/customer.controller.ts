@@ -12,7 +12,7 @@ export class CustomerController {
     constructor(private readonly customerService: CustomerService) {}
 
     @Get('')
-    async cGetDimensionById(@Req() req: Request, @Res() res: Response) {
+    async cGetCustomer(@Req() req: Request, @Res() res: Response) {
         const customer = await this.customerService.getCustomerByUserId(req.user.id);
         if (!customer) return res.send(null);
 

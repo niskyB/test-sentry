@@ -42,6 +42,7 @@ export class QuizController {
     ) {}
 
     @Get('/:id')
+    @UseGuards(CommonGuard)
     @ApiParam({ name: 'id', example: 'TVgJIjsRFmIvyjUeBOLv4gOD3eQZY' })
     async cGetQuiz(@Res() res: Response, @Param('id') id: string) {
         const quiz = await this.quizService.getQuizByField('id', id);
@@ -299,6 +300,7 @@ export class QuizController {
     }
 
     @Delete('/:id')
+    @UseGuards(ExpertGuard)
     @ApiParam({ name: 'id', example: 'TVgJIjsRFmIvyjUeBOLv4gOD3eQZY' })
     async cDeleteQuiz(@Req() req: Request, @Res() res: Response, @Param('id') id: string) {
         const user = req.user;
