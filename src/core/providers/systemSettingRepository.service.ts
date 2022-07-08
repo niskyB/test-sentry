@@ -4,11 +4,11 @@ import { Brackets, Repository } from 'typeorm';
 
 export class SystemSettingRepositoryService<T> extends Repository<T> {
     public async findOneByField(field: keyof T, value: any): Promise<T> {
-        return await this.createQueryBuilder().where(`${field.toString()} = :value`, { value }).getOne();
+        return await this.createQueryBuilder('Table').where(`Table.${field.toString()} = :value`, { value }).getOne();
     }
 
     public async findManyByField(field: keyof T, value: any): Promise<T[]> {
-        return await this.createQueryBuilder().where(`${field.toString()} = :value`, { value }).getMany();
+        return await this.createQueryBuilder('Table').where(`Table.${field.toString()} = :value`, { value }).getMany();
     }
 
     async filterSetting(status: boolean, value: string, order: SortOrder, orderBy: string, currentPage: number, pageSize: number): Promise<{ data: T[]; count: number }> {
