@@ -6,7 +6,7 @@ import { QuizService } from './../quiz/quiz.service';
 import { Lesson, LessonDetail, LessonQuiz, LessonTypes, SubjectTopic, UserRole } from './../core/models';
 import { SubjectService } from './../subject/subject.service';
 import { LessonTypeService } from './../lesson-type/lesson-type.service';
-import { ExpertGuard } from './../auth/guard';
+import { CommonGuard, ExpertGuard } from './../auth/guard';
 import { JoiValidatorPipe } from './../core/pipe';
 import { ResponseMessage } from './../core/interface';
 import { Body, Controller, Get, HttpException, Param, Post, Put, Req, Res, UseGuards, UsePipes } from '@nestjs/common';
@@ -32,6 +32,7 @@ export class LessonController {
     ) {}
 
     @Get('/:id')
+    @UseGuards(CommonGuard)
     @ApiParam({ name: 'id', example: 'TVgJIjsRFmIvyjUeBOLv4gOD3eQZY', description: 'lesson id' })
     async cGetLessonById(@Param('id') id: string, @Res() res: Response) {
         const lesson = await this.lessonService.getLessonByField('id', id);

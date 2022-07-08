@@ -1,6 +1,7 @@
+import { CommonGuard } from './../auth/guard';
 import { QueryJoiValidatorPipe } from './../core/pipe';
 import { ResponseMessage } from './../core/interface';
-import { Controller, Get, HttpException, Param, Query, Res, UsePipes } from '@nestjs/common';
+import { Controller, Get, HttpException, Param, Query, Res, UseGuards, UsePipes } from '@nestjs/common';
 import { ApiBearerAuth, ApiParam, ApiTags } from '@nestjs/swagger';
 import { LessonService } from './lesson.service';
 import { StatusCodes } from 'http-status-codes';
@@ -9,6 +10,7 @@ import { FilterLessonDTO, vFilterLessonDTO } from './dto';
 
 @ApiTags('lessons')
 @ApiBearerAuth()
+@UseGuards(CommonGuard)
 @Controller('lessons')
 export class LessonsController {
     constructor(private readonly lessonService: LessonService) {}

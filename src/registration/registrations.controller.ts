@@ -1,6 +1,6 @@
 import { ResponseMessage } from './../core/interface';
 import { DateService } from './../core/providers';
-import { CommonGuard, MarketingGuard } from './../auth/guard';
+import { CommonGuard, MarketingGuard, SaleGuard } from './../auth/guard';
 import { QueryJoiValidatorPipe } from './../core/pipe';
 import { Controller, Res, Get, UsePipes, Query, Req, UseGuards, HttpException } from '@nestjs/common';
 import { ApiTags, ApiBearerAuth } from '@nestjs/swagger';
@@ -27,6 +27,7 @@ export class RegistrationsController {
     constructor(private readonly registrationService: RegistrationService, private readonly dateService: DateService) {}
 
     @Get('')
+    @UseGuards(SaleGuard)
     @UsePipes(new QueryJoiValidatorPipe(vFilterRegistrationsDTO))
     async cFilterRegistrations(@Res() res: Response, @Query() queries: FilterRegistrationsDTO) {
         const { subject, validFrom, validTo, email, status, currentPage, pageSize, order, orderBy } = queries;

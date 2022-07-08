@@ -1,7 +1,7 @@
 import { QuestionLevelService } from './../question-level/question-level.service';
 import { AnswerService } from './../answer/answer.service';
 import { LessonService } from './../lesson/lesson.service';
-import { ExpertGuard } from './../auth/guard';
+import { CommonGuard, ExpertGuard } from './../auth/guard';
 import { DimensionService } from './../dimension/dimension.service';
 import { S3Service } from '../core/providers';
 import { Answer, Question } from './../core/models';
@@ -29,6 +29,7 @@ export class QuestionController {
     ) {}
 
     @Get('/:id')
+    @UseGuards(CommonGuard)
     @ApiParam({ name: 'id', example: 'TVgJIjsRFmIvyjUeBOLv4gOD3eQZY' })
     async cGetQuestionById(@Param('id') id: string, @Res() res: Response) {
         const question = await this.questionService.getQuestionByField('id', id);

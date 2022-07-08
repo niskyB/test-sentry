@@ -2,7 +2,7 @@ import { StatusCodes } from 'http-status-codes';
 import { ResponseMessage } from './../core/interface';
 import { SubjectService } from './../subject/subject.service';
 import { PricePackage } from './../core/models';
-import { AdminGuard, ExpertGuard } from './../auth/guard';
+import { AdminGuard } from './../auth/guard';
 import { Body, Controller, Post, Res, UseGuards, UsePipes, HttpException, Get, Param, Put } from '@nestjs/common';
 import { ApiBearerAuth, ApiParam, ApiTags } from '@nestjs/swagger';
 import { PricePackageService } from './price-package.service';
@@ -12,7 +12,6 @@ import { Response } from 'express';
 
 @ApiTags('price package')
 @ApiBearerAuth()
-@UseGuards(ExpertGuard)
 @Controller('price-package')
 export class PricePackageController {
     constructor(private readonly pricePackageService: PricePackageService, private readonly subjectService: SubjectService) {}
