@@ -1,3 +1,4 @@
+import { RegistrationModule } from './../registration/registration.module';
 import { Lesson } from './../core/models';
 import { QuizModule } from './../quiz/quiz.module';
 import { LessonQuizModule } from './../lesson-quiz/lesson-quiz.module';
@@ -29,6 +30,7 @@ import { FilterModule } from '../core/providers';
         QuizModule,
         UserModule,
         FilterModule,
+        RegistrationModule,
     ],
     controllers: [LessonController, LessonsController],
     providers: [LessonService, { provide: LessonRepository, useFactory: (connection: Connection) => connection.getCustomRepository(LessonRepository), inject: [Connection] }],

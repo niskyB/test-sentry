@@ -1,6 +1,7 @@
+import { StatusCodes } from 'http-status-codes';
 import { FilterService } from './../core/providers';
-import { SortOrder } from './../core/interface';
-import { Injectable } from '@nestjs/common';
+import { ResponseMessage, SortOrder } from './../core/interface';
+import { HttpException, Injectable } from '@nestjs/common';
 import { Registration, RegistrationStatus } from '../core/models';
 import { RegistrationRepository } from '../core/repositories';
 import { Brackets } from 'typeorm';
@@ -212,5 +213,13 @@ export class RegistrationService {
         }
 
         return { data: registrations, count };
+    }
+
+    async checkUserAccess(subject: string, email: string) {
+        const registrations = await this.getExistedRegistration(subject, email);
+
+        if (!registrations || registrations.length === 0) throw new HttpException({ errorMessage: ResponseMessage.UNAUTHORIZED }, StatusCodes.UNAUTHORIZED);
+        const validRegistration = registrations.filter((item) => item.status === RegistrationStatus.PAID);
+        if (!validRegistration || validRegistration.length === 0) throw new HttpException({ errorMessage: ResponseMessage.UNAUTHORIZED }, StatusCodes.UNAUTHORIZED);
     }
 }
