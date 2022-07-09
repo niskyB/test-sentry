@@ -9,6 +9,12 @@ import { Brackets } from 'typeorm';
 export class BlogService {
     constructor(private readonly blogRepository: BlogRepository, private readonly filterService: FilterService) {}
 
+    private filterBlog = this.blogRepository
+        .createQueryBuilder('blog')
+        .leftJoinAndSelect('blog.category', 'category')
+        .leftJoinAndSelect('blog.marketing', 'marketing')
+        .leftJoinAndSelect('marketing.user', 'user');
+
     async saveBlog(blog: Blog): Promise<Blog> {
         return await this.blogRepository.save(blog);
     }
@@ -31,76 +37,37 @@ export class BlogService {
             const activeValue = this.filterService.getMinMaxValue(isShow);
             const date = new Date(createdAt);
             let blogs, count;
+
+            let query = this.filterBlog
+                .where(`blog.title LIKE (:title)`, { title: `%${title}%` })
+                .andWhere(`blog.createdAt >= (:createdAt)`, { createdAt: date })
+                .andWhere(
+                    new Brackets((qb) => {
+                        qb.where('blog.isShow = :activeMinValue', {
+                            activeMinValue: activeValue.minValue,
+                        }).orWhere('blog.isShow = :activeMaxValue', { activeMaxValue: activeValue.maxValue });
+                    }),
+                )
+                .andWhere(`category.id LIKE (:id)`, { id: `%${categoryId}%` });
+
             if (!userId) {
-                blogs = await this.blogRepository
-                    .createQueryBuilder('blog')
-                    .where(`blog.title LIKE (:title)`, {
-                        title: `%${title}%`,
-                    })
-                    .andWhere(`blog.createdAt >= (:createdAt)`, { createdAt: date })
-                    .andWhere(
-                        new Brackets((qb) => {
-                            qb.where('blog.isShow = :activeMinValue', {
-                                activeMinValue: activeValue.minValue,
-                            }).orWhere('blog.isShow = :activeMaxValue', { activeMaxValue: activeValue.maxValue });
-                        }),
-                    )
-                    .leftJoinAndSelect('blog.category', 'category')
-                    .andWhere(`category.id LIKE (:id)`, { id: `%${categoryId}%` })
-                    .leftJoinAndSelect('blog.marketing', 'marketing')
-                    .leftJoinAndSelect('marketing.user', 'user')
+                blogs = await query
                     .orderBy(`blog.updatedAt`, order)
                     .skip(currentPage * pageSize)
                     .take(pageSize)
                     .getMany();
-                count = await this.blogRepository
-                    .createQueryBuilder('blog')
-                    .where(`blog.title LIKE (:title)`, {
-                        title: `%${title}%`,
-                    })
-                    .andWhere(`blog.createdAt >= (:createdAt)`, { createdAt: date })
-                    .andWhere(
-                        new Brackets((qb) => {
-                            qb.where('blog.isShow = :activeMinValue', {
-                                activeMinValue: activeValue.minValue,
-                            }).orWhere('blog.isShow = :activeMaxValue', { activeMaxValue: activeValue.maxValue });
-                        }),
-                    )
-                    .leftJoinAndSelect('blog.category', 'category')
-                    .andWhere(`category.id LIKE (:id)`, { id: `%${categoryId}%` })
-                    .leftJoinAndSelect('blog.marketing', 'marketing')
-                    .leftJoinAndSelect('marketing.user', 'user')
-                    .getCount();
+
+                count = await query.getCount();
             } else {
-                blogs = await this.blogRepository
-                    .createQueryBuilder('blog')
-                    .where(`blog.title LIKE (:title)`, {
-                        title: `%${title}%`,
-                    })
-                    .andWhere(`blog.createdAt >= (:createdAt)`, { createdAt: date })
-                    .andWhere(`blog.isShow = (:isShow)`, { isShow: isShow })
-                    .leftJoinAndSelect('blog.category', 'category')
-                    .andWhere(`category.id LIKE (:id)`, { id: `%${categoryId}%` })
-                    .leftJoinAndSelect('blog.marketing', 'marketing')
-                    .leftJoinAndSelect('marketing.user', 'user')
-                    .andWhere('user.id LIKE (:userId)', { userId: `%${userId}%` })
-                    .orderBy(`blog.createdAt`, 'DESC')
+                query = query.andWhere('user.id LIKE (:userId)', { userId: `%${userId}%` });
+
+                blogs = await query
+                    .orderBy(`blog.updatedAt`, 'DESC')
                     .skip(currentPage * pageSize)
                     .take(pageSize)
                     .getMany();
-                count = await this.blogRepository
-                    .createQueryBuilder('blog')
-                    .where(`blog.title LIKE (:title)`, {
-                        title: `%${title}%`,
-                    })
-                    .andWhere(`blog.createdAt >= (:createdAt)`, { createdAt: date })
-                    .andWhere(`blog.isShow = (:isShow)`, { isShow: isShow })
-                    .leftJoinAndSelect('blog.category', 'category')
-                    .andWhere(`category.id LIKE (:id)`, { id: `%${categoryId}%` })
-                    .leftJoinAndSelect('blog.marketing', 'marketing')
-                    .leftJoinAndSelect('marketing.user', 'user')
-                    .andWhere('user.id LIKE (:userId)', { userId: `%${userId}%` })
-                    .getCount();
+
+                count = await query.getCount();
             }
 
             return { data: blogs, count };
