@@ -1,3 +1,4 @@
+import { RegistrationService } from './../registration/registration.service';
 import { QuizDetailService } from '../quiz-detail/quiz-detail.service';
 import { CommonGuard, ExpertGuard } from '../auth/guard';
 import { Controller, Res, UseGuards, Get, UsePipes, Query, Req } from '@nestjs/common';
@@ -11,7 +12,7 @@ import { FilterQuizzesDTO, FilterSimulationExamsDTO, vFilterQuizzesDTO, vFilterS
 @ApiBearerAuth()
 @Controller('quizzes')
 export class QuizzesController {
-    constructor(private readonly quizService: QuizService, private readonly quizDetailService: QuizDetailService) {}
+    constructor(private readonly quizService: QuizService, private readonly quizDetailService: QuizDetailService, private readonly registrationService: RegistrationService) {}
 
     @Get('/')
     @UseGuards(ExpertGuard)
@@ -34,6 +35,7 @@ export class QuizzesController {
     @UsePipes(new QueryJoiValidatorPipe(vFilterSimulationExamsDTO))
     async cGetSimulationExams(@Req() req: Request, @Res() res: Response, @Query() queries: FilterSimulationExamsDTO) {
         const { subject, name, currentPage, pageSize } = queries;
+        await this.registrationService.checkUserAccess(subject, req.user.email);
         const quizzes = await this.quizService.filterSimulationExams(req.user.id, subject, name, currentPage, pageSize);
 
         await Promise.all(

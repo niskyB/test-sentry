@@ -1,3 +1,4 @@
+import { RegistrationService } from './../registration/registration.service';
 import { SubjectTopicService } from './../subject-topic/subject-topic.service';
 import { LessonQuizService } from './../lesson-quiz/lesson-quiz.service';
 import { LessonDetailService } from './../lesson-detail/lesson-detail.service';
@@ -29,15 +30,18 @@ export class LessonController {
         private readonly lessonDetailService: LessonDetailService,
         private readonly lessonQuizService: LessonQuizService,
         private readonly subjectTopicService: SubjectTopicService,
+        private readonly registrationService: RegistrationService,
     ) {}
 
     @Get('/:id')
     @UseGuards(CommonGuard)
     @ApiParam({ name: 'id', example: 'TVgJIjsRFmIvyjUeBOLv4gOD3eQZY', description: 'lesson id' })
-    async cGetLessonById(@Param('id') id: string, @Res() res: Response) {
+    async cGetLessonById(@Req() req: Request, @Param('id') id: string, @Res() res: Response) {
         const lesson = await this.lessonService.getLessonByField('id', id);
 
         if (!lesson) throw new HttpException({ errorMessage: ResponseMessage.NOT_FOUND }, StatusCodes.NOT_FOUND);
+
+        await this.registrationService.checkUserAccess(lesson.subject.id, req.user.email);
 
         if (lesson.type.description == LessonTypes.LESSON) {
             const lessonDetail = await this.lessonDetailService.getLessonDetailByLessonId(lesson.id);
