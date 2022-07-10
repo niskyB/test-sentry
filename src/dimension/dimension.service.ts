@@ -22,18 +22,10 @@ export class DimensionService {
     }
 
     async getDimensionsBySubjectId(id: string): Promise<{ data: Dimension[]; count: number }> {
+        const query = this.dimensionRepository.createQueryBuilder('dimension').leftJoinAndSelect('dimension.subject', 'subject').where('subject.id = (:id)', { id });
         try {
-            const dimensions = await this.dimensionRepository
-                .createQueryBuilder('dimension')
-                .leftJoinAndSelect('dimension.type', 'type')
-                .leftJoinAndSelect('dimension.subject', 'subject')
-                .where('subject.id = (:id)', { id })
-                .leftJoinAndSelect('subject.assignTo', 'assignTo')
-                .leftJoinAndSelect('assignTo.user', 'user')
-                .skip(0)
-                .take(200)
-                .getMany();
-            const count = await this.dimensionRepository.createQueryBuilder('dimension').leftJoinAndSelect('dimension.subject', 'subject').andWhere('subject.id = (:id)', { id }).getCount();
+            const dimensions = await query.leftJoinAndSelect('dimension.type', 'type').leftJoinAndSelect('subject.assignTo', 'assignTo').leftJoinAndSelect('assignTo.user', 'user').getMany();
+            const count = await query.getCount();
             return { data: dimensions, count };
         } catch (err) {
             console.log(err);
