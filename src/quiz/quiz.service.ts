@@ -28,24 +28,17 @@ export class QuizService {
 
     async filterQuizzes({ name, subject, type }): Promise<{ data: Quiz[]; count: number }> {
         let quizzes, count;
+        const query = this.quizRepository
+            .createQueryBuilder('quiz')
+            .where('quiz.name LIKE (:name)', { name: `%${name}%` })
+            .leftJoinAndSelect('quiz.subject', 'subject')
+            .andWhere('subject.id LIKE (:subjectId)', { subjectId: `%${subject}%` })
+            .leftJoinAndSelect('quiz.type', 'type')
+            .andWhere('type.id LIKE (:typeId)', { typeId: `%${type}%` });
+
         try {
-            quizzes = await this.quizRepository
-                .createQueryBuilder('quiz')
-                .where('quiz.name LIKE (:name)', { name: `%${name}%` })
-                .leftJoinAndSelect('quiz.subject', 'subject')
-                .andWhere('subject.id LIKE (:subjectId)', { subjectId: `%${subject}%` })
-                .leftJoinAndSelect('quiz.type', 'type')
-                .andWhere('type.id LIKE (:typeId)', { typeId: `%${type}%` })
-                .leftJoinAndSelect('quiz.level', 'level')
-                .getMany();
-            count = await this.quizRepository
-                .createQueryBuilder('quiz')
-                .where('quiz.name LIKE (:name)', { name: `%${name}%` })
-                .leftJoinAndSelect('quiz.subject', 'subject')
-                .andWhere('subject.id LIKE (:subjectId)', { subjectId: `%${subject}%` })
-                .leftJoinAndSelect('quiz.type', 'type')
-                .andWhere('type.id LIKE (:typeId)', { typeId: `%${type}%` })
-                .getCount();
+            quizzes = await query.leftJoinAndSelect('quiz.level', 'level').getMany();
+            count = await query.getCount();
         } catch (err) {
             console.log(err);
             return { data: [], count: 0 };
@@ -53,28 +46,23 @@ export class QuizService {
         return { data: quizzes, count };
     }
 
-    async filterSimulationExams(userId: string, subject: string, name: string, currentPage: number, pageSize: number): Promise<{ data: Quiz[]; count: number }> {
+    async filterSimulationExams(subject: string, name: string, currentPage: number, pageSize: number): Promise<{ data: Quiz[]; count: number }> {
         let simulationExams, count;
+        const query = this.quizRepository
+            .createQueryBuilder('quiz')
+            .leftJoinAndSelect('quiz.subject', 'subject')
+            .where('subject.id LIKE (:subjectId)', { subjectId: `%${subject}%` })
+            .andWhere('quiz.name LIKE (:name)', { name: `%${name}%` });
+
         try {
-            simulationExams = await this.quizRepository
-                .createQueryBuilder('quiz')
-                .leftJoinAndSelect('quiz.subject', 'subject')
-                .where('subject.id LIKE (:subjectId)', { subjectId: `%${subject}%` })
-                .andWhere('quiz.name LIKE (:name)', { name: `%${name}%` })
+            simulationExams = await query
                 .leftJoinAndSelect('quiz.type', 'type')
                 .leftJoinAndSelect('quiz.level', 'level')
                 .skip(currentPage * pageSize)
                 .take(pageSize)
                 .getMany();
 
-            count = await this.quizRepository
-                .createQueryBuilder('quiz')
-                .leftJoinAndSelect('quiz.subject', 'subject')
-                .where('subject.id LIKE (:subjectId)', { subjectId: `%${subject}%` })
-                .andWhere('quiz.name LIKE (:name)', { name: `%${name}%` })
-                .skip(currentPage * pageSize)
-                .take(pageSize)
-                .getCount();
+            count = await query.getCount();
         } catch (err) {
             console.log(err);
             return { data: [], count: 0 };

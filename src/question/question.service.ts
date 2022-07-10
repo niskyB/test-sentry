@@ -56,7 +56,8 @@ export class QuestionService {
         pageSize: number,
     ): Promise<{ data: Question[]; count: number }> {
         const activeValue = this.filterService.getMinMaxValue(isActive);
-        const questions = await this.questionRepository
+        let questions, count;
+        const query = this.questionRepository
             .createQueryBuilder('question')
             .leftJoinAndSelect('question.lesson', 'lesson')
             .where('lesson.id LIKE (:lessonId)', { lessonId: `%${lesson}%` })
@@ -74,29 +75,19 @@ export class QuestionService {
                         activeMinValue: activeValue.minValue,
                     }).orWhere('question.isActive = :activeMaxValue', { activeMaxValue: activeValue.maxValue });
                 }),
-            )
-            .skip(currentPage * pageSize)
-            .take(pageSize)
-            .getMany();
-        const count = await this.questionRepository
-            .createQueryBuilder('question')
-            .leftJoinAndSelect('question.lesson', 'lesson')
-            .where('lesson.id LIKE (:lessonId)', { lessonId: `%${lesson}%` })
-            .leftJoinAndSelect('lesson.subject', 'subject')
-            .andWhere('subject.id LIKE (:subjectId)', { subjectId: `%${subject}%` })
-            .leftJoinAndSelect('question.dimensions', 'dimensions')
-            .andWhere('dimensions.id LIKE (:dimensionId)', { dimensionId: `%${dimension}%` })
-            .leftJoinAndSelect('question.questionLevel', 'questionLevel')
-            .andWhere('questionLevel.id LIKE (:levelId)', { levelId: `%${level}%` })
-            .andWhere('question.content LIKE (:content)', { content: `%${content}%` })
-            .andWhere(
-                new Brackets((qb) => {
-                    qb.where('question.isActive = :activeMinValue', {
-                        activeMinValue: activeValue.minValue,
-                    }).orWhere('question.isActive = :activeMaxValue', { activeMaxValue: activeValue.maxValue });
-                }),
-            )
-            .getCount();
+            );
+
+        try {
+            questions = await query
+                .skip(currentPage * pageSize)
+                .take(pageSize)
+                .getMany();
+            count = await query.getCount();
+        } catch (err) {
+            console.log(err);
+            return { data: [], count: 0 };
+        }
+
         return { data: questions, count };
     }
 
@@ -112,7 +103,8 @@ export class QuestionService {
         pageSize: number,
     ): Promise<{ data: Question[]; count: number }> {
         const activeValue = this.filterService.getMinMaxValue(isActive);
-        const questions = await this.questionRepository
+        let questions, count;
+        const query = this.questionRepository
             .createQueryBuilder('question')
             .leftJoinAndSelect('question.lesson', 'lesson')
             .where('lesson.id LIKE (:lessonId)', { lessonId: `%${lesson}%` })
@@ -133,32 +125,19 @@ export class QuestionService {
                         activeMinValue: activeValue.minValue,
                     }).orWhere('question.isActive = :activeMaxValue', { activeMaxValue: activeValue.maxValue });
                 }),
-            )
-            .skip(currentPage * pageSize)
-            .take(pageSize)
-            .getMany();
-        const count = await this.questionRepository
-            .createQueryBuilder('question')
-            .leftJoinAndSelect('question.lesson', 'lesson')
-            .where('lesson.id LIKE (:lessonId)', { lessonId: `%${lesson}%` })
-            .leftJoinAndSelect('lesson.subject', 'subject')
-            .andWhere('subject.id LIKE (:subjectId)', { subjectId: `%${subject}%` })
-            .leftJoinAndSelect('subject.assignTo', 'assignTo')
-            .leftJoinAndSelect('assignTo.user', 'user')
-            .andWhere('user.id = (:id)', { id })
-            .leftJoinAndSelect('question.dimensions', 'dimensions')
-            .andWhere('dimensions.id LIKE (:dimensionId)', { dimensionId: `%${dimension}%` })
-            .leftJoinAndSelect('question.questionLevel', 'questionLevel')
-            .andWhere('questionLevel.id LIKE (:levelId)', { levelId: `%${level}%` })
-            .andWhere('question.content LIKE (:content)', { content: `%${content}%` })
-            .andWhere(
-                new Brackets((qb) => {
-                    qb.where('question.isActive = :activeMinValue', {
-                        activeMinValue: activeValue.minValue,
-                    }).orWhere('question.isActive = :activeMaxValue', { activeMaxValue: activeValue.maxValue });
-                }),
-            )
-            .getCount();
+            );
+
+        try {
+            questions = await query
+                .skip(currentPage * pageSize)
+                .take(pageSize)
+                .getMany();
+            count = await query.getCount();
+        } catch (err) {
+            console.log(err);
+            return { data: [], count: 0 };
+        }
+
         return { data: questions, count };
     }
 }

@@ -26,46 +26,27 @@ export class LessonService {
     async getLessonsBySubjectId(id: string, name: string, type: string, createdAt: string, updatedAt: string, isActive: boolean): Promise<{ data: Lesson[]; count: number }> {
         const activeValue = this.filterService.getMinMaxValue(isActive);
         let lessons, count;
+        const query = this.lessonRepository
+            .createQueryBuilder('Lesson')
+            .leftJoinAndSelect('Lesson.subject', 'subject')
+            .where('subject.id = (:id)', { id })
+            .andWhere('Lesson.name LIKE (:name)', { name: `%${name}%` })
+            .leftJoinAndSelect('subject.assignTo', 'assignTo')
+            .leftJoinAndSelect('assignTo.user', 'user')
+            .leftJoinAndSelect('Lesson.type', 'type')
+            .andWhere('type.description LIKE (:type)', { type: `%${type}%` })
+            .andWhere('Lesson.createdAt >= (:createdAt)', { createdAt })
+            .andWhere('Lesson.updatedAt >= (:updatedAt)', { updatedAt })
+            .andWhere(
+                new Brackets((qb) => {
+                    qb.where('Lesson.isActive = :activeMinValue', {
+                        activeMinValue: activeValue.minValue,
+                    }).orWhere('Lesson.isActive = :activeMaxValue', { activeMaxValue: activeValue.maxValue });
+                }),
+            );
         try {
-            lessons = await this.lessonRepository
-                .createQueryBuilder('Lesson')
-                .leftJoinAndSelect('Lesson.subject', 'subject')
-                .where('subject.id = (:id)', { id })
-                .andWhere('Lesson.name LIKE (:name)', { name: `%${name}%` })
-                .leftJoinAndSelect('subject.assignTo', 'assignTo')
-                .leftJoinAndSelect('assignTo.user', 'user')
-                .leftJoinAndSelect('Lesson.type', 'type')
-                .andWhere('type.description LIKE (:type)', { type: `%${type}%` })
-                .andWhere('Lesson.createdAt >= (:createdAt)', { createdAt })
-                .andWhere('Lesson.updatedAt >= (:updatedAt)', { updatedAt })
-                .andWhere(
-                    new Brackets((qb) => {
-                        qb.where('Lesson.isActive = :activeMinValue', {
-                            activeMinValue: activeValue.minValue,
-                        }).orWhere('Lesson.isActive = :activeMaxValue', { activeMaxValue: activeValue.maxValue });
-                    }),
-                )
-                .getMany();
-
-            count = await this.lessonRepository
-                .createQueryBuilder('Lesson')
-                .leftJoinAndSelect('Lesson.subject', 'subject')
-                .where('subject.id = (:id)', { id })
-                .andWhere('Lesson.name LIKE (:name)', { name: `%${name}%` })
-                .leftJoinAndSelect('subject.assignTo', 'assignTo')
-                .leftJoinAndSelect('assignTo.user', 'user')
-                .leftJoinAndSelect('Lesson.type', 'type')
-                .andWhere('type.description LIKE (:type)', { type: `%${type}%` })
-                .andWhere('Lesson.createdAt >= (:createdAt)', { createdAt })
-                .andWhere('Lesson.updatedAt >= (:updatedAt)', { updatedAt })
-                .andWhere(
-                    new Brackets((qb) => {
-                        qb.where('Lesson.isActive = :activeMinValue', {
-                            activeMinValue: activeValue.minValue,
-                        }).orWhere('Lesson.isActive = :activeMaxValue', { activeMaxValue: activeValue.maxValue });
-                    }),
-                )
-                .getCount();
+            lessons = await query.getMany();
+            count = await query.getCount();
         } catch (err) {
             console.log(err);
             return { data: [], count: 0 };

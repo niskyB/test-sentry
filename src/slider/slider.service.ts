@@ -25,88 +25,30 @@ export class SliderService {
         try {
             const isShowValue = this.filterService.getMinMaxValue(isShow);
             const date = new Date(createdAt);
-            let sliders, count;
-            if (userId) {
-                sliders = await this.sliderRepository
-                    .createQueryBuilder('slider')
-                    .where(`slider.title LIKE (:title)`, {
-                        title: `%${title}%`,
-                    })
-                    .andWhere(`slider.backLink LIKE (:backLink)`, { backLink: `%${backLink}%` })
-                    .andWhere(`slider.createdAt >= (:createdAt)`, { createdAt: date })
-                    .andWhere(
-                        new Brackets((qb) => {
-                            qb.where('slider.isShow = :isShowMinValue', {
-                                isShowMinValue: isShowValue.minValue,
-                            }).orWhere('slider.isShow = :isShowMaxValue', { isShowMaxValue: isShowValue.maxValue });
-                        }),
-                    )
-                    .leftJoinAndSelect('slider.marketing', 'marketing')
-                    .leftJoinAndSelect('marketing.user', 'user')
-                    .andWhere('user.id LIKE (:userId)', { userId: `%${userId}%` })
-                    .orderBy(`slider.createdAt`, 'DESC')
-                    .skip(currentPage * pageSize)
-                    .take(pageSize)
-                    .getMany();
 
-                count = await this.sliderRepository
-                    .createQueryBuilder('slider')
-                    .where(`slider.title LIKE (:title)`, {
-                        title: `%${title}%`,
-                    })
-                    .andWhere(`slider.backLink LIKE (:backLink)`, { backLink: `%${backLink}%` })
-                    .andWhere(`slider.createdAt >= (:createdAt)`, { createdAt: date })
-                    .andWhere(
-                        new Brackets((qb) => {
-                            qb.where('slider.isShow = :isShowMinValue', {
-                                isShowMinValue: isShowValue.minValue,
-                            }).orWhere('slider.isShow = :isShowMaxValue', { isShowMaxValue: isShowValue.maxValue });
-                        }),
-                    )
-                    .leftJoinAndSelect('slider.marketing', 'marketing')
-                    .leftJoinAndSelect('marketing.user', 'user')
-                    .andWhere('user.id LIKE (:userId)', { userId: `%${userId}%` })
-                    .getCount();
-            } else {
-                sliders = await this.sliderRepository
-                    .createQueryBuilder('slider')
-                    .where(`slider.title LIKE (:title)`, {
-                        title: `%${title}%`,
-                    })
-                    .andWhere(`slider.backLink LIKE (:backLink)`, { backLink: `%${backLink}%` })
-                    .andWhere(`slider.createdAt >= (:createdAt)`, { createdAt: date })
-                    .andWhere(
-                        new Brackets((qb) => {
-                            qb.where('slider.isShow = :isShowMinValue', {
-                                isShowMinValue: isShowValue.minValue,
-                            }).orWhere('slider.isShow = :isShowMaxValue', { isShowMaxValue: isShowValue.maxValue });
-                        }),
-                    )
-                    .leftJoinAndSelect('slider.marketing', 'marketing')
-                    .leftJoinAndSelect('marketing.user', 'user')
-                    .orderBy(`slider.createdAt`, 'DESC')
-                    .skip(currentPage * pageSize)
-                    .take(pageSize)
-                    .getMany();
+            let query = this.sliderRepository
+                .createQueryBuilder('slider')
+                .where(`slider.title LIKE (:title)`, { title: `%${title}%` })
+                .andWhere(`slider.backLink LIKE (:backLink)`, { backLink: `%${backLink}%` })
+                .andWhere(`slider.createdAt >= (:createdAt)`, { createdAt: date })
+                .andWhere(
+                    new Brackets((qb) => {
+                        qb.where('slider.isShow = :isShowMinValue', {
+                            isShowMinValue: isShowValue.minValue,
+                        }).orWhere('slider.isShow = :isShowMaxValue', { isShowMaxValue: isShowValue.maxValue });
+                    }),
+                )
+                .leftJoinAndSelect('slider.marketing', 'marketing')
+                .leftJoinAndSelect('marketing.user', 'user');
+            if (userId) query = query.andWhere('user.id LIKE (:userId)', { userId: `%${userId}%` });
 
-                count = await this.sliderRepository
-                    .createQueryBuilder('slider')
-                    .where(`slider.title LIKE (:title)`, {
-                        title: `%${title}%`,
-                    })
-                    .andWhere(`slider.backLink LIKE (:backLink)`, { backLink: `%${backLink}%` })
-                    .andWhere(`slider.createdAt >= (:createdAt)`, { createdAt: date })
-                    .andWhere(
-                        new Brackets((qb) => {
-                            qb.where('slider.isShow = :isShowMinValue', {
-                                isShowMinValue: isShowValue.minValue,
-                            }).orWhere('slider.isShow = :isShowMaxValue', { isShowMaxValue: isShowValue.maxValue });
-                        }),
-                    )
-                    .leftJoinAndSelect('slider.marketing', 'marketing')
-                    .leftJoinAndSelect('marketing.user', 'user')
-                    .getCount();
-            }
+            const sliders = await query
+                .orderBy(`slider.createdAt`, 'DESC')
+                .skip(currentPage * pageSize)
+                .take(pageSize)
+                .getMany();
+
+            const count = await query.getCount();
 
             return { data: sliders, count };
         } catch (err) {

@@ -43,34 +43,26 @@ export class QuizResultService {
 
     async getQuizResultByUserId(userId: string, subject: string, currentPage: number, pageSize: number): Promise<{ data: QuizResult[]; count: number }> {
         let quizResults, count;
+        const query = this.quizResultRepository
+            .createQueryBuilder('quiz_result')
+            .leftJoinAndSelect('quiz_result.customer', 'customer')
+            .leftJoinAndSelect('customer.user', 'user')
+            .where('user.id = (:userId)', { userId })
+            .leftJoinAndSelect('quiz_result.attendedQuestions', 'attendedQuestions')
+            .leftJoinAndSelect('attendedQuestions.questionInQuiz', 'questionInQuiz')
+            .leftJoinAndSelect('questionInQuiz.quiz', 'quiz')
+            .leftJoinAndSelect('quiz.subject', 'subject')
+            .andWhere('subject.id LIKE (:subjectId)', { subjectId: `%${subject}%` });
+
         try {
-            quizResults = await this.quizResultRepository
-                .createQueryBuilder('quiz_result')
-                .leftJoinAndSelect('quiz_result.customer', 'customer')
-                .leftJoinAndSelect('customer.user', 'user')
-                .where('user.id = (:userId)', { userId })
-                .leftJoinAndSelect('quiz_result.attendedQuestions', 'attendedQuestions')
+            quizResults = await query
                 .leftJoinAndSelect('attendedQuestions.userAnswers', 'userAnswers')
-                .leftJoinAndSelect('attendedQuestions.questionInQuiz', 'questionInQuiz')
-                .leftJoinAndSelect('questionInQuiz.quiz', 'quiz')
-                .leftJoinAndSelect('quiz.subject', 'subject')
                 .leftJoinAndSelect('quiz.level', 'level')
-                .andWhere('subject.id LIKE (:subjectId)', { subjectId: `%${subject}%` })
                 .skip(currentPage * pageSize)
                 .take(pageSize)
                 .getMany();
 
-            count = await this.quizResultRepository
-                .createQueryBuilder('quiz_result')
-                .leftJoinAndSelect('quiz_result.customer', 'customer')
-                .leftJoinAndSelect('customer.user', 'user')
-                .where('user.id = (:userId)', { userId })
-                .leftJoinAndSelect('quiz_result.attendedQuestions', 'attendedQuestions')
-                .leftJoinAndSelect('attendedQuestions.questionInQuiz', 'questionInQuiz')
-                .leftJoinAndSelect('questionInQuiz.quiz', 'quiz')
-                .leftJoinAndSelect('quiz.subject', 'subject')
-                .andWhere('subject.id LIKE (:subjectId)', { subjectId: `%${subject}%` })
-                .getCount();
+            count = await query.getCount();
         } catch (err) {
             console.log(err);
             return { data: [], count: 0 };
