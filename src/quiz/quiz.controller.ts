@@ -108,19 +108,19 @@ export class QuizController {
                 let attendedQuestion = await this.attendedQuestionService.getAttendedQuestionByField('id', item.attendedQuestionId);
                 attendedQuestion.isMarked = item.isMarked;
                 attendedQuestion = await this.attendedQuestionService.saveAttendedQuestion(attendedQuestion);
-                let isCorrect = 0;
-                const numberOfCorrectAnswer = await this.answerService.getNumberOfCorrectAnswer(attendedQuestion.questionInQuiz.question.id);
+                let isCorrect = true;
+
                 await Promise.all(
                     item.answerId.map(async (id) => {
                         const answer = await this.answerService.getAnswerByField('id', id);
                         const userAnswer = new UserAnswer();
                         userAnswer.attendedQuestion = attendedQuestion;
                         userAnswer.answer = answer;
-                        if (answer.isCorrect) isCorrect++;
+                        if (!answer.isCorrect) isCorrect = false;
                         await this.userAnswerService.saveUserAnswer(userAnswer);
                     }),
                 );
-                correctAnswers += isCorrect / numberOfCorrectAnswer;
+                if (isCorrect) correctAnswers++;
             }),
         );
 

@@ -13,13 +13,4 @@ export class AnswerService {
     async getAnswerByField(field: keyof Answer, value: any): Promise<Answer> {
         return await this.answerRepository.createQueryBuilder('answer').where(`answer.${field.toString()} = (:value)`, { value }).getOne();
     }
-
-    async getNumberOfCorrectAnswer(question: string): Promise<number> {
-        return await this.answerRepository
-            .createQueryBuilder('answer')
-            .where('answer.isCorrect = (:isCorrect)', { isCorrect: true })
-            .leftJoinAndSelect('answer.question', 'question')
-            .andWhere('question.id = (:questionId)', { questionId: question })
-            .getCount();
-    }
 }
