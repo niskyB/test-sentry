@@ -1,5 +1,6 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, Generated, PrimaryGeneratedColumn } from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
+import { SystemType } from '../interface';
 
 export enum UserRole {
     CUSTOMER = 'customer',
@@ -16,11 +17,12 @@ export class Role {
     id: string;
 
     @ApiProperty({ description: 'Type' })
-    @Column({ default: null })
+    @Column({ default: SystemType.USER_ROLE })
     type: string;
 
     @ApiProperty({ description: 'Value' })
-    @Column({ default: null })
+    @Column()
+    @Generated('uuid')
     value: string;
 
     @ApiProperty({ description: 'Order' })

@@ -21,7 +21,7 @@ export class Registration {
     id: string;
 
     @ApiProperty({ description: 'Customer' })
-    @ManyToOne(() => Customer)
+    @ManyToOne(() => Customer, { nullable: false })
     customer: Customer;
 
     @ApiProperty({ description: 'Registration Time' })
