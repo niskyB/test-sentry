@@ -97,51 +97,38 @@ export class RegistrationService {
         orderBy: string,
     ): Promise<{ data: Registration[]; count: number }> {
         let registrations, count;
-        let registrationsQuery = this.registrationRepository.createQueryBuilder('registration');
+        let query = this.registrationRepository
+            .createQueryBuilder('registration')
+            .leftJoinAndSelect('registration.pricePackage', 'pricePackage')
+            .leftJoinAndSelect('pricePackage.subject', 'subject')
+            .where('subject.name LIKE (:subject)', { subject: `%${subject}%` })
+            .andWhere('registration.registrationTime >= (:validFrom)', { validFrom })
+            .andWhere('registration.registrationTime <= (:validTo)', { validTo })
+            .andWhere('registration.status LIKE (:status)', { status: `%${status}%` })
+            .leftJoinAndSelect('registration.customer', 'customer')
+            .leftJoinAndSelect('customer.user', 'user')
+            .andWhere('user.email LIKE (:email)', { email: `%${email}%` });
         try {
-            registrationsQuery = registrationsQuery
-                .leftJoinAndSelect('registration.pricePackage', 'pricePackage')
-                .leftJoinAndSelect('pricePackage.subject', 'subject')
-                .leftJoinAndSelect('subject.category', 'category')
-                .where('subject.name LIKE (:subject)', { subject: `%${subject}%` })
-                .andWhere('registration.registrationTime >= (:validFrom)', { validFrom })
-                .andWhere('registration.registrationTime <= (:validTo)', { validTo })
-                .andWhere('registration.status LIKE (:status)', { status: `%${status}%` })
-                .leftJoinAndSelect('registration.customer', 'customer')
-                .leftJoinAndSelect('customer.user', 'user')
-                .leftJoinAndSelect('registration.sale', 'sale')
-                .leftJoinAndSelect('sale.user', 'saleUser')
-                .andWhere('user.email LIKE (:email)', { email: `%${email}%` });
+            query = query.leftJoinAndSelect('subject.category', 'category').leftJoinAndSelect('registration.sale', 'sale').leftJoinAndSelect('sale.user', 'saleUser');
             switch (orderBy) {
                 case 'subject':
-                    registrationsQuery = registrationsQuery.orderBy(`subject.id`, order);
+                    query = query.orderBy(`subject.id`, order);
                     break;
                 case 'email':
-                    registrationsQuery = registrationsQuery.orderBy(`user.email`, order);
+                    query = query.orderBy(`user.email`, order);
                     break;
                 case 'package':
-                    registrationsQuery = registrationsQuery.orderBy(`pricePackage.id`, order);
+                    query = query.orderBy(`pricePackage.id`, order);
                     break;
                 default:
-                    registrationsQuery = registrationsQuery.orderBy(`registration.${orderBy}`, order);
+                    query = query.orderBy(`registration.${orderBy}`, order);
             }
-            registrations = await registrationsQuery
+            registrations = await query
                 .skip(currentPage * pageSize)
                 .take(pageSize)
                 .getMany();
 
-            count = await this.registrationRepository
-                .createQueryBuilder('registration')
-                .leftJoinAndSelect('registration.pricePackage', 'pricePackage')
-                .leftJoinAndSelect('pricePackage.subject', 'subject')
-                .where('subject.name LIKE (:subject)', { subject: `%${subject}%` })
-                .andWhere('registration.registrationTime >= (:validFrom)', { validFrom })
-                .andWhere('registration.registrationTime <= (:validTo)', { validTo })
-                .andWhere('registration.status LIKE (:status)', { status: `%${status}%` })
-                .leftJoinAndSelect('registration.customer', 'customer')
-                .leftJoinAndSelect('customer.user', 'user')
-                .andWhere('user.email LIKE (:email)', { email: `%${email}%` })
-                .getCount();
+            count = await query.getCount();
         } catch (err) {
             console.log(err);
             return { data: [], count: 0 };
@@ -162,25 +149,26 @@ export class RegistrationService {
     ): Promise<{ data: Registration[]; count: number }> {
         let registrations, count;
         const featureValue = this.filterService.getMinMaxValue(isFeature);
+        const query = this.registrationRepository
+            .createQueryBuilder('registration')
+            .leftJoinAndSelect('registration.pricePackage', 'pricePackage')
+            .leftJoinAndSelect('pricePackage.subject', 'subject')
+            .where('subject.name LIKE (:subjectName)', { subjectName: `%${name}%` })
+            .andWhere(
+                new Brackets((qb) => {
+                    qb.where('subject.isFeature = :featureMinValue', {
+                        featureMinValue: featureValue.minValue,
+                    }).orWhere('subject.isFeature = :featureMaxValue', { featureMaxValue: featureValue.maxValue });
+                }),
+            )
+            .andWhere('registration.status LIKE (:status)', { status: `%${status}%` })
+            .leftJoinAndSelect('subject.category', 'category')
+            .andWhere('category.id LIKE (:categoryId)', { categoryId: `%${category}%` })
+            .leftJoinAndSelect('registration.customer', 'customer')
+            .leftJoinAndSelect('customer.user', 'user')
+            .andWhere('user.id = (:userId)', { userId });
         try {
-            registrations = await this.registrationRepository
-                .createQueryBuilder('registration')
-                .leftJoinAndSelect('registration.pricePackage', 'pricePackage')
-                .leftJoinAndSelect('pricePackage.subject', 'subject')
-                .where('subject.name LIKE (:subjectName)', { subjectName: `%${name}%` })
-                .andWhere(
-                    new Brackets((qb) => {
-                        qb.where('subject.isFeature = :featureMinValue', {
-                            featureMinValue: featureValue.minValue,
-                        }).orWhere('subject.isFeature = :featureMaxValue', { featureMaxValue: featureValue.maxValue });
-                    }),
-                )
-                .andWhere('registration.status LIKE (:status)', { status: `%${status}%` })
-                .leftJoinAndSelect('subject.category', 'category')
-                .andWhere('category.id LIKE (:categoryId)', { categoryId: `%${category}%` })
-                .leftJoinAndSelect('registration.customer', 'customer')
-                .leftJoinAndSelect('customer.user', 'user')
-                .andWhere('user.id = (:userId)', { userId })
+            registrations = await query
                 .leftJoinAndSelect('registration.sale', 'sale')
                 .leftJoinAndSelect('sale.user', 'saleUser')
                 .orderBy(`subject.updatedAt`, order)
@@ -188,25 +176,7 @@ export class RegistrationService {
                 .take(pageSize)
                 .getMany();
 
-            count = await this.registrationRepository
-                .createQueryBuilder('registration')
-                .leftJoinAndSelect('registration.pricePackage', 'pricePackage')
-                .leftJoinAndSelect('pricePackage.subject', 'subject')
-                .where('subject.name LIKE (:subjectName)', { subjectName: `%${name}%` })
-                .andWhere(
-                    new Brackets((qb) => {
-                        qb.where('subject.isFeature = :featureMinValue', {
-                            featureMinValue: featureValue.minValue,
-                        }).orWhere('subject.isFeature = :featureMaxValue', { featureMaxValue: featureValue.maxValue });
-                    }),
-                )
-                .andWhere('registration.status LIKE (:status)', { status: `%${status}%` })
-                .leftJoinAndSelect('subject.category', 'category')
-                .andWhere('category.id LIKE (:categoryId)', { categoryId: `%${category}%` })
-                .leftJoinAndSelect('registration.customer', 'customer')
-                .leftJoinAndSelect('customer.user', 'user')
-                .andWhere('user.id = (:userId)', { userId })
-                .getCount();
+            count = await query.getCount();
         } catch (err) {
             console.log(err);
             return { data: [], count: 0 };

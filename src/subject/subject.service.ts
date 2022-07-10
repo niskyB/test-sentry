@@ -79,12 +79,9 @@ export class SubjectService {
             const date = new Date(createdAt);
             const activeValue = this.filterService.getMinMaxValue(isActive);
             const featureValue = this.filterService.getMinMaxValue(isFeature);
-            const subjects = await this.subjectRepository
+            const query = this.subjectRepository
                 .createQueryBuilder('subject')
-                .where(`subject.name LIKE (:name)`, {
-                    name: `%${name}%`,
-                })
-                .andWhere(`subject.createdAt >= (:createdAt)`, { createdAt: date })
+                .where(`subject.name LIKE (:name)`, { name: `%${name}%` })
                 .andWhere(
                     new Brackets((qb) => {
                         qb.where('subject.isActive = :activeMinValue', {
@@ -99,45 +96,23 @@ export class SubjectService {
                         }).orWhere('subject.isFeature = :featureMaxValue', { featureMaxValue: featureValue.maxValue });
                     }),
                 )
-                .leftJoinAndSelect('subject.lessons', 'lessons')
+                .andWhere(`subject.createdAt >= (:createdAt)`, { createdAt: date })
                 .leftJoinAndSelect('subject.assignTo', 'assignTo')
                 .leftJoinAndSelect('assignTo.user', 'user')
-                .leftJoinAndSelect('subject.pricePackages', 'pricePackages')
                 .andWhere(`user.id LIKE (:id)`, { id: `%${assignTo}%` })
                 .leftJoinAndSelect(`subject.category`, 'category')
-                .andWhere(`category.id LIKE (:categoryId)`, { categoryId: `%${category}%` })
+                .andWhere(`category.id LIKE (:categoryId)`, { categoryId: `%${category}%` });
+
+            const subjects = await query
+                .leftJoinAndSelect('subject.lessons', 'lessons')
+                .leftJoinAndSelect('subject.pricePackages', 'pricePackages')
                 .orderBy(`subject.createdAt`, 'DESC')
                 .skip(currentPage * pageSize)
                 .take(pageSize)
                 .orderBy('subject.updatedAt', order)
                 .getMany();
 
-            const count = await this.subjectRepository
-                .createQueryBuilder('subject')
-                .where(`subject.name LIKE (:name)`, {
-                    name: `%${name}%`,
-                })
-                .andWhere(
-                    new Brackets((qb) => {
-                        qb.where('subject.isActive = :activeMinValue', {
-                            activeMinValue: activeValue.minValue,
-                        }).orWhere('subject.isActive = :activeMaxValue', { activeMaxValue: activeValue.maxValue });
-                    }),
-                )
-                .andWhere(
-                    new Brackets((qb) => {
-                        qb.where('subject.isFeature = :featureMinValue', {
-                            featureMinValue: featureValue.minValue,
-                        }).orWhere('subject.isFeature = :featureMaxValue', { featureMaxValue: featureValue.maxValue });
-                    }),
-                )
-                .andWhere(`subject.createdAt >= (:createdAt)`, { createdAt: date })
-                .leftJoinAndSelect('subject.assignTo', 'assignTo')
-                .leftJoinAndSelect('assignTo.user', 'user')
-                .andWhere(`user.id LIKE (:id)`, { id: `%${assignTo}%` })
-                .leftJoinAndSelect(`subject.category`, 'category')
-                .andWhere(`category.id LIKE (:categoryId)`, { categoryId: `%${category}%` })
-                .getCount();
+            const count = await query.getCount();
 
             return { data: subjects, count };
         } catch (err) {
@@ -159,12 +134,9 @@ export class SubjectService {
             const date = new Date(createdAt);
             const activeValue = this.filterService.getMinMaxValue(isActive);
             const featureValue = this.filterService.getMinMaxValue(isFeature);
-            const subjects = await this.subjectRepository
+            const query = this.subjectRepository
                 .createQueryBuilder('subject')
-                .where(`subject.name LIKE (:name)`, {
-                    name: `%${name}%`,
-                })
-                .andWhere(`subject.createdAt >= (:createdAt)`, { createdAt: date })
+                .where(`subject.name LIKE (:name)`, { name: `%${name}%` })
                 .andWhere(
                     new Brackets((qb) => {
                         qb.where('subject.isActive = :activeMinValue', {
@@ -179,42 +151,21 @@ export class SubjectService {
                         }).orWhere('subject.isFeature = :featureMaxValue', { featureMaxValue: featureValue.maxValue });
                     }),
                 )
-                .leftJoinAndSelect('subject.lessons', 'lessons')
+                .andWhere(`subject.createdAt >= (:createdAt)`, { createdAt: date })
                 .leftJoinAndSelect('subject.assignTo', 'assignTo')
                 .leftJoinAndSelect('assignTo.user', 'user')
-                .leftJoinAndSelect('subject.pricePackages', 'pricePackages')
                 .leftJoinAndSelect(`subject.category`, 'category')
-                .andWhere(`category.id LIKE (:categoryId)`, { categoryId: `%${category}%` })
+                .andWhere(`category.id LIKE (:categoryId)`, { categoryId: `%${category}%` });
+
+            const subjects = await query
+                .leftJoinAndSelect('subject.lessons', 'lessons')
+                .leftJoinAndSelect('subject.pricePackages', 'pricePackages')
                 .orderBy(`subject.createdAt`, 'DESC')
                 .skip(currentPage * pageSize)
                 .take(pageSize)
                 .getMany();
 
-            const count = await this.subjectRepository
-                .createQueryBuilder('subject')
-                .where(`subject.name LIKE (:name)`, {
-                    name: `%${name}%`,
-                })
-                .andWhere(
-                    new Brackets((qb) => {
-                        qb.where('subject.isActive = :activeMinValue', {
-                            activeMinValue: activeValue.minValue,
-                        }).orWhere('subject.isActive = :activeMaxValue', { activeMaxValue: activeValue.maxValue });
-                    }),
-                )
-                .andWhere(
-                    new Brackets((qb) => {
-                        qb.where('subject.isFeature = :featureMinValue', {
-                            featureMinValue: featureValue.minValue,
-                        }).orWhere('subject.isFeature = :featureMaxValue', { featureMaxValue: featureValue.maxValue });
-                    }),
-                )
-                .andWhere(`subject.createdAt >= (:createdAt)`, { createdAt: date })
-                .leftJoinAndSelect('subject.assignTo', 'assignTo')
-                .leftJoinAndSelect('assignTo.user', 'user')
-                .leftJoinAndSelect(`subject.category`, 'category')
-                .andWhere(`category.id LIKE (:categoryId)`, { categoryId: `%${category}%` })
-                .getCount();
+            const count = await query.getCount();
 
             return { data: subjects, count };
         } catch (err) {

@@ -36,7 +36,7 @@ export class QuizzesController {
     async cGetSimulationExams(@Req() req: Request, @Res() res: Response, @Query() queries: FilterSimulationExamsDTO) {
         const { subject, name, currentPage, pageSize } = queries;
         await this.registrationService.checkUserAccess(subject, req.user.email);
-        const quizzes = await this.quizService.filterSimulationExams(req.user.id, subject, name, currentPage, pageSize);
+        const quizzes = await this.quizService.filterSimulationExams(subject, name, currentPage, pageSize);
 
         await Promise.all(
             quizzes.data.map(async (item) => {

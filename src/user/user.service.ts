@@ -57,27 +57,7 @@ export class UserService {
     ): Promise<{ data: User[]; count: number }> {
         const activeValue = this.filterService.getMinMaxValue(isActive);
         try {
-            const users = await this.userRepository
-                .createQueryBuilder('user')
-                .where(`user.gender Like (:gender)`, { gender: `${gender}%` })
-                .andWhere(
-                    new Brackets((qb) => {
-                        qb.where('user.isActive = :activeMinValue', {
-                            activeMinValue: activeValue.minValue,
-                        }).orWhere('user.isActive = :activeMaxValue', { activeMaxValue: activeValue.maxValue });
-                    }),
-                )
-                .andWhere(`user.fullName Like (:fullName)`, { fullName: `%${fullName}%` })
-                .andWhere(`user.email Like (:email)`, { email: `%${email}%` })
-                .andWhere(`user.mobile Like (:mobile)`, { mobile: `%${mobile}%` })
-                .leftJoinAndSelect(`user.role`, 'role')
-                .andWhere(`role.description Like (:role)`, { role: `%${role}%` })
-                .orderBy(`user.${orderBy}`, order)
-                .skip(currentPage * pageSize)
-                .take(pageSize)
-                .getMany();
-
-            const count = await this.userRepository
+            const query = this.userRepository
                 .createQueryBuilder('user')
                 .where(`user.gender LIKE (:gender)`, { gender: `${gender}%` })
                 .andWhere(
@@ -91,8 +71,15 @@ export class UserService {
                 .andWhere(`user.email Like (:email)`, { email: `%${email}%` })
                 .andWhere(`user.mobile Like (:mobile)`, { mobile: `%${mobile}%` })
                 .leftJoinAndSelect(`user.role`, 'role')
-                .andWhere(`role.description Like (:role)`, { role: `%${role}%` })
-                .getCount();
+                .andWhere(`role.description Like (:role)`, { role: `%${role}%` });
+
+            const users = await query
+                .orderBy(`user.${orderBy}`, order)
+                .skip(currentPage * pageSize)
+                .take(pageSize)
+                .getMany();
+
+            const count = await query.getCount();
 
             return { data: users, count };
         } catch (err) {
