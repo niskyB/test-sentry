@@ -20,7 +20,7 @@ export class QuizResult {
     createdAt: string;
 
     @ApiProperty({ description: 'Customer' })
-    @ManyToOne(() => Customer, { cascade: true })
+    @ManyToOne(() => Customer, { cascade: true, nullable: false })
     customer: Customer;
 
     @ApiProperty({ description: 'Customer' })

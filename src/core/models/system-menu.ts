@@ -1,5 +1,6 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, Generated, PrimaryGeneratedColumn } from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
+import { SystemType } from '../interface';
 
 @Entity()
 export class SystemMenu {
@@ -8,11 +9,12 @@ export class SystemMenu {
     id: string;
 
     @ApiProperty({ description: 'Type' })
-    @Column({ default: null })
+    @Column({ default: SystemType.SYSTEM_MENU })
     type: string;
 
     @ApiProperty({ description: 'Value' })
-    @Column({ default: null })
+    @Column()
+    @Generated('uuid')
     value: string;
 
     @ApiProperty({ description: 'Order' })
