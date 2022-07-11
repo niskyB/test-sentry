@@ -71,7 +71,7 @@ export class RegistrationController {
                 customer = await this.customerService.getCustomerByUserId(user.id);
                 user.typeId = customer.id;
                 await this.userService.saveUser(user);
-            }
+            } else throw new HttpException({ email: ResponseMessage.EMAIL_TAKEN }, StatusCodes.BAD_REQUEST);
         }
 
         let customer = await this.customerService.getCustomerByUserId(user.id);
@@ -117,7 +117,10 @@ export class RegistrationController {
         if (registration.status === RegistrationStatus.APPROVED && body.status === RegistrationStatus.SUBMITTED)
             throw new HttpException({ status: ResponseMessage.INVALID_STATUS }, StatusCodes.BAD_REQUEST);
 
-        if (body.status === RegistrationStatus.APPROVED && registration.status !== RegistrationStatus.APPROVED && !registration.customer.user.isActive) {
+        if (
+            (body.status === RegistrationStatus.APPROVED && registration.status !== RegistrationStatus.APPROVED && !registration.customer.user.isActive) ||
+            (body.status === RegistrationStatus.CANCELLED && registration.status !== RegistrationStatus.CANCELLED && !registration.customer.user.isActive)
+        ) {
             const password = this.dataService.generateData(8, 'lettersAndNumbers');
             registration.customer.user.password = await this.authService.encryptPassword(password, constant.default.hashingSalt);
             const hashPassword = registration.customer.user.password;
