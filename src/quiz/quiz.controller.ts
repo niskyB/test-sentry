@@ -48,7 +48,7 @@ export class QuizController {
     @ApiParam({ name: 'id', example: 'TVgJIjsRFmIvyjUeBOLv4gOD3eQZY' })
     async cGetQuiz(@Req() req: Request, @Res() res: Response, @Param('id') id: string) {
         const quiz = await this.quizService.getQuizByField('id', id);
-        if (req.user.role.description !== UserRole.ADMIN) await this.registrationService.checkUserAccess(quiz.subject.id, req.user.email);
+        if (req.user.role.description !== UserRole.ADMIN && req.user.role.description !== UserRole.EXPERT) await this.registrationService.checkUserAccess(quiz.subject.id, req.user.email);
         quiz.questions = [];
         const quizDetail = await this.quizDetailService.getQuizDetailsByQuizId(id);
 
