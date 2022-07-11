@@ -150,7 +150,7 @@ export class RegistrationController {
 
         if (registration.status !== RegistrationStatus.SUBMITTED) throw new HttpException({ errorMessage: ResponseMessage.INVALID_STATUS }, StatusCodes.BAD_REQUEST);
         if (registration.sale && registration.sale.id !== req.user.typeId && req.user.role.description !== UserRole.ADMIN)
-            throw new HttpException({ errorMessage: ResponseMessage.UNAUTHORIZED }, StatusCodes.UNAUTHORIZED);
+            throw new HttpException({ errorMessage: ResponseMessage.FORBIDDEN }, StatusCodes.FORBIDDEN);
 
         const pricePackage = await this.pricePackageService.getPricePackageByField('id', body.pricePackage);
 

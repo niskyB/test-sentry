@@ -188,8 +188,8 @@ export class RegistrationService {
     async checkUserAccess(subject: string, email: string) {
         const registrations = await this.getExistedRegistration(subject, email);
 
-        if (!registrations || registrations.length === 0) throw new HttpException({ errorMessage: ResponseMessage.UNAUTHORIZED }, StatusCodes.UNAUTHORIZED);
+        if (!registrations || registrations.length === 0) throw new HttpException({ errorMessage: ResponseMessage.FORBIDDEN }, StatusCodes.FORBIDDEN);
         const validRegistration = registrations.filter((item) => item.status === RegistrationStatus.PAID);
-        if (!validRegistration || validRegistration.length === 0) throw new HttpException({ errorMessage: ResponseMessage.UNAUTHORIZED }, StatusCodes.UNAUTHORIZED);
+        if (!validRegistration || validRegistration.length === 0) throw new HttpException({ errorMessage: ResponseMessage.FORBIDDEN }, StatusCodes.FORBIDDEN);
     }
 }
