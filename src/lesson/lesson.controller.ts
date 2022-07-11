@@ -41,7 +41,7 @@ export class LessonController {
 
         if (!lesson) throw new HttpException({ errorMessage: ResponseMessage.NOT_FOUND }, StatusCodes.NOT_FOUND);
 
-        await this.registrationService.checkUserAccess(lesson.subject.id, req.user.email);
+        if (req.user.role.description !== UserRole.ADMIN) await this.registrationService.checkUserAccess(lesson.subject.id, req.user.email);
 
         if (lesson.type.description == LessonTypes.LESSON) {
             const lessonDetail = await this.lessonDetailService.getLessonDetailByLessonId(lesson.id);
