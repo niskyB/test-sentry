@@ -1,8 +1,9 @@
+import { RegistrationService } from './../registration/registration.service';
 import { CommonGuard } from './../auth/guard';
 import { QuizResultService } from './../quiz-result/quiz-result.service';
-import { Controller, Res, Param, Get, UseGuards } from '@nestjs/common';
+import { Controller, Res, Param, Get, UseGuards, Req } from '@nestjs/common';
 import { ApiTags, ApiBearerAuth, ApiParam } from '@nestjs/swagger';
-import { Response } from 'express';
+import { Response, Request } from 'express';
 import { AttendedQuestion } from '../core/models';
 
 @ApiTags('quiz result')
@@ -10,12 +11,14 @@ import { AttendedQuestion } from '../core/models';
 @UseGuards(CommonGuard)
 @Controller('quiz-result')
 export class QuizResultController {
-    constructor(private readonly quizResultService: QuizResultService) {}
+    constructor(private readonly quizResultService: QuizResultService, private readonly registrationService: RegistrationService) {}
 
     @Get('/:id')
     @ApiParam({ name: 'id', example: 'TVgJIjsRFmIvyjUeBOLv4gOD3eQZY' })
-    async cGetQuiz(@Res() res: Response, @Param('id') id: string) {
+    async cGetQuiz(@Req() req: Request, @Res() res: Response, @Param('id') id: string) {
         const quizResult = (await this.quizResultService.getQuizResultByField('id', id)) as any;
+
+        await this.registrationService.checkUserAccess(quizResult.quiz.subject.id, req.user.email);
 
         for (let i = 0; i < quizResult.attendedQuestions.length; i++) {
             const question = quizResult.attendedQuestions[i] as AttendedQuestion;

@@ -24,6 +24,7 @@ export class QuizResultService {
             .leftJoinAndSelect('attendedQuestions.questionInQuiz', 'questionInQuiz')
             .leftJoinAndSelect('questionInQuiz.question', 'question')
             .leftJoinAndSelect('questionInQuiz.quiz', 'quiz')
+            .leftJoinAndSelect('quiz.subject', 'subject')
             .leftJoinAndSelect('quiz.type', 'type')
             .leftJoinAndSelect('question.answers', 'answers')
             .getOne();
