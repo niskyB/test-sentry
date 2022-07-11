@@ -1,5 +1,4 @@
 import { SortOrder } from './../../core/interface';
-import { subjectValidateSchema } from './../../core/models';
 import { ApiProperty } from '@nestjs/swagger';
 import * as joi from 'joi';
 export class FilterSubjectsDTO {
@@ -32,13 +31,13 @@ export class FilterSubjectsDTO {
 }
 
 export const vFilterSubjectsDTO = joi.object<FilterSubjectsDTO>({
-    name: subjectValidateSchema.name.failover(''),
+    name: joi.string().trim().required().failover(''),
     isActive: joi.boolean().required().failover(null),
     isFeature: joi.boolean().required().failover(null),
-    category: joi.string().required().failover(''),
-    assignTo: joi.string().required().failover(''),
-    createdAt: joi.string().required().failover('1/1/2022'),
+    category: joi.string().trim().required().failover(''),
+    assignTo: joi.string().trim().required().failover(''),
+    createdAt: joi.string().trim().required().failover('1/1/2022'),
     currentPage: joi.number().min(0).required().failover(0),
     pageSize: joi.number().min(1).required().failover(4),
-    order: joi.string().required().valid(SortOrder.ASC, SortOrder.DESC).failover(SortOrder.DESC),
+    order: joi.string().trim().required().valid(SortOrder.ASC, SortOrder.DESC).failover(SortOrder.DESC),
 });
