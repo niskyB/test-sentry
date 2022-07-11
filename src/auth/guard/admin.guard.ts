@@ -35,7 +35,7 @@ export class AdminGuard implements CanActivate {
         }
 
         if (roles.length && !roles.includes(user.role) && user.role.description !== UserRole.ADMIN) {
-            throw new HttpException({}, StatusCodes.UNAUTHORIZED);
+            throw new HttpException({}, StatusCodes.FORBIDDEN);
         }
 
         user.password = '';

@@ -34,7 +34,7 @@ export class CommonGuard implements CanActivate {
         }
 
         if (roles.length && !roles.includes(user.role)) {
-            throw new HttpException({}, StatusCodes.UNAUTHORIZED);
+            throw new HttpException({}, StatusCodes.FORBIDDEN);
         }
 
         user.password = '';
