@@ -51,7 +51,18 @@ export class SubjectsController {
 
         let result;
         if (req.user && req.user.role.description === UserRole.ADMIN) result = await this.subjectService.filterSubjectsForAdmin(name, createdAt, currentPage, pageSize, isActive, isFeature, category);
-        else result = await this.subjectService.filterSubjects(name, createdAt, currentPage, pageSize, isActive, isFeature, category, req.user ? req.user.id : '', order);
+        else
+            result = await this.subjectService.filterSubjects(
+                name,
+                createdAt,
+                currentPage,
+                pageSize,
+                isActive,
+                isFeature,
+                category,
+                req.user && req.user.role.description === UserRole.EXPERT ? req.user.id : '',
+                order,
+            );
 
         if (result) {
             result.data = result.data.map((item) => {
