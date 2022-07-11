@@ -1,5 +1,5 @@
 import { DateService } from './../core/providers';
-import { ExpertGuard, MarketingGuard } from './../auth/guard';
+import { ExpertGuard, MarketingGuard, RegistrationGuard } from './../auth/guard';
 import { UserRole } from './../core/models';
 import { QueryJoiValidatorPipe } from './../core/pipe';
 import { FilterSubjectsDTO, vFilterSubjectsDTO } from './dto';
@@ -44,6 +44,7 @@ export class SubjectsController {
     }
 
     @Get('')
+    @UseGuards(RegistrationGuard)
     @UsePipes(new QueryJoiValidatorPipe(vFilterSubjectsDTO))
     async cFilterSubjects(@Req() req: Request, @Res() res: Response, @Query() queries: FilterSubjectsDTO) {
         const { name, isActive, isFeature, category, currentPage, createdAt, pageSize, order } = queries;
