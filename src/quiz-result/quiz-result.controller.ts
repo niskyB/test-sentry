@@ -18,7 +18,7 @@ export class QuizResultController {
     async cGetQuiz(@Req() req: Request, @Res() res: Response, @Param('id') id: string) {
         const quizResult = (await this.quizResultService.getQuizResultByField('id', id)) as any;
 
-        await this.registrationService.checkUserAccess(quizResult.attendedQuestions.questionInQuiz.quiz.subject.id, req.user.email);
+        await this.registrationService.checkUserAccess(quizResult.attendedQuestions[0].questionInQuiz.quiz.subject.id, req.user.email);
 
         for (let i = 0; i < quizResult.attendedQuestions.length; i++) {
             const question = quizResult.attendedQuestions[i] as AttendedQuestion;
