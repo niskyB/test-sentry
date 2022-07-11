@@ -36,6 +36,7 @@ export class QuestionService {
         return await this.questionRepository
             .createQueryBuilder('question')
             .where('question.isOld = (:isOld)', { isOld: false })
+            .andWhere('question.isActive = (:isActive)', { isActive: true })
             .leftJoinAndSelect('question.dimensions', 'dimensions')
             .andWhere('dimensions.id LIKE (:dimensionId)', { dimensionId: `%${dimensionId}%` })
             .leftJoinAndSelect('question.lesson', 'lesson')
