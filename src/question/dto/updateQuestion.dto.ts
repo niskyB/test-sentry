@@ -27,6 +27,9 @@ export class UpdateQuestionDTO {
 
     @ApiProperty({ description: 'Answer', example: '123-asd21-asd2' })
     answers: string;
+
+    @ApiProperty({ description: 'Image', example: 'aadvadsv' })
+    image: Express.Multer.File;
 }
 
 export const vUpdateQuestionDTO = joi.object<UpdateQuestionDTO>({
@@ -48,5 +51,12 @@ export const vUpdateQuestionDTO = joi.object<UpdateQuestionDTO>({
         .boolean()
         .required()
         .messages(JoiMessage.createBooleanMessages({ field: 'Is Active' }))
+        .failover(null),
+    image: joi
+        .object({
+            filename: joi.string().required().failover(''),
+            path: joi.string().required().failover(''),
+            bytes: joi.number().required().failover(''),
+        })
         .failover(null),
 });
