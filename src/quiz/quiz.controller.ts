@@ -101,6 +101,7 @@ export class QuizController {
     async cSubmitQuiz(@Res() res: Response, @Body() body: SubmitQuizDTO) {
         const quizResult = await this.quizResultService.getQuizResultByAttendedQuestionId(body.data[0].attendedQuestionId);
         if (!quizResult) throw new HttpException({ errorMessage: ResponseMessage.NOT_FOUND }, StatusCodes.NOT_FOUND);
+        if (quizResult.rate != null) throw new HttpException({ errorMessage: ResponseMessage.FORBIDDEN }, StatusCodes.FORBIDDEN);
         let correctAnswers = 0;
 
         await Promise.all(
