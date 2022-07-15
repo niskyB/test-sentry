@@ -33,6 +33,10 @@ export class Quiz {
     @Column({ nullable: false, default: true })
     isPublic: boolean;
 
+    @ApiProperty({ description: 'Is Old' })
+    @Column({ nullable: false, default: false })
+    isOld: boolean;
+
     @ApiProperty({ description: 'Quiz Type' })
     @ManyToOne(() => QuizType, { nullable: false })
     type: QuizType;

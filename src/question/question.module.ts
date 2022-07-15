@@ -1,3 +1,4 @@
+import { QuizDetailModule } from './../quiz-detail/quiz-detail.module';
 import { FilterModule, S3Module } from './../core/providers';
 import { QuestionLevelModule } from './../question-level/question-level.module';
 import { AnswerModule } from './../answer/answer.module';
@@ -13,9 +14,22 @@ import { Module, forwardRef } from '@nestjs/common';
 import { QuestionController } from './question.controller';
 import { QuestionService } from './question.service';
 import { Connection } from 'typeorm';
+import { QuizModule } from 'src/quiz/quiz.module';
 
 @Module({
-    imports: [TypeOrmModule.forFeature([Question]), S3Module, DimensionModule, AuthModule, UserModule, forwardRef(() => LessonModule), AnswerModule, QuestionLevelModule, FilterModule],
+    imports: [
+        TypeOrmModule.forFeature([Question]),
+        S3Module,
+        DimensionModule,
+        AuthModule,
+        UserModule,
+        forwardRef(() => LessonModule),
+        AnswerModule,
+        QuestionLevelModule,
+        FilterModule,
+        QuizDetailModule,
+        forwardRef(() => QuizModule),
+    ],
     controllers: [QuestionController, QuestionsController],
     providers: [QuestionService, { provide: QuestionRepository, useFactory: (connection: Connection) => connection.getCustomRepository(QuestionRepository), inject: [Connection] }],
     exports: [QuestionService],
