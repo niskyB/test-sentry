@@ -59,6 +59,7 @@ export class QuizResultService {
             quizResults = await query
                 .leftJoinAndSelect('attendedQuestions.userAnswers', 'userAnswers')
                 .leftJoinAndSelect('quiz.level', 'level')
+                .orderBy('quiz_result.createdAt', 'DESC')
                 .skip(currentPage * pageSize)
                 .take(pageSize)
                 .getMany();
