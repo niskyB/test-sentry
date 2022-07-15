@@ -44,6 +44,7 @@ export const DbModule = TypeOrmModule.forRoot({
     password: config.DB_PASSWORD,
     database: config.DB_NAME,
     synchronize: true,
+    // logging: true,
     keepConnectionAlive: true,
     entities: [
         User,

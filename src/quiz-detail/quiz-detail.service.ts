@@ -25,6 +25,19 @@ export class QuizDetailService {
             .getMany();
     }
 
+    async getQuizDetailsByQuestionId(id: string): Promise<QuizDetail[]> {
+        return await this.quizDetailRepository
+            .createQueryBuilder('quiz_detail')
+            .leftJoinAndSelect('quiz_detail.quiz', 'quiz')
+            .leftJoinAndSelect('quiz_detail.question', 'question')
+            .where('question.id = (:id)', { id })
+            .leftJoinAndSelect('quiz.type', 'type')
+            .leftJoinAndSelect('quiz.level', 'level')
+            .leftJoinAndSelect('quiz.subject', 'subject')
+            .leftJoinAndSelect('question.answers', 'answers')
+            .getMany();
+    }
+
     async getQuizDetailByQuizIdAndQuestionId(quizId: string, questionId: string): Promise<QuizDetail> {
         return await this.quizDetailRepository
             .createQueryBuilder('quiz_detail')

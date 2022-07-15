@@ -18,6 +18,7 @@ export class QuizService {
         return await this.quizRepository
             .createQueryBuilder('quiz')
             .where(`quiz.${field.toString()} = (:value)`, { value })
+            .andWhere('quiz.isOld = (:isOld)', { isOld: false })
             .leftJoinAndSelect('quiz.subject', 'subject')
             .leftJoinAndSelect('subject.assignTo', 'assignTo')
             .leftJoinAndSelect('assignTo.user', 'user')
@@ -31,6 +32,7 @@ export class QuizService {
         const query = this.quizRepository
             .createQueryBuilder('quiz')
             .where('quiz.name LIKE (:name)', { name: `%${name}%` })
+            .andWhere('quiz.isOld = (:isOld)', { isOld: false })
             .leftJoinAndSelect('quiz.subject', 'subject')
             .andWhere('subject.id LIKE (:subjectId)', { subjectId: `%${subject}%` })
             .leftJoinAndSelect('quiz.type', 'type')
@@ -53,6 +55,7 @@ export class QuizService {
             .leftJoinAndSelect('quiz.subject', 'subject')
             .where('subject.id LIKE (:subjectId)', { subjectId: `%${subject}%` })
             .andWhere('quiz.name LIKE (:name)', { name: `%${name}%` })
+            .andWhere('quiz.isOld = (:isOld)', { isOld: false })
             .leftJoinAndSelect('quiz.type', 'type')
             .andWhere('type.description = (:type)', { type: 'Simulation' });
         try {

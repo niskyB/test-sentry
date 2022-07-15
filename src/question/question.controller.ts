@@ -1,10 +1,11 @@
+import { QuizDetailService } from './../quiz-detail/quiz-detail.service';
 import { QuestionLevelService } from './../question-level/question-level.service';
 import { AnswerService } from './../answer/answer.service';
 import { LessonService } from './../lesson/lesson.service';
 import { CommonGuard, ExpertGuard } from './../auth/guard';
 import { DimensionService } from './../dimension/dimension.service';
 import { S3Service } from '../core/providers';
-import { Answer, Question } from './../core/models';
+import { Answer, Question, Quiz, QuizDetail } from './../core/models';
 import { JoiValidatorPipe } from './../core/pipe';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { QuestionService } from './question.service';
@@ -14,6 +15,7 @@ import { Response } from 'express';
 import { ResponseMessage } from '../core/interface';
 import { StatusCodes } from 'http-status-codes';
 import { CreateQuestionDTO, UpdateQuestionDTO, vCreateQuestionDTO, vUpdateQuestionDTO } from './dto';
+import { QuizService } from 'src/quiz/quiz.service';
 
 @ApiTags('question')
 @ApiBearerAuth()
@@ -26,6 +28,8 @@ export class QuestionController {
         private readonly lessonService: LessonService,
         private readonly answerService: AnswerService,
         private readonly questionLevelService: QuestionLevelService,
+        private readonly quizDetailService: QuizDetailService,
+        private readonly quizService: QuizService,
     ) {}
 
     @Get('/:id')
@@ -125,7 +129,7 @@ export class QuestionController {
         if (countCorrect > 1 && !body.isMultipleChoice) throw new HttpException({ errorMessage: ResponseMessage.SINGLE_CHOICE_ERROR }, StatusCodes.BAD_REQUEST);
         if (countCorrect <= 1 && body.isMultipleChoice) throw new HttpException({ errorMessage: ResponseMessage.MULTIPLE_CHOICE_ERROR }, StatusCodes.BAD_REQUEST);
 
-        const newQuestion = new Question();
+        let newQuestion = new Question();
         const questionLevel = await this.questionLevelService.getOneByField('id', body.questionLevel);
 
         newQuestion.questionLevel = questionLevel || question.questionLevel;
@@ -144,7 +148,7 @@ export class QuestionController {
             else throw new HttpException({ errorMessage: ResponseMessage.SOMETHING_WRONG }, StatusCodes.INTERNAL_SERVER_ERROR);
         } else newQuestion.imageUrl = question.imageUrl;
 
-        await this.questionService.saveQuestion(newQuestion);
+        newQuestion = await this.questionService.saveQuestion(newQuestion);
         await Promise.all(
             answers.map(async (item) => {
                 const answer = new Answer();
@@ -157,6 +161,45 @@ export class QuestionController {
 
         question.isOld = true;
         await this.questionService.saveQuestion(question);
+        const result = await this.quizDetailService.getQuizDetailsByQuestionId(question.id);
+        const setQuizDetails = new Set<Quiz>();
+        result.forEach((item) => setQuizDetails.add(item.quiz));
+        const quizDetails = Array.from(setQuizDetails);
+
+        Promise.all(
+            quizDetails.map(async (item) => {
+                let newQuiz = new Quiz();
+                newQuiz.duration = item.duration;
+                newQuiz.isPublic = item.isPublic;
+                newQuiz.level = item.level;
+                newQuiz.name = item.name;
+                newQuiz.numberOfQuestion = item.numberOfQuestion;
+                newQuiz.passRate = item.passRate;
+                newQuiz.questions = item.questions;
+                newQuiz.subject = item.subject;
+                newQuiz.type = item.type;
+                newQuiz = await this.quizService.saveQuiz(newQuiz);
+
+                const result = await this.quizDetailService.getQuizDetailsByQuizId(item.id);
+                Promise.all(
+                    result.map(async (item) => {
+                        if (!item.question.isOld) {
+                            const question = item.question;
+                            const quizDetail = new QuizDetail();
+                            quizDetail.question = question;
+                            quizDetail.quiz = newQuiz;
+                            await this.quizDetailService.saveQuizDetail(quizDetail);
+                        }
+                    }),
+                );
+                const quizDetail = new QuizDetail();
+                quizDetail.question = newQuestion;
+                quizDetail.quiz = newQuiz;
+                await this.quizDetailService.saveQuizDetail(quizDetail);
+                item.isOld = true;
+                await this.quizService.saveQuiz(item);
+            }),
+        );
 
         return res.send(newQuestion);
     }
