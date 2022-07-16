@@ -37,4 +37,5 @@ export enum ResponseMessage {
     REGISTRATION_NOT_FOUND = 'Registration not found',
     BALANCE_NOT_ENOUGH = 'Your balance is not enough',
     FROM_LAGER_THAN_TO = 'From day should be less than or equal to To Day',
+    ACTION_NOT_ALLOW = 'This action is not allowed',
 }
