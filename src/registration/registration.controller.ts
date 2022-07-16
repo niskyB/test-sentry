@@ -12,7 +12,16 @@ import { AuthService } from '../auth/auth.service';
 import { JoiValidatorPipe } from '../core/pipe';
 import { PricePackageService } from '../price-package/price-package.service';
 import { UserService } from '../user/user.service';
-import { CreateRegistrationDTO, UpdateGeneralInformationDTO, UpdateSpecificInformationDTO, vCreateRegistrationDTO, vUpdateGeneralInformationDTO, vUpdateSpecificInformationDTO } from './dto';
+import {
+    CreateRegistrationDTO,
+    UpdateGeneralInformationDTO,
+    UpdateRegistrationByUserDTO,
+    UpdateSpecificInformationDTO,
+    vCreateRegistrationDTO,
+    vUpdateGeneralInformationDTO,
+    vUpdateRegistrationByUserDTO,
+    vUpdateSpecificInformationDTO,
+} from './dto';
 import { RegistrationService } from './registration.service';
 import { constant } from '../core';
 import { Cron, CronExpression } from '@nestjs/schedule';
@@ -189,6 +198,26 @@ export class RegistrationController {
         registration.customer = customer;
 
         await this.registrationService.saveRegistration(registration);
+        return res.send();
+    }
+
+    @Put('/user/:id')
+    @UseGuards(CommonGuard)
+    @ApiParam({ name: 'id', example: 'TVgJIjsRFmIvyjUeBOLv4gOD3eQZY' })
+    @UsePipes(new JoiValidatorPipe(vUpdateRegistrationByUserDTO))
+    async cEditRegistrationByUser(@Req() req: Request, @Res() res: Response, @Param('id') id: string, @Body() body: UpdateRegistrationByUserDTO) {
+        const registration = await this.registrationService.getRegistrationByField('id', id);
+
+        if (!registration) throw new HttpException({ errorMessage: ResponseMessage.NOT_FOUND }, StatusCodes.NOT_FOUND);
+        if (registration.customer.user.id !== req.user.id) throw new HttpException({ errorMessage: ResponseMessage.FORBIDDEN }, StatusCodes.FORBIDDEN);
+        if (registration.status !== RegistrationStatus.SUBMITTED) throw new HttpException({ status: ResponseMessage.ACTION_NOT_ALLOW }, StatusCodes.METHOD_NOT_ALLOWED);
+
+        const pricePackage = await this.pricePackageService.getPricePackageByField('id', body.pricePackage);
+        registration.pricePackage = pricePackage || registration.pricePackage;
+        registration.notes = body.notes || registration.notes;
+
+        await this.registrationService.saveRegistration(registration);
+
         return res.send();
     }
 

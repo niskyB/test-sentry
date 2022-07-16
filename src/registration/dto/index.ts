@@ -6,3 +6,4 @@ export * from './updateSpecificInformation.dto';
 export * from './statisticRegistration.dto';
 export * from './statisticRevenues.dto';
 export * from './statisticOrderTrend.dto';
+export * from './updateRegistrationByUser.dto';
