@@ -38,6 +38,7 @@ import { RoleModule } from './role/role.module';
 import { SystemMenuModule } from './system-menu/system-menu.module';
 import { TransactionModule } from './transaction/transaction.module';
 import { ScheduleModule } from '@nestjs/schedule';
+import { SentryModule } from './sentry/sentry.module';
 @Module({
     imports: [
         DbModule,
@@ -81,6 +82,7 @@ import { ScheduleModule } from '@nestjs/schedule';
         SystemMenuModule,
         TransactionModule,
         ScheduleModule.forRoot(),
+        SentryModule,
     ],
 })
 export class AppModule {}
