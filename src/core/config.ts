@@ -42,4 +42,6 @@ export const config = {
     MOMO_ACCESS_KEY: process.env.MOMO_ACCESS_KEY || '',
     MOMO_LANG: process.env.MOMO_LANG || '',
     MOMO_REQUEST_TYPE: process.env.MOMO_REQUEST_TYPE || '',
+
+    SENTRY_DSN: process.env.SENTRY_DSN || '',
 };
